@@ -286,7 +286,7 @@ foreach csv_line_fields $values_list_of_lists {
 	    if {"" == $main_office_id} {
 
 		# First create a new main_office:
-		set main_office_id [office::new \
+		set main_office_id [im_office::new \
 				    -office_name	$office_name \
 				    -office_path	$office_path \
 				    -company_id		$company_id \
@@ -296,7 +296,7 @@ foreach csv_line_fields $values_list_of_lists {
 	    }
 
 	    # Now create the company with the new main_office:
-	    set company_id [company::new \
+	    set company_id [im_company::new \
 				-company_id		$company_id \
 				-company_name		$company_name \
 				-company_path		$company_path \
