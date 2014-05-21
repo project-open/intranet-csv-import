@@ -440,6 +440,7 @@ ad_proc -public im_csv_import_guess_map {
 } {
     set field_name_lower [string tolower $field_name]
     ns_log Notice "im_csv_import_guess_map: trying to guess attribute_name for field_name=$field_name_lower"
+    im_security_alert_check_alphanum -location "im_csv_import_guess_map: object_type" -value $object_type
 
     set dynfield_sql "
 	select  lower(aa.attribute_name) as attribute_name,
