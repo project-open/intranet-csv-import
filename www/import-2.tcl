@@ -41,8 +41,10 @@ if { $max_n_bytes && ([file size $tmp_filename] > $max_n_bytes) } {
 # Choose depending on the object type...
 if {"" == $return_url} {
     switch $object_type {
-	im_project { set return_url "/intranet/projects/index" }
 	im_company { set return_url "/intranet/companies/index" }
+	im_conf_item { set return_url "/intranet-helpdesk/index" }
+	im_project { set return_url "/intranet/projects/index" }
+	person { set return_url "/intranet/users/index" }
 	default { set return_url "/intranet" }
     }
 }

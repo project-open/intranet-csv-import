@@ -269,7 +269,7 @@ ad_proc -public im_csv_import_parsers {
     Returns the list of available parsers
 } {
     switch $object_type {
-	im_project - im_company - im_risk - im_timesheet_task - im_ticket {
+	im_project - im_company - im_conf_item - im_risk - im_timesheet_task - im_ticket {
 	    set parsers {
 		no_change	"No Change"
 		hard_coded	"Hard Coded Functionality"
@@ -549,6 +549,41 @@ ad_proc -public im_csv_import_convert_project_parent_nrs {
     }
 
     return [im_csv_import_convert_project_parent_nrs -parent_id $parent_id $parent_nrs]
+}
+
+
+
+
+ad_proc -public im_csv_import_convert_conf_item_parent_nrs { 
+    {-parent_id ""}
+    parent_nrs 
+} {
+    Returns {parent_id err}
+} {
+    ns_log Notice "im_csv_import_convert_conf_item_parent_nrs -parent_id $parent_id $parent_nrs"
+
+    # Recursion end - just return the parent.
+    if {"" == $parent_nrs} { return [list $parent_id ""] }
+    
+    # Lookup the first parent_nr below the current parent_id
+    set parent_nr [lindex $parent_nrs 0]
+    set parent_nrs [lrange $parent_nrs 1 end]
+
+    set parent_sql "= $parent_id"
+    if {"" == $parent_id} { set parent_sql "is null" }
+
+    set parent_id [db_string pid "
+	select	conf_item_id
+	from	im_conf_items
+	where	conf_item_parent_id $parent_sql and
+		lower(conf_item_nr) = lower(:parent_nr)
+    "]
+
+    if {"" == $parent_id} {
+	return [list "" "Didn't find conf_item with conf_item_nr='$conf_item_nr' and parent_id='$parent_id'"]
+    }
+
+    return [im_csv_import_convert_conf_item_parent_nrs -parent_id $parent_id $parent_nrs]
 }
 
 
