@@ -13,7 +13,7 @@
 	<td> 
 <%= [im_select object_type [list \
 	      im_company "Company" \
-	      im_conf_item "Configuration Item" \
+	      im_conf_item "Configuration Item (no mapping, requires correct CSV header names)" \
 	      im_project "Project" \
 	      im_risk "Risk" \
 	      im_timesheet_task "Timesheet Task" \
