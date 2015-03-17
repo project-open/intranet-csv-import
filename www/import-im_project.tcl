@@ -21,6 +21,8 @@ ad_page_contract {
     parser_args:array
 }
 
+# ad_return_complaint 1 "<pre>\n\n[array get column]\n\n[array get map]\n\n[array get parser]\n\n[array get parser_args]\n\n</pre>"
+
 # ---------------------------------------------------------------------
 # Default & Security
 # ---------------------------------------------------------------------
@@ -75,6 +77,7 @@ set mapped_vars [list "''"]
 foreach k [array names map] {
     lappend mapped_vars "'$map($k)'"
 }
+
 
 set dynfield_sql "
 	select distinct
@@ -168,7 +171,7 @@ foreach csv_line_fields $values_list_of_lists {
     set sort_order		""
 
     foreach attribute_name $attribute_names {
-	set $attribute_name	""
+	set $attribute_name ""
     }
 
     # -------------------------------------------------------
@@ -314,11 +317,8 @@ foreach csv_line_fields $values_list_of_lists {
     set company_id $customer_id
 
     if {"" == $customer_id } { 
-	if {$ns_write_p} {
-	    ns_write "<li><font color=red>Error: Didn't find customer for '$customer_name'.<br>
-	    Every projects needs a valid customer. Please correct the CSV file.</font>\n"
-	}
-	continue
+	set customer_id [im_company_internal]
+	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find customer_name='$customer_name', using 'internal' customer</font>\n" }
     }
 
     set project_lead_id [im_id_from_user_name $project_manager]

@@ -49,8 +49,6 @@ if {"" == $return_url} {
     }
 }
 
-
-
 # strip off the C:\directories... crud and just get the file name
 if ![regexp {([^//\\]+)$} $upload_file match filename] {
     # couldn't find a match
@@ -146,7 +144,16 @@ foreach header_name $headers {
 	set val [lindex [set $row_name] $cnt]
 	if {"" != $val} { lappend parser_sample_values $val }
     }
-    set defs [im_csv_import_guess_parser -object_type $object_type -field_name $header_name -sample_values $parser_sample_values]
+
+    # Guess the object's field to which to map.
+    set object_field_best_guess [im_csv_import_guess_map -object_type $object_type -field_name $header_name -sample_values $parser_sample_values]
+    ns_log Notice "import-2: otype=$object_type, field_name=$header_name => field=$object_field_best_guess"
+    set guess_parser_field_name $header_name
+    if {"" != $object_field_best_guess} { set guess_parser_field_name $object_field_best_guess }
+
+
+    # Guess the parser how to convert the field values
+    set defs [im_csv_import_guess_parser -object_type $object_type -field_name $guess_parser_field_name -sample_values $parser_sample_values]
     ns_log Notice "import-2: otype=$object_type, field_name=$header_name => parser=$defs"
     set default_parser [lindex $defs 0]
     set default_parser_args [lindex $defs 1]
@@ -155,7 +162,7 @@ foreach header_name $headers {
     set args "<input type=text name=parser_args.$cnt value=\"$default_parser_args\">\n"
 
     # Mapping - Map to which object field?
-    set default_map [im_csv_import_guess_map -object_type $object_type -field_name $header_name -sample_values $parser_sample_values]
+    set default_map $object_field_best_guess
     if {"" != $override_map} { set default_map $override_map }
     set map [im_select map.$cnt $object_type_pairs $default_map]
 

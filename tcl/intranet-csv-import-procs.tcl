@@ -336,7 +336,7 @@ ad_proc -public im_csv_import_guess_parser {
 	im_project - im_timesheet_task - im_ticket {
 	    switch $field_name {
 		parent_nrs { return [list "hard_coded" "" ""] }
-		customer_name { return [list "hard_coded" "" ""] }
+		customer_name { return [list "hard_coded" "" "company_id"] }
 		project_status { return [list "hard_coded" "" "project_status_id"] }
 		project_type { return [list "hard_coded" "" "project_type_id"] }
 		on_track_status { return [list "hard_coded" "" "on_track_status_id"] }
