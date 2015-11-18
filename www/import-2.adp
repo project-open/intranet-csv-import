@@ -4,7 +4,7 @@
 <property name="main_navbar_label">@main_navbar_label@</property>
 
 <form enctype="multipart/form-data" method=POST action="import-@redirect_object_type@.tcl">
-<%= [export_form_vars object_type return_url import_filename] %>
+<%= [export_vars -form {object_type return_url import_filename}] %>
 
      <table>
      <tr clas=rowtitle>

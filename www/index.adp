@@ -5,7 +5,7 @@
 <property name="main_navbar_label">@main_navbar_label@</property>
 
 <form enctype="multipart/form-data" method=POST action="import-2.tcl">
-<%= [export_form_vars return_url main_navbar_label] %>
+<%= [export_vars -form {return_url main_navbar_label}] %>
 
      <table border=0>
      <tr> 
