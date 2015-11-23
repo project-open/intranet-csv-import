@@ -1,7 +1,7 @@
 <master>
-<property name="title">@page_title@</property>
-<property name="context">@context_bar@</property>
-<property name="main_navbar_label">@main_navbar_label@</property>
+<property name="doc(title)">@page_title;literal@</property>
+<property name="context">@context_bar;literal@</property>
+<property name="main_navbar_label">@main_navbar_label;literal@</property>
 
 <form enctype="multipart/form-data" method=POST action="import-@redirect_object_type@.tcl">
 <%= [export_vars -form {object_type return_url import_filename}] %>
@@ -39,12 +39,12 @@
 <!--
      <tr>
      <td>Save Mapping as:</td>
-     <td><input type=text name=mapping_name></td>
+     <td><input type="text" name="mapping_name"></td>
      </tr>
 -->
      <tr>
      <td></td>
-     <td><input type=submit value="<%= [lang::message::lookup "" intranet-csv-import.Import_CSV "Import CSV"] %>"></td>
+     <td><input type="submit" value="<%= [lang::message::lookup "" intranet-csv-import.Import_CSV "Import CSV"] %>"></td>
      </tr>
      </table>
 

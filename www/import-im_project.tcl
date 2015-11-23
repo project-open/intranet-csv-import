@@ -27,7 +27,7 @@ ad_page_contract {
 # Default & Security
 # ---------------------------------------------------------------------
 
-set current_user_id [ad_maybe_redirect_for_registration]
+set current_user_id [auth::require_login]
 set page_title [lang::message::lookup "" intranet-cvs-import.Upload_Objects "Upload Objects"]
 set context_bar [im_context_bar "" $page_title]
 set admin_p [im_is_user_site_wide_or_intranet_admin $current_user_id]
@@ -193,7 +193,7 @@ foreach csv_line_fields $values_list_of_lists {
 
 	set var_value [string trim [lindex $csv_line_fields $j]]
 	set var_value [string map -nocase {"\"" "'" "\[" "(" "\{" "(" "\}" ")" "\]" ")"} $var_value]
-	if {[string equal "NULL" $var_value]} { set var_value ""}
+	if {"NULL" eq $var_value} { set var_value ""}
 
 	# replace unicode characters by non-accented characters
 	# Watch out! Does not work with Latin-1 characters

@@ -1,13 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <master>
-<property name="title">@page_title@</property>
-<property name="context">@context_bar@</property>
-<property name="main_navbar_label">@main_navbar_label@</property>
+<property name="doc(title)">@page_title;literal@</property>
+<property name="context">@context_bar;literal@</property>
+<property name="main_navbar_label">@main_navbar_label;literal@</property>
 
 <form enctype="multipart/form-data" method=POST action="import-2.tcl">
 <%= [export_vars -form {return_url main_navbar_label}] %>
 
-     <table border=0>
+     <table border="0">
      <tr> 
 	<td>#intranet-csv-import.Object_Type#</td>
 	<td> 
@@ -26,7 +26,7 @@
      <tr> 
 	<td><%= [lang::message::lookup "" intranet-csv-import.Filename] %></td>
 	<td> 
-	  <input type=file name=upload_file size=30>
+	  <input type="file" name="upload_file" size="30">
 	<%= [im_gif help "Use the &quot;Browse...&quot; button to locate your file, then click &quot;Open&quot;."] %>
 	</td>
      </tr>
@@ -34,7 +34,7 @@
      <tr> 
 	<td></td>
 	<td> 
-	  <input type=submit>
+	  <input type="submit">
 	</td>
     </tr>
 

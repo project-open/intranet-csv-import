@@ -205,7 +205,7 @@ ad_proc -public im_csv_import_object_fields {
     set super_types [im_object_super_types -object_type $object_type]
     set s [list]
     foreach t $super_types {
-	if {$t == "acs_object"} { continue }
+	if {$t eq "acs_object"} { continue }
 	lappend s $t
     }
     set super_types $s
@@ -377,7 +377,7 @@ ad_proc -public im_csv_import_guess_parser {
     set super_types [im_object_super_types -object_type $object_type]
     set s [list]
     foreach t $super_types {
-	if {$t == "acs_object"} { continue }
+	if {$t eq "acs_object"} { continue }
 	lappend s $t
     }
     set super_types $s

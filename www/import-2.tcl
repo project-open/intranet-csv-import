@@ -15,7 +15,7 @@ ad_page_contract {
 # Default & Security
 # ---------------------------------------------------------------------
 
-set current_user_id [ad_maybe_redirect_for_registration]
+set current_user_id [auth::require_login]
 set page_title [lang::message::lookup "" intranet-cvs-import.Upload_Objects "Upload Objects"]
 set context_bar [im_context_bar "" $page_title]
 set admin_p [im_is_user_site_wide_or_intranet_admin $current_user_id]
@@ -50,14 +50,14 @@ if {"" == $return_url} {
 }
 
 # strip off the C:\directories... crud and just get the file name
-if ![regexp {([^//\\]+)$} $upload_file match filename] {
+if {![regexp {([^//\\]+)$} $upload_file match filename]} {
     # couldn't find a match
     set filename $upload_file
 }
 
 if {[regexp {\.\.} $filename]} {
     set error "Filename contains forbidden characters"
-    ad_returnredirect "/error.tcl?[export_vars -url {error}]"
+    ad_returnredirect [export_vars -base /error.tcl {error}]
 }
 
 if {![file readable $tmp_filename]} {
