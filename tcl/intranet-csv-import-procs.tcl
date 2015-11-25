@@ -42,6 +42,54 @@ ad_proc -public im_csv_import_parser_no_change {
     return [list $arg ""]
 }
 
+
+ad_proc -public im_csv_import_parser_user_name {
+    {-parser_args "" }
+    arg
+} {
+    Returns a user_id from parties
+} {
+    if {[regexp {'} $arg match]} {
+       set err "Found a email (email) with single quote, consider removing single quotes from emails"
+       im_security_alert -location "im_csv_import_parser_project_nr" -message $err -value $arg
+       return [list $arg $err]
+    }
+
+    set sql "
+        select  party_id
+        from    parties p
+        where   p.email = '$arg'
+    "
+    set party_id [db_string party_id_from_name $sql -default ""]
+    set err ""
+    if {"" == $party_id} { set err "Didn't find user with email ='$arg'" }
+    return [list $party_id $err]
+}
+
+
+ad_proc -public im_csv_import_parser_company_name { 
+    {-parser_args "" }
+    arg 
+} {
+    Returns a company_id from im_companies
+} {
+    if {[regexp {'} $arg match]} { 
+       set err "Found a company name ($arg) with single quote, consider removing single quotes from companies"
+       im_security_alert -location "im_csv_import_parser_project_nr" -message $err -value $arg 
+       return [list $arg $err]
+    }
+
+    set sql "
+	select	min(c.company_id)
+	from	im_companies c
+	where	c.company_name = '$arg'
+    "
+    set company_id [db_string company_id_from_name $sql -default ""]
+    set err ""
+    if {"" == $company_id} { set err "Didn't find company with company_name ='$arg'" }
+    return [list $company_id $err]
+}
+
 ad_proc -public im_csv_import_parser_project_nr { 
     {-parser_args "" }
     arg 
@@ -77,7 +125,21 @@ ad_proc -public im_csv_import_parser_date_european {
 	if {1 == [string length $month]} { set dom "0$month" }
 	return [list "$year-$month-$dom" ""] 
     }
-    return [list "" "Error parsing European date format '$arg': expected 'dd.mm.yyyy'"]
+    return [list "" "Error parsing European date format '$arg': expected 'dd.mm.yyyy'. If the error remains, try to import ANSI dates (2015-01-01) and set parser to 'No change'"]
+}
+
+ad_proc -public im_csv_import_parser_date_european_dashes { 
+    {-parser_args "" }
+    arg 
+} {
+    Parses a European date format like '08/06/2011' as the 8th of June, 2011
+} {
+    if {[regexp {^(.+)/(.+)/(....)$} $arg match dom month year]} { 
+	if {1 == [string length $dom]} { set dom "0$dom" }
+	if {1 == [string length $month]} { set dom "0$month" }
+	return [list "$year-$month-$dom" ""] 
+    }
+    return [list "" "Error parsing European date format '$arg': expected 'dd/mm/yyyy' ()"]
 }
 
 
@@ -271,16 +333,19 @@ ad_proc -public im_csv_import_parsers {
     switch $object_type {
 	im_project - im_company - im_conf_item - im_risk - im_timesheet_task - im_ticket {
 	    set parsers {
-		no_change	"No Change"
-		hard_coded	"Hard Coded Functionality"
-		date_european	"European Date Parser (DD.MM.YYYY)"
-		number_european	"European Number Parser (20.000,00)"
-		date_american	"American Date Parser (MM/DD/YYYY)"
-		number_american	"American Number Parser (20,000.00)"
-		category	"Category Parser"
-		cost_center	"Cost Center Parser"
-		project_nr	"Project from Project Nr"
-		project_name	"Project from Project Name"
+		no_change		"No Change"
+		hard_coded		"Hard Coded Functionality"
+		date_european		"European Date Parser (DD.MM.YYYY)"
+		date_european_dashes	"European Date Parser (DD/MM/YYYY)"
+		number_european		"European Number Parser (20.000,00)"
+		date_american		"US Date Parser (MM/DD/YYYY)"
+		number_american		"US Number Parser (20,000.00)"
+		category		"Category ID from Category Name"
+		cost_center		"Cost Center Parser"
+		project_nr		"Project from Project Nr"
+		project_name		"Project from Project Name"
+		company_name    	"Company ID from Company Name"
+		user_name		"User ID from user-email"
 	    }
 	}
 	default {
@@ -338,10 +403,15 @@ ad_proc -public im_csv_import_guess_parser {
 		parent_nrs { return [list "hard_coded" "" ""] }
 		customer_name { return [list "hard_coded" "" "company_id"] }
 		project_status { return [list "hard_coded" "" "project_status_id"] }
-		project_type { return [list "hard_coded" "" "project_type_id"] }
 		on_track_status { return [list "hard_coded" "" "on_track_status_id"] }
 		customer_contact { return [list "" "" "company_contact_id"] }
 		project_manager { return [list "hard_coded" "" "project_lead_id"] }
+		project_path { return [list "project_path" "" "project_path"] }
+		project_type { return [list "category" "Intranet Project Type" "project_type_id"] }
+		project_status { return [list "category" "Intranet Project Status" "project_status_id"] }
+		project_budget { return [list "" "" "project_budget"] }
+		start_date { return [list "" "" "start_date"] }
+		end_date { return [list "" "" "end_date"] }		
 	    }
 	}
     }

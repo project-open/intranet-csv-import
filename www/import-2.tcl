@@ -12,6 +12,20 @@ ad_page_contract {
 }
 
 # ---------------------------------------------------------------------
+# Note: 
+# ---------------------------------------------------------------------
+
+# This script uses jquery-save-as-you-type in order to store 
+# the user settings for mapping. This way a user does not need   
+# to start all over again if an import fails. 
+# The script stores ALL form vars so please add any new vars 
+# added to the form that should not be stored to the 
+# "exclude" section see (.adp file) to avoid side effects. 
+
+template::head::add_javascript -src "/intranet-csv-import/js/jquery-save-as-you-type/source/sayt.min.jquery.js" -order 1000
+template::head::add_javascript -src "/intranet-csv-import/js/jquery-save-as-you-type/dependencies/jquery-cookie.js" -order 1000
+
+# ---------------------------------------------------------------------
 # Default & Security
 # ---------------------------------------------------------------------
 
@@ -28,9 +42,11 @@ set admin_p [im_is_user_site_wide_or_intranet_admin $current_user_id]
 
 # Get the file from the user.
 # number_of_bytes is the upper-limit
-set max_n_bytes [im_parameter -package_id [im_package_filestorage_id] MaxNumberOfBytes "" 0]
+set max_n_bytes [parameter::get -package_id [apm_package_id_from_key im_package_filestorage_id] -parameter "MaxNumberOfBytes" -default 0]
 set tmp_filename [ns_queryget upload_file.tmpfile]
+
 im_security_alert_check_tmpnam -location "import-2.tcl" -value $tmp_filename
+
 if { $max_n_bytes && ([file size $tmp_filename] > $max_n_bytes) } {
     ad_return_complaint 1 "Your file is larger than the maximum permissible upload size:  
     [util_commify_number $max_n_bytes] bytes"
@@ -39,13 +55,30 @@ if { $max_n_bytes && ([file size $tmp_filename] > $max_n_bytes) } {
 
 # Empty return_url?
 # Choose depending on the object type...
+# Varied form_id's tio support 'jquery-save-as-you-type'
 if {"" == $return_url} {
     switch $object_type {
-	im_company { set return_url "/intranet/companies/index" }
-	im_conf_item { set return_url "/intranet-helpdesk/index" }
-	im_project { set return_url "/intranet/projects/index" }
-	person { set return_url "/intranet/users/index" }
-	default { set return_url "/intranet" }
+	im_company { 
+	    set return_url "/intranet/companies/index" 
+	    set form_id "intranet-csv-import-import2-companies"
+	}
+	im_conf_item { 
+	    set return_url "/intranet-helpdesk/index" 
+            set form_id "intranet-csv-import-import2-confitems"	    
+	}
+	im_project { 
+	    set return_url "/intranet/projects/index" 
+            set form_id "intranet-csv-import-import2-projects"
+
+	}
+	person { 
+	    set return_url "/intranet/users/index" 
+            set form_id "intranet-csv-import-import2-users"
+	}
+	default { 
+	    set return_url "/intranet" 
+            set form_id "intranet-csv-import-import2-other"
+	}
     }
 }
 
@@ -103,7 +136,6 @@ set values_lol [im_csv_get_values $lines_content $separator]
 # set error [im_csv_import_check_list_of_lists $values_lol]
 # if {"" != $error} { ad_return_complaint 1 $error }
 
-
 # Take a sample of max_row rows from the file and show
 set max_row 10
 for {set i 1} {$i <= $max_row} {incr i} {
@@ -159,7 +191,7 @@ foreach header_name $headers {
     set default_parser_args [lindex $defs 1]
     set override_map [lindex $defs 2]
     set parser [im_select parser.$cnt $parser_pairs $default_parser]
-    set args "<input type=text name=parser_args.$cnt value=\"$default_parser_args\">\n"
+    set args "<input type=text name=parser_args.$cnt value=\"$default_parser_args\" size=\"40\">\n"
 
     # Mapping - Map to which object field?
     set default_map $object_field_best_guess
@@ -168,9 +200,7 @@ foreach header_name $headers {
 
     ns_log Notice "import-2: header_name=$header_name, default_map=$default_map, override_map=$override_map, map=$map"
 
-
     if {"hard_coded" == $default_parser} { set map [im_select map.$cnt $object_type_pairs "hard_coded"] }
-
 
     multirow append mapping $header_name $column $map $parser $args [lindex $row_1 $cnt] [lindex $row_2 $cnt] [lindex $row_3 $cnt] [lindex $row_4 $cnt] [lindex $row_5 $cnt]
 
@@ -187,3 +217,4 @@ switch $object_type {
 	set redirect_object_type $object_type
     }
 }
+

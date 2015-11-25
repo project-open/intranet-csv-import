@@ -46,7 +46,7 @@
 <table>
 <tr>
 <td>
-We espect that the import file contains the column names in the first row.
+We expect that the import file contains the column names in the first row.<br/>
 </td>
 </tr>
 </table>

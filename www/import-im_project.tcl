@@ -21,8 +21,6 @@ ad_page_contract {
     parser_args:array
 }
 
-# ad_return_complaint 1 "<pre>\n\n[array get column]\n\n[array get map]\n\n[array get parser]\n\n[array get parser_args]\n\n</pre>"
-
 # ---------------------------------------------------------------------
 # Default & Security
 # ---------------------------------------------------------------------
@@ -129,7 +127,7 @@ foreach csv_line_fields $values_list_of_lists {
     set project_nr		""
     set project_path		""
     set customer_name		""
-    set customer_id		""
+    set company_id		""
     set parent_nrs		""
     set parent_id		""
     set project_status		""
@@ -207,18 +205,25 @@ foreach csv_line_fields $values_list_of_lists {
     # -------------------------------------------------------
     # Transform the variables
     set i 0
+
     foreach varname $var_name_list {
 	set p $parser($i)
 	set p_args $parser_args($i)
 	set target_varname $map($i)
 	ns_log Notice "import-im_project: Parser: $varname -> $target_varname"
+	ns_log Notice "import-im_project: Parser: p_args: $p_args"
+	ns_log Notice "import-im_project: Parser: target_varname: $target_varname"
 
 	switch $p {
-	    no_change { }
+	    no_change { 
+		set $target_varname [set $varname]
+		ns_log Notice "import-im_project: Parser: no change: varname: $varname, val: [set $varname]"
+	    }
 	    default {
 		set proc_name "im_csv_import_parser_$p"
 		if {[catch {
 		    set val [set $varname]
+		    ns_log Notice "import-im_project: Parser: val: $val"
 		    if {"" != $val} {
 			    set result [$proc_name -parser_args $p_args $val]
 			    set res [lindex $result 0]
@@ -240,9 +245,9 @@ foreach csv_line_fields $values_list_of_lists {
 	}
 
 	incr i
+	ns_log Notice "import-im_project: -------------------------------------------"
     }
     
-
     # -------------------------------------------------------
     # Specific field transformations
 
@@ -306,18 +311,18 @@ foreach csv_line_fields $values_list_of_lists {
     # On track status can be NULL without problems
     set on_track_status_id [im_id_from_category [list $on_track_status] "Intranet Project On Track Status"]
 
-    # customer_id
-    if {"" == $customer_id } { 
-	set customer_id [db_string cust "select company_id from im_companies where lower(company_name) = trim(lower(:customer_name))" -default ""] 
+    # company_id
+    if {"" == $company_id } { 
+	set company_id [db_string cust "select company_id from im_companies where lower(company_name) = trim(lower(:customer_name))" -default ""] 
     }
-    if {"" == $customer_id } { 
-	set customer_id [db_string cust "select company_id from im_companies where lower(company_path) = trim(lower(:customer_name))" -default ""] 
+    if {"" == $company_id } { 
+	set company_id [db_string cust "select company_id from im_companies where lower(company_path) = trim(lower(:customer_name))" -default ""] 
     }
     # For compatibility
-    set company_id $customer_id
+    set company_id $company_id
 
-    if {"" == $customer_id } { 
-	set customer_id [im_company_internal]
+    if {"" == $company_id } { 
+	set company_id [im_company_internal]
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find customer_name='$customer_name', using 'internal' customer</font>\n" }
     }
 
@@ -330,7 +335,6 @@ foreach csv_line_fields $values_list_of_lists {
     if {"" == $customer_contact_id && "" != $customer_contact} {
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find customer contact '$customer_contact'.</font>\n"	}
     }
-
 
     # -------------------------------------------------------
     # Check if the project already exists
@@ -391,7 +395,7 @@ foreach csv_line_fields $values_list_of_lists {
 			    -project_name	$project_name \
 			    -project_nr		$project_nr \
 			    -project_path	$project_path \
-			    -company_id		$customer_id \
+			    -company_id		$company_id \
 			    -parent_id		$parent_id \
 			    -project_type_id	$project_type_id \
 			    -project_status_id	$project_status_id \
@@ -412,7 +416,7 @@ foreach csv_line_fields $values_list_of_lists {
 			project_name		= :project_name,
 			project_nr		= :project_nr,
 			project_path		= :project_path,
-			company_id		= :customer_id,
+			company_id		= :company_id,
 			parent_id		= :parent_id,
 			project_status_id	= :project_status_id,
 			project_type_id		= :project_type_id,
@@ -591,7 +595,6 @@ foreach csv_line_fields $values_list_of_lists {
 
 }
 
-
 if {$ns_write_p} {
     ns_write "</ul>\n"
     ns_write "<p>\n"
@@ -604,5 +607,6 @@ if {$ns_write_p} {
 if {$ns_write_p} {
     ns_write [im_footer]
 }
+
 
 
