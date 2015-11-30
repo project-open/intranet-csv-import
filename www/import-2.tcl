@@ -75,6 +75,10 @@ if {"" == $return_url} {
 	    set return_url "/intranet/users/index" 
             set form_id "intranet-csv-import-import2-users"
 	}
+	im_hour { 
+	    set return_url "/intranet/index" 
+            set form_id "intranet-csv-import-import2-hours"
+	}
 	default { 
 	    set return_url "/intranet" 
             set form_id "intranet-csv-import-import2-other"

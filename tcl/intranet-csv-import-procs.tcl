@@ -262,6 +262,12 @@ ad_proc -public im_csv_import_object_fields {
 } {
     Returns a list of database columns for the specified object type.
 } {
+
+    # Special case: im_hour is not an object
+    if { "im_hour" == $object_type } {
+	return "project_id user_id day hours"
+    }
+
     # Get the list of super-types for object_type, including object_type
     # and remove "acs_object" from the list
     set super_types [im_object_super_types -object_type $object_type]
@@ -316,7 +322,6 @@ ad_proc -public im_csv_import_object_fields {
 	lappend selected_tables $table_name
 	incr cnt
     }
-
     return [lsort $selected_columns]
 }
 
@@ -331,7 +336,7 @@ ad_proc -public im_csv_import_parsers {
     Returns the list of available parsers
 } {
     switch $object_type {
-	im_project - im_company - im_conf_item - im_risk - im_timesheet_task - im_ticket {
+	im_project - im_company - im_conf_item - im_risk - im_timesheet_task - im_ticket - im_hour {
 	    set parsers {
 		no_change		"No Change"
 		hard_coded		"Hard Coded Functionality"

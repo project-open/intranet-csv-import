@@ -7,13 +7,13 @@
 $(document).ready(function() {
 
     // Initialize
-    $('#@form_id@').sayt({'days': 180});
+    $('#@form_id;literal@').sayt({'days': 180});
 
-    // if($('#@form_id@').sayt({'checksaveexists': true}) == true)
+    // if($('#@form_id;literal@').sayt({'checksaveexists': true}) == true)
     //	{ console.log('Form has an existing save cookie.'); } else { console.log('No cookie found'); };
 
     // Do not save the hidden fields 
-    $('#@form_id@').sayt({'exclude': 
+    $('#@form_id;literal@').sayt({'exclude': 
     	[
 		'[name=return_url]', 
 		'[name=object_type]', 
@@ -32,6 +32,20 @@ $(document).ready(function() {
 
 <form enctype="multipart/form-data" method=POST action="import-@redirect_object_type@.tcl" id="@form_id@">
 <%= [export_vars -form {object_type return_url import_filename}] %>
+
+
+<if @object_type;literal@ eq im_hour>
+    <table cellpadding="0" cellspacing="0" border="0">
+    <tr>
+	<td><input type="checkbox" name="merge_p" /></td>
+	<td>If checked, import hours will be added to already existing hours found on target server.</td>
+    </tr>
+    <tr>
+	<td><input type="checkbox" name="test_run_p" checked></td>
+	<td>Uncheck to perform a real run</td>
+    </tr>
+    </table>
+</if> 
 
      <table>
      <tr clas=rowtitle>
