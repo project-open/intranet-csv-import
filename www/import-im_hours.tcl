@@ -276,15 +276,15 @@ foreach csv_line_fields $values_list_of_lists {
     if { $hours > 0  && $merge_p } {
 	# Update 
 	ns_write "<li>Merging hours: project_id: $project_id, user_id: $user_id, day: $day</li>"
-	if { $test_run_p } { db_dml sql "update im_hours h set hours = h.hours + :hours where h.project_id = :project_id and h.user_id = :user_id and h.day = :day" }
+	if { !$test_run_p } { db_dml sql "update im_hours h set hours = h.hours + :hours where h.project_id = :project_id and h.user_id = :user_id and h.day = :day" }
 
     } elseif { $hours > 0 && !$merge_p } {
 	# Overwrite 
 	ns_write "<li>Overwrite hours: project_id: $project_id, user_id: $user_id, day: $day</li>"
-	if { $test_run_p } { db_dml sql "update im_hours h set hours = h.hours + :hours where h.project_id = :project_id and h.user_id = :user_id and h.day = :day" }
+	if { !$test_run_p } { db_dml sql "update im_hours h set hours = h.hours + :hours where h.project_id = :project_id and h.user_id = :user_id and h.day = :day" }
     } elseif { $hours == 0 } {
 	# create im_hours record 
-	if { $test_run_p } {
+	if { !$test_run_p } {
 	    if {[catch {
 		db_dml insert_hour "insert into im_hours (user_id,project_id,day,hours) values (:user_id,:project_id,:day,:hours)"
 	    } err_msg]} {
@@ -295,7 +295,6 @@ foreach csv_line_fields $values_list_of_lists {
 	}
 	ns_write "<li>Merging hours: project_id: $project_id, user_id: $user_id, day: $day</li>"	
     } 
-
 
     # -------------------------------------------------------
     # Import DynFields    
