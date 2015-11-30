@@ -265,7 +265,7 @@ ad_proc -public im_csv_import_object_fields {
 
     # Special case: im_hour is not an object
     if { "im_hour" == $object_type } {
-	return "project_id user_id day hours"
+	return "project_id project_nr project_nr_path user_id day hours"
     }
 
     # Get the list of super-types for object_type, including object_type

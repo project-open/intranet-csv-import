@@ -7,13 +7,13 @@
 $(document).ready(function() {
 
     // Initialize
-    $('#@form_id;literal@').sayt({'days': 180});
+    $('#@form_id@').sayt({'days': 180});
 
-    // if($('#@form_id;literal@').sayt({'checksaveexists': true}) == true)
+    // if($('#@form_id@').sayt({'checksaveexists': true}) == true)
     //	{ console.log('Form has an existing save cookie.'); } else { console.log('No cookie found'); };
 
     // Do not save the hidden fields 
-    $('#@form_id;literal@').sayt({'exclude': 
+    $('#@form_id@').sayt({'exclude': 
     	[
 		'[name=return_url]', 
 		'[name=object_type]', 
@@ -34,19 +34,21 @@ $(document).ready(function() {
 <%= [export_vars -form {object_type return_url import_filename}] %>
 
 
-<if @object_type;literal@ eq im_hour>
+<if @object_type@ eq im_hour>
+    <h2>Settings</h2>
     <table cellpadding="0" cellspacing="0" border="0">
     <tr>
-	<td><input type="checkbox" name="merge_p" /></td>
-	<td>If checked, import hours will be added to already existing hours found on target server.</td>
+	<td valign="top"><input type="checkbox" name="merge_p" checked/>&nbsp;</td>
+	<td valign="top"><strong>Merge?</strong><br/>If checked, import hours will be added to already existing hours found on target server. <br/>If 'unchecked', existing hours will be overwritten</td>
     </tr>
     <tr>
-	<td><input type="checkbox" name="test_run_p" checked></td>
-	<td>Uncheck to perform a real run</td>
+	<td valign="top"><input type="checkbox" name="test_run_p" checked>&nbsp;</td>
+	<td valign="top"><strong>Test Run?</strong><br/>Uncheck to perform an import, otherwise import will be done in test mode and no data will be written to the DB</td>
     </tr>
     </table>
 </if> 
-
+<br/>
+<h2>Mapping</h2>
      <table>
      <tr clas=rowtitle>
      <td class=rowtitle>Field Name</td>
