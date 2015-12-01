@@ -268,6 +268,11 @@ ad_proc -public im_csv_import_object_fields {
 	return "project_id project_nr project_nr_path user_id day hours"
     }
 
+    # Special case: membership is not an object
+    if { "im_membership" == $object_type } {
+	return "project_id project_nr project_nr_path user_id role_id"
+    }
+
     # Get the list of super-types for object_type, including object_type
     # and remove "acs_object" from the list
     set super_types [im_object_super_types -object_type $object_type]
@@ -353,6 +358,19 @@ ad_proc -public im_csv_import_parsers {
 		user_name		"User ID from user-email"
 	    }
 	}
+
+	im_membership {
+	    set parsers {
+		no_change		"No Change"
+		hard_coded		"Hard Coded Functionality"
+		project_nr		"Project from Project Nr"
+		project_name		"Project from Project Name"
+		user_name		"User ID from user-email"
+	    }
+	}
+
+
+
 	default {
 	    ad_return_complaint 1 "im_csv_import_parsers: Unknown object type '$object_type'"
 	    ad_script_abort

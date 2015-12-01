@@ -31,6 +31,7 @@ ad_page_contract {
 set current_user_id [auth::require_login]
 set page_title [lang::message::lookup "" intranet-cvs-import.Upload_Objects "Upload Objects"]
 set context_bar [im_context_bar "" $page_title]
+set sync_cost_item_immediately_p [parameter::get_from_package_key -package_key intranet-timesheet2 -parameter "SyncHoursImmediatelyAfterEntryP" -default 1]
 
 # ---------------------------------------------------------------------
 # Check and open the file
@@ -242,7 +243,6 @@ foreach csv_line_fields $values_list_of_lists {
 	continue
     }
 
-
     # -------------------------------------------------------
     # Find project_id in target DB 
     #
@@ -253,45 +253,41 @@ foreach csv_line_fields $values_list_of_lists {
     ns_write "<li>Checking first for 'project_nr_path'</li>"
     if { "" ne $project_nr_path } {
 	set sql "select project_id as target_project_id, project_name as target_project_name from im_projects where im_project_nr_parent_list(project_id) = '$project_nr_path'"
-	set target_project_id [db_0or1row get_target_project_id $sql]
+	db_0or1row get_target_project_id $sql
     } else {
-	ns_write "<li>No project_nr_path found, continuing ...</li>"
+	ns_write "<li>No project_nr_path found, now checking for 'project_nr'. We assume that hours to be imported come from the same \]po\[ instance.</li>"
     }
 
     # Check for project_nr
     if { "" eq $target_project_id } {
-	ns_write "<li>No project_found for project_nr_path. We assume that hours will be imported that come from the same \]po\[ instance."
-        ns_write "Now checking for 'project_nr'</li>"
-
+	ns_write "<li>No project found for project_nr_path: $project_nr_path, now checking for 'project_nr'."
 	if { "" ne $project_nr  } {
 	    set sql "select project_id as target_project_id, project_name as target_project_name from im_projects where project_nr = '$project_nr'"
-	    set target_project_id [db_0or1row get_target_project_id $sql]
+	    db_0or1row get_target_project_id $sql
 	} else {
-	    ns_write "<li>No project_nr_path found, continuing ...</li>"
+	    ns_write "<li>No project_nr found, now checking for project_id</li>"
 	}
 
 	# Check for project_id
 	if { "" eq $target_project_id } {
-	    # project_id
-	    ns_write "<li>No matching project_found for project_nr: $project_nr, now checking for 'project_id'</li>"
-
+	    ns_write "<li>No project found for project_nr: $project_nr, now checking for 'project_id'."
 	    if { "" ne $project_id } {
 		set sql "select project_id as target_project_id, project_name as target_project_name from im_projects where project_id = $project_id"
-		set target_project_id [db_0or1row get_target_project_id $sql]
+		db_0or1row get_target_project_id $sql
 	    } else {
 		ns_write "<li>No project_id found.</li>"
 	    }
 	    if { "" eq $target_project_id } {
-		ns_write "<li>No matching project_found for id: $project_id.</li>"
+		ns_write "<li>No matching project found for project_id: $project_id.</li>"
 	    }
 	} else {
-	    ns_write "<li>Found matching project_nr ($project_nr) for project: $project_name: $target_project_name ($target_project_id)</li>"
+	    ns_write "<li><span style='color:green'>Found matching project_nr ($project_nr) for project: $project_name: $target_project_name ($target_project_id)</span></li>"
 	}
     } else {
-	ns_write "<li>Found matching project_nr_path ($project_nr_path) for project: $project_name: $target_project_name ($target_project_id)</li>"
+	ns_write "<li><span style='color:green'>Found matching project_nr_path ($project_nr_path) for project: $project_name: $target_project_name ($target_project_id)</span></li>"
     }
 
-    ns_write "</li>"
+    ns_write "</li></ul>"
 
     if { "" eq $target_project_id } {
 	ns_write "<li><font color=red>Error: No matching project found for project: $project_name. Skipping line!</font></li>"
@@ -352,6 +348,7 @@ foreach csv_line_fields $values_list_of_lists {
 
     # -------------------------------------------------------
     # Import DynFields    
+    set im_hours_dynfield_updates ""
     set im_hours_updates {}
     array unset attributes_hash
     array set attributes_hash {}
@@ -388,9 +385,6 @@ foreach csv_line_fields $values_list_of_lists {
 	}
     }
 
-    # Update TS cache 
-    db_dml update_timesheet_task {}
-
     if {$sync_cost_item_immediately_p} {
 	# Update the affected project's cost_hours_cache and cost_days_cache fields,
 	# so that the numbers will appear correctly in the TaskListPage
@@ -400,7 +394,6 @@ foreach csv_line_fields $values_list_of_lists {
 	    # Create timesheet cost_items for all modified projects
 	    im_timesheet2_sync_timesheet_costs -project_id $project_id
 	}
-	
 	
 	# The cost updates don't get promoted to the main project
 	im_cost_cache_sweeper

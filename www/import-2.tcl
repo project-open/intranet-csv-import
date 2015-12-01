@@ -69,7 +69,6 @@ if {"" == $return_url} {
 	im_project { 
 	    set return_url "/intranet/projects/index" 
             set form_id "intranet-csv-import-import2-projects"
-
 	}
 	person { 
 	    set return_url "/intranet/users/index" 
@@ -79,6 +78,10 @@ if {"" == $return_url} {
 	    set return_url "/intranet/index" 
             set form_id "intranet-csv-import-import2-hours"
 	}
+        im_membership {
+            set return_url "/intranet/index"
+            set form_id "intranet-csv-import-import2-memberships"
+        }
 	default { 
 	    set return_url "/intranet" 
             set form_id "intranet-csv-import-import2-other"

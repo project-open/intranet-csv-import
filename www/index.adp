@@ -18,7 +18,7 @@
 	      im_hour "Hour" \
 	      im_risk "Risk" \
 	      im_timesheet_task "Timesheet Task" \
-	      person "User" \
+	      im_membership "Membership" \
 ] $object_type] %>
 
 	</td>
