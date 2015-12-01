@@ -129,8 +129,13 @@ foreach csv_line_fields $values_list_of_lists {
     }
 
     # Preset values, defined by CSV sheet:
-    set user_id          ""
-    set project_id       ""
+    set user_id          	""
+    set project_id       	""
+    set target_project_id 	""
+    set project_nr       	""
+    set project_nr_path  	""
+    set project_name	 	""
+    set target_project_name     ""
     set day              ""
     set hours            ""
     set billing_rate     ""
@@ -148,14 +153,7 @@ foreach csv_line_fields $values_list_of_lists {
 	set $attribute_name	""
     }
 
-    # -------------------------------------------------------
-    # Extract variables from the CSV file and write them to local variables
-    # 
-    # column:   	4 Impact 0 Project 5 Type 1 {Risk Name} 6 Status 2 {Risk Value} 7 Description 3 Probability
-    # map:      	4 risk_impact 0 risk_project_id 5 risk_type_id 1 risk_name 6 risk_status_id 2 {} 7 risk_description 3 risk_probability_percent
-    # parser:   	4 no_change 0 no_change 5 no_change 1 no_change 6 no_change 2 no_change 7 no_change 3 no_change
-    # parser_args:   	4 {} 0 {} 5 {} 1 {} 6 {} 2 {} 7 {} 3 {}
-    #
+
     foreach j [array names column] {
 
 	# Extract values
@@ -221,7 +219,7 @@ foreach csv_line_fields $values_list_of_lists {
     if {""eq $project_id && "" eq $project_nr_path && "" eq $project_nr } {
         if {$ns_write_p} {
             ns_write "<li><font color=red>Error: $cnt.<br>
-                Please correct the CSV file. Import requires at least one of the following fields: 'project_id', 'project_nr', 'project_path' or 'project_nr_path'. Skipping line!</font></li>"
+                Please correct the CSV file. Import requires at least one of the following fields: 'project_id', 'project_nr' or 'project_nr_path'. Skipping line!</font></li>"
         }
         continue
     }
@@ -248,23 +246,41 @@ foreach csv_line_fields $values_list_of_lists {
     # -------------------------------------------------------
     # Find project_id in target DB 
     #
+
     ns_write "<li>Matching projects: <ul>"
-    # Prefered option - find target_project_id based on project_nr_path 
 
+    # Find target_project_id based on project_nr_path 
     ns_write "<li>Checking first for 'project_nr_path'</li>"
+    if { "" ne $project_nr_path } {
+	set sql "select project_id as target_project_id, project_name as target_project_name from im_projects where im_project_nr_parent_list(project_id) = '$project_nr_path'"
+	set target_project_id [db_0or1row get_target_project_id $sql]
+    } else {
+	ns_write "<li>No project_nr_path found, continuing ...</li>"
+    }
 
-    set sql "select project_id as target_project_id, project_name as target_project_name from im_projects where im_project_nr_parent_list(project_id) = $project_nr_path"
-    set target_project_id [db_1row get_target_project_id $sql]
-    
+    # Check for project_nr
     if { "" eq $target_project_id } {
-	ns_write "<li>No project_found for project_nr_path. We assume that hours will be imported that come from the same ]po[ instance."
-        ns_write "now checking for 'project_nr'</li>"
-	set sql "select project_id as target_project_id, project_name as target_project_name from im_projects where project_nr = $project_nr"
-	set target_project_id [db_1row get_target_project_id $sql]
+	ns_write "<li>No project_found for project_nr_path. We assume that hours will be imported that come from the same \]po\[ instance."
+        ns_write "Now checking for 'project_nr'</li>"
+
+	if { "" ne $project_nr  } {
+	    set sql "select project_id as target_project_id, project_name as target_project_name from im_projects where project_nr = '$project_nr'"
+	    set target_project_id [db_0or1row get_target_project_id $sql]
+	} else {
+	    ns_write "<li>No project_nr_path found, continuing ...</li>"
+	}
+
+	# Check for project_id
 	if { "" eq $target_project_id } {
+	    # project_id
 	    ns_write "<li>No matching project_found for project_nr: $project_nr, now checking for 'project_id'</li>"
-	    set sql "select project_id as target_project_id, project_name as target_project_name from im_projects where project_id = $project_nr"
-	    set target_project_id [db_1row get_target_project_id $sql]
+
+	    if { "" ne $project_id } {
+		set sql "select project_id as target_project_id, project_name as target_project_name from im_projects where project_id = $project_id"
+		set target_project_id [db_0or1row get_target_project_id $sql]
+	    } else {
+		ns_write "<li>No project_id found.</li>"
+	    }
 	    if { "" eq $target_project_id } {
 		ns_write "<li>No matching project_found for id: $project_id.</li>"
 	    }
@@ -285,14 +301,14 @@ foreach csv_line_fields $values_list_of_lists {
     # -------------------------------------------------------
     # Check if there is a conf object 
     #
-    set conf_object_id_exist_p [db_string risk_id "
+    set conf_object_id_exist_p [db_string get_conf_object_id "
         select  conf_object_id
         from    im_hours h
         where
                 h.day = :day and
-                h.user_id = :user_id
+                h.user_id = :user_id and
                 h.project_id = :target_project_id
-    " -default ""]
+    " -default 0]
 
     if { $conf_object_id_exist_p } {
        ns_write "<li>Merging hours: <font color=red>Conf Object exists, skipping project_id: $target_project_id, user_id: $user_id, day: $day</font></li>"
@@ -302,12 +318,12 @@ foreach csv_line_fields $values_list_of_lists {
     # -------------------------------------------------------
     # Check if there are hours booked for that day 
     #
-    set hours [db_string risk_id "
+    set hours [db_string get_hours "
 	select	coalesce(h.hours,0) as hours
 	from	im_hours h
 	where	 
  		h.day = :day and
-		h.user_id = :user_id
+		h.user_id = :user_id and
 		h.project_id = :target_project_id		
     " -default ""]
 		
@@ -351,14 +367,14 @@ foreach csv_line_fields $values_list_of_lists {
 	    continue
 	}
 	set attributes_hash($key) $table_name
-	lappend risk_dynfield_updates "$attribute_name = :$attribute_name"
+	lappend im_hours_dynfield_updates "$attribute_name = :$attribute_name"
     }
 
     if {$ns_write_p} { ns_write "<li>Going to update im_hours DynFields.\n" }
     if {"" != $im_hours_dynfield_updates} {
 	set hours_update_sql "
 		update im_hours set
-		[join $risk_dynfield_updates ",\n\t\t"]
+		[join $im_hours_dynfield_updates ",\n\t\t"]
 		where 
 	                h.day = :day and
         	        h.user_id = :user_id
@@ -366,18 +382,29 @@ foreach csv_line_fields $values_list_of_lists {
 
 	"
 	if {[catch {
-	    db_dml hours_dynfield_update $risk_update_sql
+	    db_dml hours_dynfield_update $hours_update_sql
 	} err_msg]} {
 	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Error updating im_hours dynfields:<br><pre>$err_msg</pre></font>" }
 	}
     }
 
-    # if {$ns_write_p} { ns_write "<li>Going to write audit log.\n" }
-    #  im_audit -object_id $risk_id -action after_update
-
     # Update TS cache 
     db_dml update_timesheet_task {}
 
+    if {$sync_cost_item_immediately_p} {
+	# Update the affected project's cost_hours_cache and cost_days_cache fields,
+	# so that the numbers will appear correctly in the TaskListPage
+	foreach project_id [array names modified_projects_hash] {
+	    # Update sum(hours) and percent_completed for all modified projects
+	    im_timesheet_update_timesheet_cache -project_id $project_id
+	    # Create timesheet cost_items for all modified projects
+	    im_timesheet2_sync_timesheet_costs -project_id $project_id
+	}
+	
+	
+	# The cost updates don't get promoted to the main project
+	im_cost_cache_sweeper
+    }
 }
 
 
