@@ -318,6 +318,7 @@ foreach csv_line_fields $values_list_of_lists {
     if {"" == $company_id } { 
 	set company_id [db_string cust "select company_id from im_companies where lower(company_path) = trim(lower(:customer_name))" -default ""] 
     }
+
     # For compatibility
     set company_id $company_id
 
@@ -326,11 +327,25 @@ foreach csv_line_fields $values_list_of_lists {
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find customer_name='$customer_name', using 'internal' customer</font>\n" }
     }
 
-    set project_lead_id [im_id_from_user_name $project_manager]
-    if {"" == $project_lead_id && "" != $project_manager} {
-	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project manager '$project_manager'.</font>\n" }
+    # 'forgiving' routine -> project_lead_id might be empty or contain a name or email address. 
+    # Check if empty: 
+    if { "" eq $project_lead_id } {
+	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: No project manager found. Will try to create project w/o PM. </font>\n" }
+    } else {
+	# Check if project_lead_id contains integer 
+	if { ![string is digit $project_lead_id] } {
+	    set project_lead_id [im_id_from_user_name $project_lead_id]
+	    if { "" eq $project_lead_id } {
+		ns_write "<li><font color='red'>Warning: Didn't find a \]po\[ user for: '$project_lead_id'.</font>\n"
+	    } 
+	} 
+	# Check if project_lead_id can be found in DB
+	if { ![db_string sql "select count(*) from parties where party_id = :project_lead_id" -default 0] } {
+	    ns_write "<li><font color='red'>Warning: Didn't find a \]po\[ user for: '$project_lead_id'.</font>\n"
+	}
     }
 
+    # ToDo: make import 'forgiving' -> see project_lead_id
     set customer_contact_id [im_id_from_user_name $customer_contact]
     if {"" == $customer_contact_id && "" != $customer_contact} {
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find customer contact '$customer_contact'.</font>\n"	}
