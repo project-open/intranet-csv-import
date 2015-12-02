@@ -34,7 +34,6 @@ if {!$admin_p} {
     ad_script_abort
 }
 
-
 # ---------------------------------------------------------------------
 # Check and open the file
 # ---------------------------------------------------------------------
@@ -66,43 +65,6 @@ set header_fields [im_csv_split $header $separator]
 set header_len [llength $header_fields]
 set values_list_of_lists [im_csv_get_values $lines_content $separator]
 
-
-# ------------------------------------------------------------
-# Get DynFields
-
-# Determine the list of actually available fields.
-set mapped_vars [list "''"]
-foreach k [array names map] {
-    lappend mapped_vars "'$map($k)'"
-}
-
-
-set dynfield_sql "
-	select distinct
-		aa.attribute_name,
-		aa.object_type,
-		aa.table_name,
-		w.parameters,
-		w.widget as tcl_widget,
-		substring(w.parameters from 'category_type \"(.*)\"') as category_type
-	from	im_dynfield_widgets w,
-		im_dynfield_attributes a,
-		acs_attributes aa
-	where	a.widget_name = w.widget_name and
-		a.acs_attribute_id = aa.attribute_id and
-		aa.object_type in ('im_project', 'im_timesheet_task') and
-		(also_hard_coded_p is null OR also_hard_coded_p = 'f') and
-		-- Only overwrite DynFields specified in the mapping
-		aa.attribute_name in ([join $mapped_vars ","])
-"
-
-set attribute_names [db_list attribute_names "
-	select	distinct
-		attribute_name
-	from	($dynfield_sql) t
-	order by attribute_name
-"]
-
 # ------------------------------------------------------------
 # Render Result Header
 
@@ -127,9 +89,7 @@ foreach csv_line_fields $values_list_of_lists {
     set project_nr		""
     set project_path		""
     set target_project_id	""
-    foreach attribute_name $attribute_names {
-	set $attribute_name ""
-    }
+    set role_id			""
 
     # -------------------------------------------------------
     # Extract variables from the CSV file
@@ -229,7 +189,7 @@ foreach csv_line_fields $values_list_of_lists {
 
     # -------------------------------------------------------
     # Find project_id in target DB
-    #
+
     ns_write "<li>Matching projects: <ul>"
 
     # Find target_project_id based on project_nr_path
@@ -291,7 +251,7 @@ foreach csv_line_fields $values_list_of_lists {
 
     # Check permission 
     set object_type [db_string acs_object_type "select object_type from acs_objects where object_id=:target_project_id"]
-    set perm_cmd "${object_type}_permissions \$user_id \$object_id view read write admin"
+    set perm_cmd "${object_type}_permissions \$user_id \$target_project_id view read write admin"
     eval $perm_cmd
 
     if {!$write} {
@@ -309,7 +269,7 @@ foreach csv_line_fields $values_list_of_lists {
     im_audit -object_id $target_project_id -action "after_update" -comment "After adding members"
 
     if {$ns_write_p} { ns_write "<li>Going to write audit log.\n" }
-    im_audit -object_id $project_id
+    im_audit -object_id $target_project_id
 
 }
 
