@@ -24,6 +24,11 @@ ad_page_contract {
     parser_args:array
 }
 
+
+# ---------------------------------------------------------------------
+# Help proc to determine missing projects / user in target domain 
+# ---------------------------------------------------------------------
+
 # ---------------------------------------------------------------------
 # Default & Security
 # ---------------------------------------------------------------------
@@ -114,11 +119,14 @@ if {$ns_write_p} {
 # ------------------------------------------------------------
 
 set cnt 1
+set missing_project_list [list]
+
+if { $ns_write_p && $test_run_p } { ns_write "<span style='color=red;font-size:14px'>TEST RUN - Nothing will be written to the database</span>" }
+
 foreach csv_line_fields $values_list_of_lists {
     incr cnt
 
     if {$ns_write_p} { ns_write "</ul><hr>\n" }
-    if { $ns_write_p && $test_run_p } { ns_write "<span style='color=red;font-size14px'>TEST RUN - Nothing will be written to the database</span>" }
     if {$ns_write_p} { ns_write "<ul><li>Starting to parse line $cnt\n" }
 
     if {[llength $csv_line_fields] < 4} {
@@ -290,7 +298,15 @@ foreach csv_line_fields $values_list_of_lists {
     ns_write "</li></ul>"
 
     if { "" eq $target_project_id } {
-	ns_write "<li><font color=red>Error: No matching project found for project: $project_name. Skipping line!</font></li>"
+	ns_write "<li><font color=red>Error: No matching project found for project: $project_nr_path / $project_nr / $project_name. Skipping line!</font></li>"
+
+	if { "" eq $project_nr_path } { set project_nr_path * }
+	if { "" eq $project_nr } { set project_nr * }
+	if { "" eq $project_name } { set project_name * }
+
+	if { "-1" eq [lsearch -exact $missing_project_list "project_nr_path / $project_nr / $project_name" ] } {
+	    lappend missing_project_list "$project_nr_path / $project_nr / $project_name"	    
+	}
 	continue
     }
 
@@ -326,21 +342,20 @@ foreach csv_line_fields $values_list_of_lists {
     if { $hours > 0  && $merge_p } {
 	# Update 
 	ns_write "<li>Merging hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>"
-	if { !$test_run_p } { db_dml sql "update im_hours h set hours = h.hours + :hours where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" }
-
+	if { !$test_run_p } { db_dml sql "update im_hours h set (hours, note) values (h.hours + :hours, h.note || ', ' || :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" }
     } elseif { $hours > 0 && !$merge_p } {
 	# Overwrite 
 	ns_write "<li>Overwrite hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>"
-	if { !$test_run_p } { db_dml sql "update im_hours h set hours = h.hours + :hours where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" }
+	if { !$test_run_p } { db_dml sql "update im_hours h set (hours, note) values (:hours, :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" }
     } elseif { $hours == 0 } {
 	# create im_hours record 
 	if { !$test_run_p } {
 	    if {[catch {
-		db_dml insert_hour "insert into im_hours (user_id,project_id,day,hours) values (:user_id,:target_project_id,:day,:hours)"
+		db_dml insert_hour "insert into im_hours (user_id,project_id,day,hours,note) values (:user_id,:target_project_id,:day,:hours,:note)"
 	    } err_msg]} {
 		global errorInfo
 		ns_log Error $errorInfo
-		<li>Merging hours: <font color=red>Conf Object exists, skipping project_id: $target_project_id, user_id: $user_id, day: $day</font></li>
+		ns_write "<li>Merging hours: <font color=red>Conf Object exists, skipping project_id: $target_project_id, user_id: $user_id, day: $day</font></li>"
 	    }
 	}
 	ns_write "<li>Merging hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>"	
@@ -404,6 +419,8 @@ foreach csv_line_fields $values_list_of_lists {
 if {$ns_write_p} {
     ns_write "</ul>\n"
     ns_write "<p>\n"
+    ns_write "<p>List of missing projects:<br/>$missing_project_list</p>"
+    ns_write "<br/>"
     ns_write "<A HREF=$return_url>Return</A>\n"
 }
 
