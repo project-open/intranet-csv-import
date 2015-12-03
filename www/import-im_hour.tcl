@@ -287,6 +287,8 @@ foreach csv_line_fields $values_list_of_lists {
 	    }
 	    if { "" eq $target_project_id } {
 		ns_write "<li>No matching project found for project_id: $project_id.</li>"
+	    } else {
+		ns_write "<li><span style='color:green'>Found matching project_id ($project_id) for project: $project_name: $target_project_name ($target_project_id)</span></li>"
 	    }
 	} else {
 	    ns_write "<li><span style='color:green'>Found matching project_nr ($project_nr) for project: $project_name: $target_project_name ($target_project_id)</span></li>"
