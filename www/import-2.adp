@@ -3,35 +3,12 @@
 <property name="context">@context_bar;literal@</property>
 <property name="main_navbar_label">@main_navbar_label;literal@</property>
 
-<script type="text/javascript">
-$(document).ready(function() {
-
-    // Initialize
-    $('#@form_id@').sayt({'days': 180});
-
-    // if($('#@form_id@').sayt({'checksaveexists': true}) == true)
-    //	{ console.log('Form has an existing save cookie.'); } else { console.log('No cookie found'); };
-
-    // Do not save the hidden fields 
-    $('#@form_id@').sayt({'exclude': 
-    	[
-		'[name=return_url]', 
-		'[name=object_type]', 
-		'[name=import_filename]'
-	]
-    });
-
-    $('#forms_delete_save_button').click(function() {
-    	$('#@form_id@').sayt({'erase': true});
-        console.log('Form cookie was deleted.');
-        alert('Saved settings have been deleted');
-        return false;
-    });
-});
-</script>
-
 <form enctype="multipart/form-data" method=POST action="import-@redirect_object_type@.tcl" id="@form_id@">
 <%= [export_vars -form {object_type return_url import_filename}] %>
+
+<input type="hidden" name="object_type" value="@object_type;noquote@" data-sayt-exclude >
+<input type="hidden" name="return_url" value="@return_url;noquote@" data-sayt-exclude>
+<input type="hidden" name="import_filename" value="@import_filename;noquote@" data-sayt-exclude >
 
 
 <if @object_type@ eq im_hour>
@@ -96,4 +73,31 @@ This allows you to go back, reload the file without loosing your mapping setting
 To erase the savings, please click <span id="forms_delete_save_button" style="text-decoration:underline;cursor:pointer"	>here</span>.
 </p>
 </form>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+    // Initialize
+    $('#@form_id@').sayt({'days': 180});
+
+    // if($('#@form_id@').sayt({'checksaveexists': true}) == true)
+    //  { console.log('Form has an existing save cookie.'); } else { console.log('No cookie found'); };
+
+    // Do not save the hidden fields
+    // $('#@form_id@').sayt({'exclude':
+    //    [
+    //            '[name=return_url]',
+    //            '[name=object_type]',
+    //            '[name=import_filename]'
+    //    ]
+    // });
+
+    $('#forms_delete_save_button').click(function() {
+        $('#@form_id@').sayt({'erase': true});
+        console.log('Form cookie was deleted.');
+        alert('Saved settings have been deleted');
+        return false;
+    });
+});
+</script>
 

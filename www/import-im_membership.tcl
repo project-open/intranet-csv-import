@@ -251,7 +251,7 @@ foreach csv_line_fields $values_list_of_lists {
 
     # Check permission 
     set object_type [db_string acs_object_type "select object_type from acs_objects where object_id=:target_project_id"]
-    set perm_cmd "${object_type}_permissions \$user_id \$target_project_id view read write admin"
+    set perm_cmd "${object_type}_permissions \$current_user_id \$target_project_id view read write admin"
     eval $perm_cmd
 
     if {!$write} {
