@@ -88,13 +88,13 @@ $(document).ready(function() {
     //  { console.log('Form has an existing save cookie.'); } else { console.log('No cookie found'); };
 
     // Do not save the hidden fields
-    // $('#@form_id@').sayt({'exclude':
-    //    [
-    //            '[name=return_url]',
-    //            '[name=object_type]',
-    //            '[name=import_filename]'
-    //    ]
-    // });
+    $('#@form_id@').sayt({'exclude':
+        [
+                '[name=return_url]',
+                '[name=object_type]',
+                '[name=import_filename]'
+        ]
+    });
 
     $('#forms_delete_save_button').click(function() {
         $('#@form_id@').sayt({'erase': true});
