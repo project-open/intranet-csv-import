@@ -6,20 +6,15 @@
 <form enctype="multipart/form-data" method=POST action="import-@redirect_object_type@.tcl" id="@form_id@">
 <%= [export_vars -form {object_type return_url import_filename}] %>
 
-<input type="hidden" name="object_type" value="@object_type;noquote@" data-sayt-exclude >
-<input type="hidden" name="return_url" value="@return_url;noquote@" data-sayt-exclude>
-<input type="hidden" name="import_filename" value="@import_filename;noquote@" data-sayt-exclude >
-
-
 <if @object_type@ eq im_hour>
     <h2>Settings</h2>
     <table cellpadding="0" cellspacing="0" border="0">
     <tr>
-	<td valign="top"><input type="checkbox" name="merge_p" checked/>&nbsp;</td>
+	<td valign="top"><input type="checkbox" name="merge_p" value="1" checked/>&nbsp;</td>
 	<td valign="top"><strong>Merge?</strong><br/>If checked, import hours will be added to already existing hours found on target server. <br/>If 'unchecked', existing hours will be overwritten</td>
     </tr>
     <tr>
-	<td valign="top"><input type="checkbox" name="test_run_p" checked>&nbsp;</td>
+	<td valign="top"><input type="checkbox" name="test_run_p" value="1" checked>&nbsp;</td>
 	<td valign="top"><strong>Test Run?</strong><br/>Uncheck to perform an import, otherwise import will be done in test mode and no data will be written to the DB</td>
     </tr>
     <tr>
@@ -72,9 +67,11 @@
      </tr>
      </table>
 <p>
+<!--
 The mapping showing up on this page will be saved as-you-type to simplify the import process.<br/>
 This allows you to go back, reload the file without loosing your mapping settings.<br/>
-To erase the savings, please click <span id="forms_delete_save_button" style="text-decoration:underline;cursor:pointer"	>here</span>.
+To erase the saved values, please click <span id="forms_delete_save_button" style="text-decoration:underline;cursor:pointer"	>here</span>.
+--
 </p>
 </form>
 
@@ -82,26 +79,26 @@ To erase the savings, please click <span id="forms_delete_save_button" style="te
 $(document).ready(function() {
 
     // Initialize
-    $('#@form_id@').sayt({'days': 180});
+    // $('#@form_id@').sayt({'days': 180});
 
     // if($('#@form_id@').sayt({'checksaveexists': true}) == true)
     //  { console.log('Form has an existing save cookie.'); } else { console.log('No cookie found'); };
 
     // Do not save the hidden fields
-    $('#@form_id@').sayt({'exclude':
-        [
-                '[name=return_url]',
-                '[name=object_type]',
-                '[name=import_filename]'
-        ]
-    });
+    // $('#@form_id@').sayt({'exclude':
+    //    [
+    //            '[name=return_url]',
+    //            '[name=object_type]',
+    //            '[name=import_filename]'
+    //    ]
+    // });
 
-    $('#forms_delete_save_button').click(function() {
-        $('#@form_id@').sayt({'erase': true});
-        console.log('Form cookie was deleted.');
-        alert('Saved settings have been deleted');
-        return false;
-    });
+    // $('#forms_delete_save_button').click(function() {
+    //    $('#@form_id@').sayt({'erase': true});
+    //    console.log('Form cookie was deleted.');
+    //    alert('Saved settings have been deleted');
+    //    return false;
+    // });
 });
 </script>
 
