@@ -58,7 +58,7 @@ ad_proc -public im_csv_import_parser_user_name {
     set sql "
         select  party_id
         from    parties p
-        where   p.email = '$arg'
+        where   lower(p.email) = lower('$arg')
     "
     set party_id [db_string party_id_from_name $sql -default ""]
     set err ""
