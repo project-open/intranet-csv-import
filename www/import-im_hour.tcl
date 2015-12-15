@@ -18,7 +18,7 @@ ad_page_contract {
     { ns_write_p "" }
     { write_log_p 1 } 
     { merge_p 1 }
-    { test_run_p 1 }
+    { test_run_p 0 }
     { output_device_log "screen"}
     column:array
     map:array
@@ -69,10 +69,23 @@ set current_user_id [auth::require_login]
 set page_title [lang::message::lookup "" intranet-cvs-import.Upload_Objects "Upload Objects"]
 set context_bar [im_context_bar "" $page_title]
 set sync_cost_item_immediately_p [parameter::get_from_package_key -package_key intranet-timesheet2 -parameter "SyncHoursImmediatelyAfterEntryP" -default 1]
+set path_tmp "[parameter::get -package_id [apm_package_id_from_key intranet-filestorage] -parameter "TmpPathUnix" -default 60]/import-im-hour-log.txt"
+
+# ---------------------------------------------------------------------
+# Remove old log file 
+# ---------------------------------------------------------------------
+
+if {[catch {
+    file delete $path_tmp
+} err_msg]} {
+    global errorInfo
+    ns_log Error "Error deleting old logfile: " $errorInfo
+}
 
 # ---------------------------------------------------------------------
 # Check and open the file
 # ---------------------------------------------------------------------
+
 
 if {![file readable $import_filename]} {
     ad_return_complaint 1 "Unable to read the file '$import_filename'. <br>
@@ -102,41 +115,6 @@ set header_len [llength $header_fields]
 set values_list_of_lists [im_csv_get_values $lines_content $separator]
 
 # ad_return_complaint 1 "<pre>[array get column]<br>[array get map]<br>[array get parser]<br>[array get parser_args]<br>$header_fields</pre>"
-
-# ------------------------------------------------------------
-# Get DynFields
-
-# Determine the list of actually available fields.
-set mapped_vars [list "''"]
-foreach k [array names map] {
-    lappend mapped_vars "'$map($k)'"
-}
-
-set dynfield_sql "
-	select distinct
-		aa.attribute_name,
-		aa.object_type,
-		aa.table_name,
-		w.parameters,
-		w.widget as tcl_widget,
-		substring(w.parameters from 'category_type \"(.*)\"') as category_type
-	from	im_dynfield_widgets w,
-		im_dynfield_attributes a,
-		acs_attributes aa
-	where	a.widget_name = w.widget_name and
-		a.acs_attribute_id = aa.attribute_id and
-		aa.object_type in ('im_hours') and
-		(also_hard_coded_p is null OR also_hard_coded_p = 'f') and
-		-- Only overwrite DynFields specified in the mapping
-		aa.attribute_name in ([join $mapped_vars ","])
-"
-
-set attribute_names [db_list attribute_names "
-	select	distinct
-		attribute_name
-	from	($dynfield_sql) t
-	order by attribute_name
-"]
 
 # ------------------------------------------------------------
 # Render Result Header
@@ -187,10 +165,6 @@ foreach csv_line_fields $values_list_of_lists {
     set days             ""
     set hour_id          ""
     set conf_object_id   ""
-
-    foreach attribute_name $attribute_names {
-	set $attribute_name ""
-    }
 
 
     foreach j [array names column] {
@@ -346,7 +320,7 @@ foreach csv_line_fields $values_list_of_lists {
     # -------------------------------------------------------
     # Check if there are hours booked for that day 
     #
-    set hours [db_string get_hours "
+    set hours_before [db_string get_hours "
 	select	coalesce(h.hours,0) as hours
 	from	im_hours h
 	where	 
@@ -355,66 +329,36 @@ foreach csv_line_fields $values_list_of_lists {
 		h.project_id = :target_project_id		
     " -default ""]
 		
-    if { $hours > 0  && $merge_p } {
+    if { $hours_before > 0  && $merge_p } {
 	# Update 
 	im_write_log $output_device_log $write_log_p  "<li>Merging hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
-	if { !$test_run_p } { db_dml sql "update im_hours h set (hours, note) values (h.hours + :hours, h.note || ', ' || :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" }
-    } elseif { $hours > 0 && !$merge_p } {
+	if { !$test_run_p } { 
+	    im_write_log $output_device_log $write_log_p  "<li>Updating ...</li>\n"
+	    db_dml sql "update im_hours h set (hours, note) values (h.hours + :hours_before, h.note || ', ' || :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" 
+	}
+    } elseif { $hours_before > 0 && !$merge_p } {
 	# Overwrite 
 	im_write_log $output_device_log $write_log_p  "<li>Overwrite hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
-	if { !$test_run_p } { db_dml sql "update im_hours h set (hours, note) values (:hours, :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" }
-    } elseif { $hours == 0 } {
+	if { !$test_run_p } { 
+	    im_write_log $output_device_log $write_log_p  "<li>Updating ...</li>\n"
+	    db_dml sql "update im_hours h set (hours, note) values (:hours, :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" 
+	}
+    } elseif { $hours_before == 0 } {
 	# create im_hours record 
 	if { !$test_run_p } {
 	    if {[catch {
+		im_write_log $output_device_log $write_log_p "<li>Create new hour record: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"	
 		db_dml insert_hour "insert into im_hours (user_id,project_id,day,hours,note) values (:user_id,:target_project_id,:day,:hours,:note)"
 	    } err_msg]} {
 		global errorInfo
 		ns_log Error $errorInfo
-		im_write_log $output_device_log $write_log_p  "<li>Merging hours: <font color=red>Conf Object exists, skipping project_id: $target_project_id, user_id: $user_id, day: $day</font></li>\n"
+		im_write_log $output_device_log $write_log_p  "<li>Create hour record: <font color=red>Error: insert failed for $target_project_id, user_id: $user_id, day: $day - $errorInfo</font></li>\n"
 	    }
 	}
-	im_write_log $output_device_log $write_log_p "<li>Merging hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"	
+    } else {
+	im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: not writing anything for: $target_project_id, user_id: $user_id, day: $day</font></li>\n"
     } 
 
-    # -------------------------------------------------------
-    # Import DynFields    
-    set im_hours_dynfield_updates ""
-    set im_hours_updates {}
-    array unset attributes_hash
-    array set attributes_hash {}
-    db_foreach store_dynfiels $dynfield_sql {
-	ns_log Notice "import-im_hours: name=$attribute_name, otype=$object_type, table=$table_name"
-
-	# Avoid storing attributes multipe times into the same table.
-	# Sub-types can have the same attribute defined as the main type, so duplicate
-	# DynField attributes are OK.
-	set key "$attribute_name-$table_name"
-	if {[info exists attributes_hash($key)]} {
-	    ns_log Notice "import-im_hours: name=$attribute_name already exists."
-	    continue
-	}
-	set attributes_hash($key) $table_name
-	lappend im_hours_dynfield_updates "$attribute_name = :$attribute_name"
-    }
-
-    im_write_log $output_device_log $write_log_p "<li>Going to update im_hours DynFields.\n" 
-    if {"" != $im_hours_dynfield_updates} {
-	set hours_update_sql "
-		update im_hours set
-		[join $im_hours_dynfield_updates ",\n\t\t"]
-		where 
-	                h.day = :day and
-        	        h.user_id = :user_id
-                	h.project_id = :target_project_id
-
-	"
-	if {[catch {
-	    db_dml hours_dynfield_update $hours_update_sql
-	} err_msg]} {
-	    im_write_log $output_device_log $write_log_p "<li><font color=brown>Warning: Error updating im_hours dynfields:<br><pre>$err_msg</pre></font></li>\n"
-	}
-    }
 
     if {$sync_cost_item_immediately_p} {
 	# Update the affected project's cost_hours_cache and cost_days_cache fields,
@@ -442,8 +386,6 @@ im_write_log $output_device_log $write_log_p "<A HREF=$return_url>Return</A>\n"
 if { "screen" == $output_device_log && $write_log_p } {
     im_write_log $output_device_log $write_log_p [im_footer]
 } elseif {"screen" != $output_device_log && $write_log_p } {
-    set path_tmp [parameter::get -package_id [apm_package_id_from_key intranet-filestorage] -parameter "TmpPathUnix" -default 60]
-    set path_tmp "$path_tmp/import-im-hour-log.txt"
     ad_return_top_of_page "
         [im_header]
         [im_navbar]
