@@ -15,9 +15,11 @@ ad_page_contract {
     { upload_file "" }
     { import_filename "" }
     { mapping_name "" }
-    { ns_write_p 1 }
+    { ns_write_p "" }
+    { write_log_p 1 } 
     { merge_p 1 }
     { test_run_p 1 }
+    { output_device_log "screen"}
     column:array
     map:array
     parser:array
@@ -25,9 +27,39 @@ ad_page_contract {
 }
 
 
+ad_proc -private im_write_log {
+    output_device_log 
+    write_log_p
+    msg
+} {
+    Writes log message to either screen or textfile 
+} {
+
+    if { !$write_log_p } { return }
+
+    set path_tmp  [parameter::get -package_id [apm_package_id_from_key intranet-filestorage] -parameter "TmpPathUnix" -default 60]
+    if { "screen" == $output_device_log } {
+	ns_write $msg
+    } else {
+	if {[catch {
+	    set fp [open "$path_tmp/import-im-hour-log.txt" a+]
+	    puts $fp $msg
+	    close $fp
+	} err_msg]} {
+	    global errorInfo
+	    ns_log Error "Error writing to log file: $errorInfo"
+	}
+    }
+}
+
+
 # ---------------------------------------------------------------------
-# Help proc to determine missing projects / user in target domain 
+# Compatibility 
 # ---------------------------------------------------------------------
+
+if { "" ne $ns_write_p } { set write_log_p $ns_write_p } 
+
+# ad_return_complaint xx "ns_write_p: $ns_write_p, write_log_p: $write_log_p, output_device_log: $output_device_log"
 
 # ---------------------------------------------------------------------
 # Default & Security
@@ -109,7 +141,7 @@ set attribute_names [db_list attribute_names "
 # ------------------------------------------------------------
 # Render Result Header
 
-if {$ns_write_p} {
+if { "screen" == $output_device_log && $write_log_p } {
     ad_return_top_of_page "
 	[im_header]
 	[im_navbar]
@@ -121,19 +153,17 @@ if {$ns_write_p} {
 set cnt 1
 set missing_project_list [list]
 
-if { $ns_write_p && $test_run_p } { ns_write "<span style='color=red;font-size:14px'>TEST RUN - Nothing will be written to the database</span>" }
+if { $test_run_p } { im_write_log $output_device_log $write_log_p "<span style='color=red;font-size:14px'>TEST RUN - Nothing will be written to the database</span>" }
 
 foreach csv_line_fields $values_list_of_lists {
     incr cnt
 
-    if {$ns_write_p} { ns_write "</ul><hr>\n" }
-    if {$ns_write_p} { ns_write "<ul><li>Starting to parse line $cnt\n" }
+    im_write_log $output_device_log $write_log_p "</ul><hr>\n" 
+    im_write_log $output_device_log $write_log_p "<ul><li>Starting to parse line $cnt</li>\n" 
 
     if {[llength $csv_line_fields] < 4} {
-	if {$ns_write_p} {
-	    ns_write "<li><font color=red>Error: We found a row with only [llength $csv_line_fields] columns.<br>
+	    im_write_log $output_device_log $write_log_p"<li><font color=red>Error: We found a row with only [llength $csv_line_fields] columns.<br>
 	        This is probabily because of a multi-line field in the row before.<br>Please correct the CSV file.</font>\n"
-	}
 	continue
     }
 
@@ -159,7 +189,7 @@ foreach csv_line_fields $values_list_of_lists {
     set conf_object_id   ""
 
     foreach attribute_name $attribute_names {
-	set $attribute_name	""
+	set $attribute_name ""
     }
 
 
@@ -181,16 +211,12 @@ foreach csv_line_fields $values_list_of_lists {
 		set result [$proc_name -parser_args $p_args $var_value]
 		set var_value [lindex $result 0]
 		set err [lindex $result 1]
-		ns_log Notice "import-im_project: Parser: '$p -args $p_args $var_value' -> $target_var_name=$var_value, err=$err"
+		ns_log Notice "import-im_hour: Parser: '$p -args $p_args $var_value' -> $target_var_name=$var_value, err=$err"
 		if {"" != $err} {
-		    if {$ns_write_p} { 
-			ns_write "<li><font color=brown>Warning: Error parsing field='$target_var_name' using parser '$p':<pre>$err</pre></font>\n" 
-		    }
+		    im_write_log $output_device_log $write_log_p  "<li><font color=brown>Warning: Error parsing field='$target_var_name' using parser '$p':<pre>$err</pre></font></li>\n" 
 		}
 	    } err_msg]} {
-		if {$ns_write_p} { 
-		    ns_write "<li><font color=brown>Warning: Error parsing field='$target_var_name' using parser '$p':<pre>$err_msg</pre></font>" 
-		}
+		im_write_log $output_device_log $write_log_p  "<li><font color=brown>Warning: Error parsing field='$target_var_name' using parser '$p':<pre>$err_msg</pre></font></li>\n\n" 
 	    }
 	}
 	set $target_var_name $var_value
@@ -208,99 +234,87 @@ foreach csv_line_fields $values_list_of_lists {
 
     # day is mandatory
     if {"" == $day} {
-        if {$ns_write_p} {
-            ns_write "<li><font color=red>Error: We have found an empty 'day' in line $cnt.<br>
-                Please correct the CSV file. 'day' is mandatory. Skipping line!</font></li>"
-        }
+            im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: We have found an empty 'day' in line $cnt.<br>
+                Please correct the CSV file. 'day' is mandatory. Skipping line!</font></li>\n"
         continue
     }
 
     # user_id is mandatory
     if {"" == $user_id} {
-        if {$ns_write_p} {
-            ns_write "<li><font color=red>Error: We have found an empty 'user_id' in line $cnt.<br>
-                Please correct the CSV file. 'user_id' is mandatory. Skipping line!</font></li>"
-        }
+            im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: We have found an empty 'user_id' in line $cnt.<br>
+                Please correct the CSV file. 'user_id' is mandatory. Skipping line!</font></li>\n"
         continue
     }
 
     # either project_id, project_nr or project_path need to be provided 
     if {""eq $project_id && "" eq $project_nr_path && "" eq $project_nr } {
-        if {$ns_write_p} {
-            ns_write "<li><font color=red>Error: $cnt.<br>
-                Please correct the CSV file. Import requires at least one of the following fields: 'project_id', 'project_nr' or 'project_nr_path'. Skipping line!</font></li>"
-        }
+            im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: $cnt.<br>
+                Please correct the CSV file. Import requires at least one of the following fields: 'project_id', 'project_nr' or 'project_nr_path'. Skipping line!</font></li>\n"
         continue
     }
 
     # value for hours is mandatory
     if {"" == $hours } {
-        if {$ns_write_p} {
-            ns_write "<li><font color=red>Error: We have found an empty 'hours' in line $cnt.<br>
-                Please correct the CSV file. 'hours' is mandatory. Skupping line!</font></li>"
-        }
+            im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: We have found an empty 'hours' in line $cnt.<br>
+                Please correct the CSV file. 'hours' is mandatory. Skupping line!</font></li>\n"
         continue
     }
 
     # Check permissions
     im_project_permissions $current_user_id $project_id view_p read_p write_p admin_p
     if {!$write_p} {
-	if {$ns_write_p} {
-	    ns_write "<li><font color=red>Error: You don't have write permissions for project #$project_id. Skipping line!</font></li>"
-	}
-	continue
+	im_write_log $output_device_log $write_log_p "<li><font color=red>Error: You don't have write permissions for project #$project_id. Skipping line!</font></li>\n"
+        continue
     }
 
     # -------------------------------------------------------
     # Find project_id in target DB 
     #
 
-    ns_write "<li>Matching projects: <ul>"
+    im_write_log $output_device_log $write_log_p  "<li>Matching projects:</li>\n"
 
     # Find target_project_id based on project_nr_path 
-    ns_write "<li>Checking first for 'project_nr_path'</li>"
+    im_write_log $output_device_log $write_log_p  "<li>Checking first for 'project_nr_path'</li>\n"
     if { "" ne $project_nr_path } {
 	set sql "select project_id as target_project_id, project_name as target_project_name from im_projects where im_project_nr_parent_list(project_id) = '$project_nr_path'"
 	db_0or1row get_target_project_id $sql
     } else {
-	ns_write "<li>No project_nr_path found, now checking for 'project_nr'. We assume that hours to be imported come from the same \]po\[ instance.</li>"
+	im_write_log $output_device_log $write_log_p  "<li>No project_nr_path found, now checking for 'project_nr'. We assume that hours to be imported come from the same \]po\[ instance.</li>\n"
     }
 
     # Check for project_nr
     if { "" eq $target_project_id } {
-	ns_write "<li>No project found for project_nr_path: $project_nr_path, now checking for 'project_nr'."
+	im_write_log $output_device_log $write_log_p  "<li>No project found for project_nr_path: $project_nr_path, now checking for 'project_nr'.</li>\n"
 	if { "" ne $project_nr  } {
 	    set sql "select project_id as target_project_id, project_name as target_project_name from im_projects where project_nr = '$project_nr'"
 	    db_0or1row get_target_project_id $sql
 	} else {
-	    ns_write "<li>No project_nr found, now checking for project_id</li>"
+	    im_write_log $output_device_log $write_log_p  "<li>No project_nr found, now checking for project_id</li>\n"
 	}
 
 	# Check for project_id
 	if { "" eq $target_project_id } {
-	    ns_write "<li>No project found for project_nr: $project_nr, now checking for 'project_id'."
+	    im_write_log $output_device_log $write_log_p  "<li>No project found for project_nr: $project_nr, now checking for 'project_id'.</li>\n"
 	    if { "" ne $project_id } {
 		set sql "select project_id as target_project_id, project_name as target_project_name from im_projects where project_id = $project_id"
 		db_0or1row get_target_project_id $sql
 	    } else {
-		ns_write "<li>No project_id found.</li>"
+		im_write_log $output_device_log $write_log_p  "<li>No project_id found.</li>\n"
 	    }
 	    if { "" eq $target_project_id } {
-		ns_write "<li>No matching project found for project_id: $project_id.</li>"
+		im_write_log $output_device_log $write_log_p  "<li>No matching project found for project_id: $project_id.</li>\n"
 	    } else {
-		ns_write "<li><span style='color:green'>Found matching project_id ($project_id) for project: $project_name: $target_project_name ($target_project_id)</span></li>"
+		im_write_log $output_device_log $write_log_p  "<li><span style='color:green'>Found matching project_id ($project_id) for project: $project_name: $target_project_name ($target_project_id)</span></li>\n"
 	    }
 	} else {
-	    ns_write "<li><span style='color:green'>Found matching project_nr ($project_nr) for project: $project_name: $target_project_name ($target_project_id)</span></li>"
+	    im_write_log $output_device_log $write_log_p  "<li><span style='color:green'>Found matching project_nr ($project_nr) for project: $project_name: $target_project_name ($target_project_id)</span></li>\n"
 	}
     } else {
-	ns_write "<li><span style='color:green'>Found matching project_nr_path ($project_nr_path) for project: $project_name: $target_project_name ($target_project_id)</span></li>"
+	im_write_log $output_device_log $write_log_p  "<li><span style='color:green'>Found matching project_nr_path ($project_nr_path) for project: $project_name: $target_project_name ($target_project_id)</span></li>\n"
     }
 
-    ns_write "</li></ul>"
-
     if { "" eq $target_project_id } {
-	ns_write "<li><font color=red>Error: No matching project found for project: $project_nr_path / $project_nr / $project_name. Skipping line!</font></li>"
+	im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: No matching project found for project: $project_nr_path / $project_nr / $project_name. Skipping line!</font></li>\n"
 
 	if { "" eq $project_nr_path } { set project_nr_path * }
 	if { "" eq $project_nr } { set project_nr * }
@@ -325,7 +339,7 @@ foreach csv_line_fields $values_list_of_lists {
     " -default 0]
 
     if { $conf_object_id_exist_p } {
-       ns_write "<li>Merging hours: <font color=red>Conf Object exists, skipping project_id: $target_project_id, user_id: $user_id, day: $day</font></li>"
+       im_write_log $output_device_log $write_log_p  "<li>Merging hours: <font color=red>Conf Object exists, skipping project_id: $target_project_id, user_id: $user_id, day: $day</font></li>\n"
        continue
     }
 
@@ -343,11 +357,11 @@ foreach csv_line_fields $values_list_of_lists {
 		
     if { $hours > 0  && $merge_p } {
 	# Update 
-	ns_write "<li>Merging hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>"
+	im_write_log $output_device_log $write_log_p  "<li>Merging hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
 	if { !$test_run_p } { db_dml sql "update im_hours h set (hours, note) values (h.hours + :hours, h.note || ', ' || :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" }
     } elseif { $hours > 0 && !$merge_p } {
 	# Overwrite 
-	ns_write "<li>Overwrite hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>"
+	im_write_log $output_device_log $write_log_p  "<li>Overwrite hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
 	if { !$test_run_p } { db_dml sql "update im_hours h set (hours, note) values (:hours, :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" }
     } elseif { $hours == 0 } {
 	# create im_hours record 
@@ -357,10 +371,10 @@ foreach csv_line_fields $values_list_of_lists {
 	    } err_msg]} {
 		global errorInfo
 		ns_log Error $errorInfo
-		ns_write "<li>Merging hours: <font color=red>Conf Object exists, skipping project_id: $target_project_id, user_id: $user_id, day: $day</font></li>"
+		im_write_log $output_device_log $write_log_p  "<li>Merging hours: <font color=red>Conf Object exists, skipping project_id: $target_project_id, user_id: $user_id, day: $day</font></li>\n"
 	    }
 	}
-	ns_write "<li>Merging hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>"	
+	im_write_log $output_device_log $write_log_p "<li>Merging hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"	
     } 
 
     # -------------------------------------------------------
@@ -384,7 +398,7 @@ foreach csv_line_fields $values_list_of_lists {
 	lappend im_hours_dynfield_updates "$attribute_name = :$attribute_name"
     }
 
-    if {$ns_write_p} { ns_write "<li>Going to update im_hours DynFields.\n" }
+    im_write_log $output_device_log $write_log_p "<li>Going to update im_hours DynFields.\n" 
     if {"" != $im_hours_dynfield_updates} {
 	set hours_update_sql "
 		update im_hours set
@@ -398,7 +412,7 @@ foreach csv_line_fields $values_list_of_lists {
 	if {[catch {
 	    db_dml hours_dynfield_update $hours_update_sql
 	} err_msg]} {
-	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Error updating im_hours dynfields:<br><pre>$err_msg</pre></font>" }
+	    im_write_log $output_device_log $write_log_p "<li><font color=brown>Warning: Error updating im_hours dynfields:<br><pre>$err_msg</pre></font></li>\n"
 	}
     }
 
@@ -417,20 +431,33 @@ foreach csv_line_fields $values_list_of_lists {
     }
 }
 
-
-if {$ns_write_p} {
-    ns_write "</ul>\n"
-    ns_write "<p>\n"
-    ns_write "<p>List of missing projects:<br/>$missing_project_list</p>"
-    ns_write "<br/>"
-    ns_write "<A HREF=$return_url>Return</A>\n"
-}
+im_write_log $output_device_log $write_log_p "</ul>\n"
+im_write_log $output_device_log $write_log_p "<p>\n"
+im_write_log $output_device_log $write_log_p "<p>List of missing projects:<br/>$missing_project_list</p>"
+im_write_log $output_device_log $write_log_p "<br/>"
+im_write_log $output_device_log $write_log_p "<A HREF=$return_url>Return</A>\n"
 
 # ------------------------------------------------------------
 # Render Report Footer
+if { "screen" == $output_device_log && $write_log_p } {
+    im_write_log $output_device_log [im_footer]
+} elseif {"screen" != $output_device_log && $write_log_p } {
 
-if {$ns_write_p} {
-    ns_write [im_footer]
+    set path_tmp [parameter::get -package_id [apm_package_id_from_key intranet-filestorage] -parameter "TmpPathUnix" -default 60]
+    set path_tmp "$path_tmp/import-im-hour-log.txt"
+    ad_return_top_of_page "
+        [im_header]
+        [im_navbar]
+    "
+    ns_write "Files imported. Logfile is located at: $path_tmp <br/>"
+
+    set fp [open $path_tmp r]
+    set file_data [read $fp]
+    close $fp
+
+    ns_write $file_data
+    
+} else {
+
+
 }
-
-
