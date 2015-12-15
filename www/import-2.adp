@@ -22,6 +22,10 @@
 	<td valign="top"><input type="checkbox" name="test_run_p" checked>&nbsp;</td>
 	<td valign="top"><strong>Test Run?</strong><br/>Uncheck to perform an import, otherwise import will be done in test mode and no data will be written to the DB</td>
     </tr>
+    <tr>
+        <td valign="top"><input type="checkbox" name="output_device_log" value="file">&nbsp;</td>
+        <td valign="top"><strong>Redirect to file?</strong><br/>Uncheck to redirect log messages to file in default tmp directory</td>
+    </tr>
     </table>
 </if> 
 <br/>
