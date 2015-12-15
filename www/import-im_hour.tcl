@@ -440,9 +440,8 @@ im_write_log $output_device_log $write_log_p "<A HREF=$return_url>Return</A>\n"
 # ------------------------------------------------------------
 # Render Report Footer
 if { "screen" == $output_device_log && $write_log_p } {
-    im_write_log $output_device_log [im_footer]
+    im_write_log $output_device_log $write_log_p [im_footer]
 } elseif {"screen" != $output_device_log && $write_log_p } {
-
     set path_tmp [parameter::get -package_id [apm_package_id_from_key intranet-filestorage] -parameter "TmpPathUnix" -default 60]
     set path_tmp "$path_tmp/import-im-hour-log.txt"
     ad_return_top_of_page "
@@ -459,5 +458,10 @@ if { "screen" == $output_device_log && $write_log_p } {
     
 } else {
 
+    ad_return_top_of_page "
+        [im_header]
+        [im_navbar]
+    "
+    ns_write "Import finished."
 
 }
