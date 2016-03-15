@@ -10,6 +10,39 @@ ad_library {
 }
 
 # ---------------------------------------------------------------------
+# Default mapping for built-in ]po[ object types
+# ---------------------------------------------------------------------
+
+ad_proc -public im_csv_import_guess_im_risk { } {} {
+    set mapping {
+	{risk_name "Risk Name" no_change ""}
+	{risk_project_id "Project" project_nr ""}
+	{risk_status_id "Status" category "Intranet Risk Status"}
+	{risk_type_id "Type" category "Intranet Risk Type"}
+	{risk_description "Description" no_change ""}
+	{risk_impact "Impact" number_european ""}
+	{risk_probability_percent "Probability" number_european ""}
+    }
+    return $mapping
+}
+
+
+ad_proc -public im_csv_import_guess_im_project { } {} {
+    set mapping {
+	{parent_nrs "Parent Nrs" hard_coded ""}
+	{company_id "Customer Name" hard_coded ""}
+	{start_date "Start Date" no_change ""}
+	{end_date "End Date" no_change ""}
+	{percent_completed "Percent Completed" number_european ""}
+	{project_budget "Budget" number_european ""}
+	{project_budget_hours "Budget Hours" number_european ""}
+    }
+    return $mapping
+}
+
+
+
+# ---------------------------------------------------------------------
 # Aux functions
 # ---------------------------------------------------------------------
 
@@ -358,7 +391,6 @@ ad_proc -public im_csv_import_parsers {
 		user_name		"User ID from user-email"
 	    }
 	}
-
 	im_membership {
 	    set parsers {
 		no_change		"No Change"
@@ -368,9 +400,6 @@ ad_proc -public im_csv_import_parsers {
 		user_name		"User ID from user-email"
 	    }
 	}
-
-
-
 	default {
 	    ad_return_complaint 1 "im_csv_import_parsers: Unknown object type '$object_type'"
 	    ad_script_abort
@@ -412,7 +441,7 @@ ad_proc -public im_csv_import_guess_parser {
 	set parser [lindex $tuple 2]
 	set parser_args [lindex $tuple 3]
 	if {$field_name_lower == [string tolower $pretty_name]} {
-	    ns_log Notice "im_csv_import_guess_map: found statically encoded match with field_name=$field_name"
+	    ns_log Notice "im_csv_import_guess_parser: found statically encoded match with field_name=$field_name"
 	    return [list $parser $parser_args $attribute_name]
 	}
     }
@@ -423,7 +452,7 @@ ad_proc -public im_csv_import_guess_parser {
     switch $object_type {
 	im_project - im_timesheet_task - im_ticket {
 	    switch $field_name {
-		parent_nrs { return [list "hard_coded" "" ""] }
+		parent_nrs { return [list "hard_coded" "" "parent_id"] }
 		customer_name { return [list "hard_coded" "" "company_id"] }
 		project_status { return [list "hard_coded" "" "project_status_id"] }
 		on_track_status { return [list "hard_coded" "" "on_track_status_id"] }
@@ -445,7 +474,6 @@ ad_proc -public im_csv_import_guess_parser {
     #
     # Abort if there are not enough values
     if {[llength $sample_values] >= 1} { 
-
 	set date_european_p 1
 	set date_american_p 1
 	set number_plain_p 1
@@ -590,23 +618,6 @@ ad_proc -public im_csv_import_guess_map {
     return ""
 }
 
-
-# ---------------------------------------------------------------------
-# Default mapping for built-in ]po[ reports
-# ---------------------------------------------------------------------
-
-ad_proc -public im_csv_import_guess_im_risk { } {} {
-    set mapping {
-	{risk_name "Risk Name" no_change ""}
-	{risk_project_id "Project" project_nr ""}
-	{risk_status_id "Status" category "Intranet Risk Status"}
-	{risk_type_id "Type" category "Intranet Risk Type"}
-	{risk_description "Description" no_change ""}
-	{risk_impact "Impact" number_european ""}
-	{risk_probability_percent "Probability" number_european ""}
-    }
-    return $mapping
-}
 
 # ---------------------------------------------------------------------
 # Convert the list of parent_nrs into the parent_id

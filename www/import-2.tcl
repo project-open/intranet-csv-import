@@ -209,7 +209,9 @@ foreach header_name $headers {
 
     if {"hard_coded" == $default_parser} { set map [im_select map.$cnt $object_type_pairs "hard_coded"] }
 
-    multirow append mapping $header_name $column $map $parser $args [lindex $row_1 $cnt] [lindex $row_2 $cnt] [lindex $row_3 $cnt] [lindex $row_4 $cnt] [lindex $row_5 $cnt]
+#    ad_return_complaint 1 "'$column'"
+    multirow append mapping $header_name $column $map $parser $args \
+	[lindex $row_1 $cnt] [lindex $row_2 $cnt] [lindex $row_3 $cnt] [lindex $row_4 $cnt] [lindex $row_5 $cnt]
 
     incr cnt
 }

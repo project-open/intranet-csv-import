@@ -66,39 +66,5 @@
      <td><input type="submit" value="<%= [lang::message::lookup "" intranet-csv-import.Import_CSV "Import CSV"] %>"></td>
      </tr>
      </table>
-<p>
-<!--
-The mapping showing up on this page will be saved as-you-type to simplify the import process.<br/>
-This allows you to go back, reload the file without loosing your mapping settings.<br/>
-To erase the saved values, please click <span id="forms_delete_save_button" style="text-decoration:underline;cursor:pointer"	>here</span>.
---
-</p>
 </form>
-
-<script type="text/javascript">
-$(document).ready(function() {
-
-    // Initialize
-    // $('#@form_id@').sayt({'days': 180});
-
-    // if($('#@form_id@').sayt({'checksaveexists': true}) == true)
-    //  { console.log('Form has an existing save cookie.'); } else { console.log('No cookie found'); };
-
-    // Do not save the hidden fields
-    // $('#@form_id@').sayt({'exclude':
-    //    [
-    //            '[name=return_url]',
-    //            '[name=object_type]',
-    //            '[name=import_filename]'
-    //    ]
-    // });
-
-    // $('#forms_delete_save_button').click(function() {
-    //    $('#@form_id@').sayt({'erase': true});
-    //    console.log('Form cookie was deleted.');
-    //    alert('Saved settings have been deleted');
-    //    return false;
-    // });
-});
-</script>
 
