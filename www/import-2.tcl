@@ -4,7 +4,7 @@ ad_page_contract {
     Starts the analysis process for the file imported
     @author frank.bergmann@project-open.com
 } {
-    { return_url "" }
+    { return_url "/intranet/" }
     { main_navbar_label "" }
     object_type
     upload_file
@@ -12,81 +12,23 @@ ad_page_contract {
 }
 
 # ---------------------------------------------------------------------
-# Note: 
-# ---------------------------------------------------------------------
-
-# This script uses jquery-save-as-you-type in order to store 
-# the user settings for mapping. This way a user does not need   
-# to start all over again if an import fails. 
-# The script stores ALL form vars so please add any new vars 
-# added to the form that should not be stored to the 
-# "exclude" section see (.adp file) to avoid side effects. 
-
-template::head::add_javascript -src "/intranet-csv-import/js/jquery-save-as-you-type/source/sayt.min.jquery.js" -order 1000
-template::head::add_javascript -src "/intranet-csv-import/js/jquery-save-as-you-type/dependencies/jquery-cookie.js" -order 1000
-
-# ---------------------------------------------------------------------
 # Default & Security
 # ---------------------------------------------------------------------
 
-set current_user_id [auth::require_login]
 set page_title [lang::message::lookup "" intranet-cvs-import.Upload_Objects "Upload Objects"]
 set context_bar [im_context_bar "" $page_title]
-set admin_p [im_is_user_site_wide_or_intranet_admin $current_user_id]
-
+set current_user_id [auth::require_login]
 # fraber 130225: Permissions are now handled by the import-* files
-# if {!$admin_p} {
-#     ad_return_complaint 1 "Only administrators have the right to import objects"
-#     ad_script_abort
-# }
 
-# Get the file from the user.
-# number_of_bytes is the upper-limit
+# Get the file from the user. number_of_bytes is the upper-limit
 set max_n_bytes [parameter::get -package_id [apm_package_id_from_key im_package_filestorage_id] -parameter "MaxNumberOfBytes" -default 0]
 set tmp_filename [ns_queryget upload_file.tmpfile]
-
 im_security_alert_check_tmpnam -location "import-2.tcl" -value $tmp_filename
 
-if { $max_n_bytes && ([file size $tmp_filename] > $max_n_bytes) } {
+if {$max_n_bytes && ([file size $tmp_filename] > $max_n_bytes)} {
     ad_return_complaint 1 "Your file is larger than the maximum permissible upload size:  
     [util_commify_number $max_n_bytes] bytes"
     ad_script_abort
-}
-
-# Empty return_url?
-# Choose depending on the object type...
-# Varied form_id's tio support 'jquery-save-as-you-type'
-if {"" == $return_url} {
-    switch $object_type {
-	im_company { 
-	    set return_url "/intranet/companies/index" 
-	    set form_id "intranet-csv-import-import2-companies"
-	}
-	im_conf_item { 
-	    set return_url "/intranet-helpdesk/index" 
-            set form_id "intranet-csv-import-import2-confitems"	    
-	}
-	im_project { 
-	    set return_url "/intranet/projects/index" 
-            set form_id "intranet-csv-import-import2-projects"
-	}
-	person { 
-	    set return_url "/intranet/users/index" 
-            set form_id "intranet-csv-import-import2-users"
-	}
-	im_hour { 
-	    set return_url "/intranet/index" 
-            set form_id "intranet-csv-import-import2-hours"
-	}
-        im_membership {
-            set return_url "/intranet/index"
-            set form_id "intranet-csv-import-import2-memberships"
-        }
-	default { 
-	    set return_url "/intranet" 
-            set form_id "intranet-csv-import-import2-other"
-	}
-    }
 }
 
 # strip off the C:\directories... crud and just get the file name
@@ -140,8 +82,8 @@ set header_len [llength $headers]
 set values_lol [im_csv_get_values $lines_content $separator]
 
 # Check if there are lines with less then 4 elements
-# set error [im_csv_import_check_list_of_lists $values_lol]
-# if {"" != $error} { ad_return_complaint 1 $error }
+set error [im_csv_import_check_list_of_lists $values_lol]
+if {"" != $error} { ad_return_complaint 1 $error }
 
 # Take a sample of max_row rows from the file and show
 set max_row 10
@@ -169,6 +111,13 @@ set object_type_pairs [list "" ""]
 foreach field $object_fields { lappend object_type_pairs [string tolower $field] [string tolower $field] }
 lappend object_type_pairs "hard_coded" "Hard Coded Functionality"
 
+
+
+# --------------------------------------------------
+# Main Loop
+# Try to guess the mapping and the parser for each field
+# --------------------------------------------------
+
 set cnt 0
 foreach header_name $headers {
     ns_log Notice "import-2: otype=$object_type, field_name=$header_name"
@@ -186,14 +135,16 @@ foreach header_name $headers {
 
     # Guess the object's field to which to map.
     set object_field_best_guess [im_csv_import_guess_map -object_type $object_type -field_name $header_name -sample_values $parser_sample_values]
-    ns_log Notice "import-2: otype=$object_type, field_name=$header_name => field=$object_field_best_guess"
+    ns_log Notice "import-2: im_csv_import_guess_map -object_type $object_type -field_name $header_name -sample_values {$parser_sample_values}"
+    ns_log Notice "import-2: => $object_field_best_guess"
     set guess_parser_field_name $header_name
     if {"" != $object_field_best_guess} { set guess_parser_field_name $object_field_best_guess }
 
 
     # Guess the parser how to convert the field values
     set defs [im_csv_import_guess_parser -object_type $object_type -field_name $guess_parser_field_name -sample_values $parser_sample_values]
-    ns_log Notice "import-2: otype=$object_type, field_name=$header_name => parser=$defs"
+    ns_log Notice "import-2: im_csv_import_guess_parser -object_type $object_type -field_name $guess_parser_field_name -sample_values {$parser_sample_values}"
+    ns_log Notice "import-2: => $defs"
     set default_parser [lindex $defs 0]
     set default_parser_args [lindex $defs 1]
     set override_map [lindex $defs 2]

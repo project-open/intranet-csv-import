@@ -3,7 +3,7 @@
 <property name="context">@context_bar;literal@</property>
 <property name="main_navbar_label">@main_navbar_label;literal@</property>
 
-<form enctype="multipart/form-data" method=POST action="import-@redirect_object_type@.tcl" id="@form_id@">
+<form enctype="multipart/form-data" method=POST action="import-@redirect_object_type@.tcl">
 <%= [export_vars -form {object_type return_url import_filename}] %>
 
 <if @object_type@ eq im_hour>

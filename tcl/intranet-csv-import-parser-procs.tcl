@@ -36,15 +36,39 @@ ad_proc -public im_csv_import_parser_user_name {
        return [list $arg $err]
     }
 
-    set sql "
-        select  party_id
-        from    parties p
-        where   lower(p.email) = lower('$arg')
-    "
-    set party_id [db_string party_id_from_name $sql -default ""]
+    set user_id ""
     set err ""
-    if {"" == $party_id} { set err "Didn't find user with email ='$arg'" }
-    return [list $party_id $err]
+
+    # Check by email
+    if {"" eq $user_id} {
+	set sql "
+	        select  min(party_id)
+	        from    parties p
+	        where   lower(p.email) = lower('$arg')
+	"
+	set user_id [db_string user_id_from_email $sql -default ""]
+    }
+
+    # Check by (Windows) username 
+    if {"" eq $user_id} {
+	set user_id [db_string user_id_from_username "
+		select	min(user_id)
+		from	users
+		where	lower(trim(username)) = lower(trim(:name))
+	" -default ""]
+    }
+
+    # Check by full first + last name
+    if {"" == $user_id} {
+	set user_id [db_string user_id_from_first_last_name "
+		select	min(person_id)
+		from	persons
+		where	lower(trim(im_name_from_user_id(person_id))) = lower(trim(:name))
+	" -default ""]
+    }
+
+    if {"" == $user_id} { set err "Didn't find user with email, username or full name ='$arg'" }
+    return [list $user_id $err]
 }
 
 
@@ -95,6 +119,40 @@ ad_proc -public im_csv_import_parser_project_nr {
 }
 
 
+ad_proc -public im_csv_import_parser_date { 
+    {-parser_args "" }
+    arg 
+} {
+    Generic date parser - front-end for all available date formats
+} {
+    set result [im_csv_import_parser_date_european -parser_args $parser_args $arg]
+    if {"" eq [lindex $result 1]} { return $result }
+
+    set result [im_csv_import_parser_date_european_dashes -parser_args $parser_args $arg]
+    if {"" eq [lindex $result 1]} { return $result }
+
+    set result [im_csv_import_parser_date_american -parser_args $parser_args $arg]
+    if {"" eq [lindex $result 1]} { return $result }
+
+    return [list "" "Could not figure out the format of this data field"]
+}
+
+ad_proc -public im_csv_import_parser_boolean { 
+    {-parser_args "" }
+    arg 
+} {
+    Boolean - argument is mapped to SQL boolean: 't' or 'f'
+} {
+    set arg [string tolower [string trim $arg]]
+    switch $arg {
+	"" { return [list "" ""] }
+	"t" - "1" { return [list "t" ""] }
+	"f" - "0" { return [list "f" ""] }
+    }
+    return [list "" "Could not determine boolean value of arg='$arg'"]
+}
+
+
 ad_proc -public im_csv_import_parser_date_european { 
     {-parser_args "" }
     arg 
@@ -108,6 +166,7 @@ ad_proc -public im_csv_import_parser_date_european {
     }
     return [list "" "Error parsing European date format '$arg': expected 'dd.mm.yyyy'. If the error remains, try to import ANSI dates (2015-01-01) and set parser to 'No change'"]
 }
+
 
 ad_proc -public im_csv_import_parser_date_european_dashes { 
     {-parser_args "" }
@@ -138,6 +197,36 @@ ad_proc -public im_csv_import_parser_date_american {
     return [list "" "Error parsing American date format '$arg': expected 'dd.mm.yyyy'"]
 }
 
+
+ad_proc -public im_csv_import_parser_number {
+    {-parser_args "" }
+    arg 
+} {
+    Parses a generic number. 
+    There may be ambiguities between American and European number formats
+    with decimal and thousands separators
+} {
+    if {[string is integer $arg]} { return [list $arg ""] }
+    # Now we know that there is a "." or a "," in the number
+
+    # Check for a number with one or two decimal digits
+    if {[regexp {^([0-9\.\,]*)([\.\,])([0-9]{1,2})$} $arg match main separator fraction]} {
+	if {"." eq $separator} {
+	    # American number format - remove "," from the main part of the number
+	    set main [string map -nocase {"," ""} $main]
+	    if {[string is integer $main]} { return [list "$main.$fraction" ""] }
+	    # "$main" is not an integer - no idea what is is...
+	} else {
+	    # European number format - remove "." from the main part of the number
+	    set main [string map -nocase {"." ""} $main]
+	    if {[string is integer $main]} { return [list "$main.$fraction" ""] }
+	    # "$main" is not an integer - no idea what is is...
+	}
+	return [list "$main.$fraction" ""]
+    }
+
+    return [list 0 "Could not decide if this is a European or a US number - please use a specific parser"]
+}
 
 ad_proc -public im_csv_import_parser_number_european {
     {-parser_args "" }
@@ -216,3 +305,50 @@ ad_proc -public im_csv_import_parser_hard_coded {
     return [list $arg ""]
 }
 
+
+ad_proc -public im_csv_import_parser_project_parent_nrs { 
+    {-parser_args "" }
+    arg 
+} {
+    Returns a project_id from a list of project_nr's
+} {
+    set arg [string tolower [string trim $arg]]
+    set parent_id ""
+
+    # Loop through the list of parent_nrs
+    foreach parent_nr $arg {
+
+	set parent_sql "parent_id = $parent_id"
+	if {"" eq $parent_id} { set parent_sql "parent_id is null" }
+	set project_id [db_string pid "select project_id from im_projects where $parent_sql and lower(project_nr) = :parent_nr" -default ""]
+	if {"" eq $project_id} {
+	    return [list "" "Didn't find project with project_nr='$parent_nr' and parent_id='$parent_id'"]
+	}
+	set parent_id $project_id
+    }
+    return [list $parent_id ""]
+}
+
+
+ad_proc -public im_csv_import_parser_conf_item_parent_nrs { 
+    {-parser_args "" }
+    arg 
+} {
+    Returns a project_id from a list of project_nr's
+} {
+    set arg [string tolower [string trim $arg]]
+    set parent_id ""
+
+    # Loop through the list of parent_nrs
+    foreach parent_nr $arg {
+
+	set parent_sql "conf_item_parent_id = $parent_id"
+	if {"" eq $parent_id} { set parent_sql "conf_item_parent_id is null" }
+	set project_id [db_string pid "select conf_item_id from im_conf_items where $parent_sql and lower(conf_item_nr) = :parent_nr" -default ""]
+	if {"" eq $project_id} {
+	    return [list "" "Didn't find conf_item with conf_item_nr='$parent_nr' and parent_id='$parent_id'"]
+	}
+	set parent_id $project_id
+    }
+    return [list $parent_id ""]
+}
