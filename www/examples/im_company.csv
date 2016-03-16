@@ -1,0 +1,6 @@
+Company Name;Company Path;Company Status;Company Type;Primary Contact;Accounting Contact;Phone;Fax;Address Line1;Address Line2;Address City;Address State;Address Postal Code;Address Country code;Note
+]project-open[;projop;Active;Provider;Frank Bergmann;Frank Bergmann;+34 933 250 914;+34 932 890 729;Ronda de Sant Antoní, 51, 1o 2a;;Barcelona;Catalonia;8011;es;"Test note with single quote (') and double quote ("")"
+ABC Consulting;abc_consulting;Active;Customer;Sheila Carter;Antonio Salas;+41 51 376 60 60;+41 51 376 60 60;Tunastraße 12;Block 2;Basel;;5123;ch;
+adromIT;adromit;Active;Customer;David Rolland;;+49 89 33036742;+49 89 33036743;Felix-Fechenbach-Bogen 111;;München;;80797;de;
+Angelique Picard;freelance_8811;Active;Freelance Provider;Angelique Picard;Angelique Picard;+33 594 87 49 92;;198 Promenade des Americaine;;Nice;;6010;fr;
+Axios;axios;Active;Customer;;;+41 51 376 60 60;;;;bogota;CU;;co;

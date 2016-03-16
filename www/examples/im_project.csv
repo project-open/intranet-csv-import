@@ -1,0 +1,21 @@
+Parent Nrs;Project Nr;Project Name;Customer Name;Project Status;Project Type;Start Date;End Date;Percent Completed;Budget;Budget Hours;Release Item;Milestone?;Program;Presales Probability;Presales Value;Project Sponsor;Priority;Note;Project Manager;On Track;Description
+;2016_0001;Infrastructure Program;Tigerpond;Open;Program;1.1.2016;1.7.2017;0.00;200.000;;f;f;;;;Ben Bigboss;;;Ben Bigboss;Green;
+;2015_0003;Fargo Samba4 Rollout;Tigerpond;Open;Gantt Project;30/06/2015;04/10/2015;0.00;10.000;200;f;f;Infrastructure Program;95;20000;Ben Bigboss;High;"Test note with single tick (') and double quotes ("")";System Administrator;Green;
+2015_0003;task_0002;Write Specs;Tigerpond;Open;Task;30/06/2015;02/07/2015;100;;;f;f;;.00;;;;;;Green;"Test description with single tick (') and double quotes ("")"
+2015_0003;task_0003;Negotiate Specs;Tigerpond;Open;Task;02/07/2015;06/08/2015;50;;;f;t;;0;;;;;;Green;
+2015_0003;task_0004;Design;Tigerpond;Open;Gantt Project;30/07/2015;06/08/2015;20;;;f;f;;;;;;;;Green;
+2015_0003;task_0005;Implementation;Tigerpond;Open;Task;06/08/2015;20/09/2015;0.00;;;f;t;;;;;;;;Green;
+2015_0003;task_0006;Testing;Tigerpond;Open;Task;16/09/2015;28/09/2015;5.00;;;f;t;;;;;;;;Green;
+2015_0003;task_0007;Sign-Off;Tigerpond;Open;Task;30/09/2015;04/10/2015;.00;;;f;t;;;;;;;;Green;
+;2014_0007;Special Machine (2014-05-12);Boom Consuling;Open;Gantt Project;2015-03-01;2016-05-07;0.00;25000;400;f;f;Infrastructure Program;100;30000;bbigboss@tigerpond.com;High;;Ben Bigboss;Yellow;
+2014_0007;task_0086;Milestones;Boom Consuling;Open;Gantt Project;2015-11-05;2016-05-07;12.34;;;f;f;;;;;;;;Green;
+2014_0007;task_0003;Phase Montage;Boom Consuling;Open;Gantt Project;2016-01-18;2016-03-20;20.00;;;f;f;;;;;;;;Green;
+2014_0007;task_0004;Phase Inbetriebnahme;Boom Consuling;Open;Gantt Project;2016-03-26;2016-04-14;30;;;f;f;;;;;;;;Green;
+2014_0007;task_0055;Installation Kunde;Boom Consuling;Open;Gantt Project;2016-04-22;2016-05-07;.00;;;f;f;;;;;;;;Green;
+
+
+
+
+
+
+;;;;;;

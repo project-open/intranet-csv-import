@@ -54,7 +54,7 @@ ad_proc -public im_csv_import_parser_user_name {
 	set user_id [db_string user_id_from_username "
 		select	min(user_id)
 		from	users
-		where	lower(trim(username)) = lower(trim(:name))
+		where	lower(trim(username)) = lower(trim(:arg))
 	" -default ""]
     }
 
@@ -63,7 +63,7 @@ ad_proc -public im_csv_import_parser_user_name {
 	set user_id [db_string user_id_from_first_last_name "
 		select	min(person_id)
 		from	persons
-		where	lower(trim(im_name_from_user_id(person_id))) = lower(trim(:name))
+		where	lower(trim(im_name_from_user_id(person_id))) = lower(trim(:arg))
 	" -default ""]
     }
 

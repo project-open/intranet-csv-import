@@ -19,6 +19,18 @@ ad_library {
 # - Parser arguments (important for im_category type)
 # ---------------------------------------------------------------------
 
+ad_proc -public im_csv_import_guess_im_company { } {} {
+    set mapping {
+	{company_name "Company Name" no_change ""}
+	{company_path "Company Path" no_change ""}
+	{company_status_id "Company Status" category "Intranet Company Status"}
+	{company_type_id "Company Type" category "Intranet Company Type"}
+	{primary_contact_id "Primary Contact" user_name ""}
+	{accounting_contact_id "Accounting Contact" user_name ""}
+    }
+    return $mapping
+}
+
 ad_proc -public im_csv_import_guess_im_project { } {} {
     set mapping {
 	{parent_id "Parent Nrs" project_parent_nrs ""}
@@ -125,9 +137,14 @@ ad_proc -public im_csv_import_object_fields {
     }
     set super_types $s
 
+    # special logic for some object types
+    switch $object_type {
+	im_company { lappend super_types "im_office" }
+    }
+
     # ---------------------------------------------------------------
     # Get the list of tables associated with the object type and its super types
-
+    #
     set tables_sql "
 	select	*
 	from	(
@@ -179,6 +196,18 @@ ad_proc -public im_csv_import_object_fields {
 # Guess the most probable object field (DynField) for a column
 # ---------------------------------------------------------------------
 
+ad_proc -public csv_norm {
+    field_name
+} {
+    Performs normalization including trim, tolower, 
+    replace non-ascii with "_".
+} {
+    set field_name [string tolower [string trim $field_name]]
+    regsub -all {[^a-zA-Z0-9]} $field_name "_" field_name
+    return $field_name
+}
+
+
 ad_proc -public im_csv_import_guess_map {
     -object_type:required
     -field_name:required
@@ -192,7 +221,7 @@ ad_proc -public im_csv_import_guess_map {
     <li>Pretty Name: English pretty name of column ("Project Name")
     <li>
 } {
-    set field_name_lower [string tolower $field_name]
+    set field_name_lower [csv_norm $field_name]
     ns_log Notice "im_csv_import_guess_map: trying to guess attribute_name for field_name=$field_name_lower"
     im_security_alert_check_alphanum -location "im_csv_import_guess_map: object_type" -value $object_type
 
@@ -206,12 +235,15 @@ ad_proc -public im_csv_import_guess_map {
 	set pretty_name [lindex $tuple 1]
 	set parser [lindex $tuple 2]
 	set parser_args [lindex $tuple 3]
-	if {$field_name_lower == [string tolower $pretty_name]} {
+	if {$field_name_lower eq [csv_norm $pretty_name]} {
 	    ns_log Notice "im_csv_import_guess_map: found statically encoded match with field_name=$field_name"
 	    return $attribute_name
 	}
     }
 
+    switch $object_type {
+	im_company { lappend object_type "im_office" }
+    }
 
     set dynfield_sql "
 	select  lower(aa.attribute_name) as attribute_name,
@@ -223,25 +255,28 @@ ad_proc -public im_csv_import_guess_map {
 		acs_attributes aa
 	where	a.widget_name = w.widget_name and 
 		a.acs_attribute_id = aa.attribute_id and
-		aa.object_type = '$object_type'
+		aa.object_type in ('[join $object_type "', '"]')
 	order by aa.sort_order, aa.attribute_id
     "
 
     # Check if the header name is the attribute_name of a DynField
     set dynfield_attribute_names [util_memoize [list db_list otype_dynfields "select attribute_name from ($dynfield_sql) t"]]
     ns_log Notice "im_csv_import_guess_map: attribute_names=$dynfield_attribute_names"
-    if {[lsearch $dynfield_attribute_names $field_name_lower] >= 0} {
-	ns_log Notice "im_csv_import_guess_map: found attribute_name match with field_name=$field_name"
-	return $field_name_lower
+    foreach field $dynfield_attribute_names {
+	if {$field_name_lower eq [csv_norm $field]} {
+	    ns_log Notice "im_csv_import_guess_map: found attribute_name match with field_name=$field_name"
+	    return $field_name_lower
+	}
     }
 
     # Check for a pretty_name of a DynField
     set dynfield_pretty_names [util_memoize [list db_list otype_dynfields "select pretty_name from ($dynfield_sql) t"]]
     ns_log Notice "im_csv_import_guess_map: pretty_names=$dynfield_pretty_names"
-    set idx [lsearch $dynfield_pretty_names $field_name_lower]
-    if {$idx >= 0} {
-	ns_log Notice "im_csv_import_guess_map: found pretty_name match with field_name=$field_name"
-	return [lindex $dynfield_attribute_names $idx]
+    foreach field $dynfield_pretty_names {
+	if {$field_name_lower eq [csv_norm $field]} {
+	    ns_log Notice "im_csv_import_guess_map: found pretty_name match with field_name=$field_name"
+	    return $field_name_lower
+	}
     }
 
     ns_log Notice "im_csv_import_guess_map: Did not find any match with a DynField for field_name=$field_name"
@@ -412,3 +447,23 @@ ad_proc -public im_csv_import_check_list_of_lists {
 
     return $result
 }
+
+
+
+# ----------------------------------------------------------------------
+#
+# ----------------------------------------------------------------------
+
+ad_proc -public im_csv_import_label_from_object_type {
+    -object_type:required
+} {
+    Returns the main navbar lable for the object_type
+} {
+    switch $object_type {
+        im_company { return "companies" }
+        im_project { return "projects" }
+        person { return "users" }
+        default { return "" }
+    }
+}
+

@@ -1,4 +1,4 @@
-# /package/intranet-core/companies/upload-companies.tcl
+# /package/intranet-csv-import/www/index.tcl
 #
 # Copyright (C) 2004 ]project-open[
 #

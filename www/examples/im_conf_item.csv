@@ -1,0 +1,18 @@
+Conf Item Parent Nrs;Conf Item Name;Conf Item Code;Conf Item Version;Conf Item Nr;Conf Item Status;Conf Item Type;IP Address;Conf Item Owner;Conf Item Cost Center;Description;Note
+;]project-open[;;5.0.1;project-open;Active;Software Application;10.0.12.67;Ben Bigboss;CoIt;ITSM and project management;Test note with single quote (')
+;Alfresco;;3.4.d2;alfresco;Active;Software Application;10.0.12.124;System Administrator;CoMa;Document management system;
+;AlienVault;;4.0;alienvault;Active;Software Application;10.0.12.28;System Administrator;CoIt;Thread detection;"Test note with double quote ("")"
+;Bacula ;;7.4.0;bacula;Active;Software Application;10.0.14.52;System Administrator;CoIt;Backup;
+;eXo platform;;;exo;Active;Software Application;10.0.14.45;System Administrator;CoIt;Enterprise social platform;
+;ICinga 2;;;icinga2;Active;Software Application;10.0.12.5;System Administrator;CoIt;Systems monitoring;
+;Jasper Reports;;;jasper-reports;Active;Software Application;10.0.12.20;Ben Bigboss;CoIt;Reporting;
+;Mandriva Qnap;;;mandriva-qnap;Active;Software Application;10.0.134.74;System Administrator;CoIt;Windows asset management;
+;Openbravo;;;openbravo;Active;Software Application;10.0.12.80;Ben Bigboss;CoAd;ERP;
+;PacketFence;;;packetfence;Active;Software Application;10.0.12.54;System Administrator;CoIt;Network access control;
+;Pentaho;;;pentaho;Active;Software Application;10.0.12.25;System Administrator;CoIt;Business intelligence;
+pentaho;Pentaho Kettle;;;kettle;Active;Software Application;10.0.12.40;System Administrator;CoIt;Pentaho extract, transform and loading;
+pentaho;Pentaho Mondrian;;;mondrian;Active;Software Application;10.0.11.6;System Administrator;CoIt;Pentaho data-warehouse;
+;PostgreSQL;;9.5.2;postgresql;Active;Software Application;10.0.15.54;System Administrator;CoIt;PostgreSQL database server;
+;Samba 4;;4.0.3;samba4;Active;Software Application;10.0.11.89;System Administrator;CoIt;File server and identity management;
+;SugarCRM;;4.9;sugarcrm;Active;Software Application;10.0.12.42;Samuel Salesmanager;CoMa;Customer relationship management
+;Zimbra;;8.6.0;zimbra;Active;Software Application;10.0.3.6;System Administrator;CoIt;Collaboration
