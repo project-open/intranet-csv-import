@@ -1,0 +1,18 @@
+Risk Project Parent Nrs;Risk Name;Risk Probability;Risk Impact;Risk Status;Risk Type;Risk Description ;Risk Mitigation Plan
+2015_0003;Find velocity sensor that offers the same performance as the lab sample;32.0;200.0;Open;Risk;Find velocity sensor that offers the same performance as the lab sample;No plan :-)
+2015_0003;Lack of organizational or departmental buy-in;20.0;400.0;Open;Risk;;
+2015_0003;Significant changes in user requirements;0.0;300.0;Open;Risk;Significant changes in user requirements;
+2015_0003;Volume of change requests following testing extending work on each phase;26.0;500.0;Open;Risk;Volume of change requests following testing extending work on each phase;
+2014_0007;Alignment tolerance;6.0;1700.0;Open;Risk;Alignment tolerance;
+2014_0007;Customer priority change;14.0;3500.0;Open;Risk;;
+2014_0007;Dynamic detection algorithm;18.0;300.0;Open;Risk;Dynamic detection algorithm;
+2014_0007;General exchange rate risk;38.0;400.0;Open;Risk;General exchange rate risk;
+2014_0007;Object detection issues;12.0;6300.0;Open;Risk;;
+2014_0007;Alignment tolerance;0.0;20300.0;Open;Risk;Alignment tolerance;
+2014_0007;GED adherence to costs;38.0;10500.0;Open;Risk;GED adherence to costs;
+2014_0007;DRP - Weather detection;0.0;1400.0;Open;Risk;DRP - Weather detection;
+2014_0007;Dust on container housing;24.0;5900.0;Open;Risk;Dust on container housing;
+2014_0007;Unexpected radio interference from preliminary testing;10.0;5700.0;Open;Risk;;
+2015_0003;First pass sunsite front end design.;26.0;100.0;Open;Risk;First pass sunsite front end design.;
+2015_0003;General exchange rate risk;26.0;200.0;Open;Risk
+2015_0003;Lack of organizational or departmental buy-in;38.0;4900.0;Open;Risk
