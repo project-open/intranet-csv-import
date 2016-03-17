@@ -62,9 +62,6 @@ set header_fields [im_csv_split $header $separator]
 set header_len [llength $header_fields]
 set values_list_of_lists [im_csv_get_values $lines_content $separator]
 
-# ad_return_complaint 1 "<pre>[array get column]<br>[array get map]<br>[array get parser]<br>[array get parser_args]<br>$header_fields</pre>"
-
-
 
 # ------------------------------------------------------------
 # Get DynFields

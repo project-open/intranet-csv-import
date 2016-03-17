@@ -85,6 +85,7 @@ foreach csv_line_fields $values_list_of_lists {
     if {$ns_write_p} { ns_write "<li>Starting to parse line $cnt\n" }
 
     # Preset values, defined by CSV sheet:
+    set user_id			""
     set project_name		""
     set project_nr		""
     set project_path		""

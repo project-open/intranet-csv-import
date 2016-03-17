@@ -44,15 +44,34 @@ ad_proc -public im_csv_import_guess_im_project { } {} {
     return $mapping
 }
 
+ad_proc -public im_csv_import_guess_im_hour { } {} {
+    set mapping {
+	{project_id "Parent Nrs" project_parent_nrs ""}
+	{project_id "Project Parent Nrs" project_parent_nrs ""}
+	{user_id "User Email" user_name ""}
+	{user_id "User Name" user_name ""}
+	{user_id "User" user_name ""}
+	{day "Day" date ""}
+	{hours "Hours" number ""}
+	{note "Note" no_change ""}
+    }
+    return $mapping
+}
+
+
 ad_proc -public im_csv_import_guess_im_risk { } {} {
     set mapping {
+	{risk_project_id "Risk Project Parent Nrs" project_parent_nrs ""}
 	{risk_name "Risk Name" no_change ""}
-	{risk_project_id "Project" project_nr ""}
 	{risk_status_id "Status" category "Intranet Risk Status"}
 	{risk_type_id "Type" category "Intranet Risk Type"}
+	{risk_status_id "Risk Status" category "Intranet Risk Status"}
+	{risk_type_id "Risk Type" category "Intranet Risk Type"}
 	{risk_description "Description" no_change ""}
+	{risk_description "Risk Description" no_change ""}
 	{risk_impact "Impact" number ""}
 	{risk_probability_percent "Probability" number ""}
+	{risk_probability_percent "Risk Probability" number ""}
     }
     return $mapping
 }
@@ -119,7 +138,7 @@ ad_proc -public im_csv_import_object_fields {
 
     # Special case: im_hour is not an object
     if { "im_hour" == $object_type } {
-	return "project_id project_nr project_nr_path user_id day hours"
+	return "project_id project_nr project_nr_path user_id day hours note"
     }
 
     # Special case: membership is not an object
@@ -224,7 +243,6 @@ ad_proc -public im_csv_import_guess_map {
     set field_name_lower [csv_norm $field_name]
     ns_log Notice "im_csv_import_guess_map: trying to guess attribute_name for field_name=$field_name_lower"
     im_security_alert_check_alphanum -location "im_csv_import_guess_map: object_type" -value $object_type
-
 
     # Check for manual override static mapping
     set static_mapping_lol {}

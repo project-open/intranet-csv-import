@@ -125,16 +125,19 @@ ad_proc -public im_csv_import_parser_date {
 } {
     Generic date parser - front-end for all available date formats
 } {
+    set result [im_csv_import_parser_date_iso -parser_args $parser_args $arg]
+    if {"" eq [lindex $result 1]} { return $result }
+
     set result [im_csv_import_parser_date_european -parser_args $parser_args $arg]
     if {"" eq [lindex $result 1]} { return $result }
 
-    set result [im_csv_import_parser_date_european_dashes -parser_args $parser_args $arg]
+    set result [im_csv_import_parser_date_european_slashes -parser_args $parser_args $arg]
     if {"" eq [lindex $result 1]} { return $result }
 
     set result [im_csv_import_parser_date_american -parser_args $parser_args $arg]
     if {"" eq [lindex $result 1]} { return $result }
 
-    return [list "" "Could not figure out the format of this data field"]
+    return [list "" "Could not figure out the format of this data field '$arg'"]
 }
 
 ad_proc -public im_csv_import_parser_boolean { 
@@ -168,7 +171,7 @@ ad_proc -public im_csv_import_parser_date_european {
 }
 
 
-ad_proc -public im_csv_import_parser_date_european_dashes { 
+ad_proc -public im_csv_import_parser_date_european_slashes { 
     {-parser_args "" }
     arg 
 } {
@@ -179,7 +182,21 @@ ad_proc -public im_csv_import_parser_date_european_dashes {
 	if {1 == [string length $month]} { set dom "0$month" }
 	return [list "$year-$month-$dom" ""] 
     }
-    return [list "" "Error parsing European date format '$arg': expected 'dd/mm/yyyy' ()"]
+    return [list "" "Error parsing European date format '$arg': expected 'dd/mm/yyyy'"]
+}
+
+ad_proc -public im_csv_import_parser_date_iso { 
+    {-parser_args "" }
+    arg 
+} {
+    Parses ISO date format like '2011-06-08' as the 8th of June, 2011
+} {
+    if {[regexp {^(....)\-(.+)\-(.+)$} $arg match year month dom]} { 
+	if {1 == [string length $dom]} { set dom "0$dom" }
+	if {1 == [string length $month]} { set dom "0$month" }
+	return [list "$year-$month-$dom" ""] 
+    }
+    return [list "" "Error parsing ISO '$arg': expected 'yyyy-mm-dd'"]
 }
 
 

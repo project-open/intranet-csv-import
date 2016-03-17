@@ -2,10 +2,10 @@
 #
 
 ad_page_contract {
-
+    
     @author frank.bergmann@project-open.com
     @author klaus.hofeditz@project-open.com
-
+    
     @param mapping_name: Should we store the current mapping in the DB for future use?
     @param column: Name of the CSV column
     @param map: Name of the ]po[ object attribute
@@ -34,9 +34,9 @@ ad_proc -private im_write_log {
 } {
     Writes log message to either screen or textfile 
 } {
-
+    
     if { !$write_log_p } { return }
-
+    
     set path_tmp  [parameter::get -package_id [apm_package_id_from_key intranet-filestorage] -parameter "TmpPathUnix" -default 60]
     if { "screen" == $output_device_log } {
 	ns_write $msg
@@ -58,8 +58,6 @@ ad_proc -private im_write_log {
 # ---------------------------------------------------------------------
 
 if { "" ne $ns_write_p } { set write_log_p $ns_write_p } 
-
-# ad_return_complaint xx "ns_write_p: $ns_write_p, write_log_p: $write_log_p, output_device_log: $output_device_log"
 
 # ---------------------------------------------------------------------
 # Default & Security
@@ -89,7 +87,7 @@ if {[catch {
 
 if {![file readable $import_filename]} {
     ad_return_complaint 1 "Unable to read the file '$import_filename'. <br>
-    Please check the file permissions or contact your system administrator.\n"
+	Please check the file permissions or contact your system administrator.\n"
     ad_script_abort
 }
 
@@ -119,7 +117,7 @@ set values_list_of_lists [im_csv_get_values $lines_content $separator]
 # ------------------------------------------------------------
 # Render Result Header
 
-if { "screen" == $output_device_log && $write_log_p } {
+if {"screen" == $output_device_log && $write_log_p } {
     ad_return_top_of_page "
 	[im_header]
 	[im_navbar]
@@ -138,33 +136,33 @@ foreach csv_line_fields $values_list_of_lists {
 
     im_write_log $output_device_log $write_log_p "</ul><hr>\n" 
     im_write_log $output_device_log $write_log_p "<ul><li>Starting to parse line $cnt</li>\n" 
-
+    
     if {[llength $csv_line_fields] < 4} {
-	    im_write_log $output_device_log $write_log_p"<li><font color=red>Error: We found a row with only [llength $csv_line_fields] columns.<br>
-	        This is probabily because of a multi-line field in the row before.<br>Please correct the CSV file.</font>\n"
+	im_write_log $output_device_log $write_log_p"<li><font color=red>Error: We found a row with only [llength $csv_line_fields] columns.<br>
+		This is probabily because of a multi-line field in the row before.<br>Please correct the CSV file.</font>\n"
 	continue
     }
 
     # Preset values, defined by CSV sheet:
-    set user_id          	""
-    set project_id       	""
+    set user_id			""
+    set project_id		""
     set target_project_id 	""
-    set project_nr       	""
+    set project_nr		""
     set project_nr_path  	""
-    set project_name	 	""
-    set target_project_name     ""
-    set day              ""
-    set hours            ""
-    set billing_rate     ""
-    set billing_currency ""
-    set note             ""
-    set cost_id          ""
-    set invoice_id       ""
-    set internal_note    ""
-    set material_id      ""
-    set days             ""
-    set hour_id          ""
-    set conf_object_id   ""
+    set project_name		""
+    set target_project_name	""
+    set day			""
+    set hours			""
+    set billing_rate		""
+    set billing_currency 	""
+    set note			""
+    set cost_id			""
+    set invoice_id		""
+    set internal_note		""
+    set material_id		""
+    set days			""
+    set hour_id			""
+    set conf_object_id   	""
 
 
     foreach j [array names column] {
@@ -208,37 +206,37 @@ foreach csv_line_fields $values_list_of_lists {
 
     # day is mandatory
     if {"" == $day} {
-            im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: We have found an empty 'day' in line $cnt.<br>
-                Please correct the CSV file. 'day' is mandatory. Skipping line!</font></li>\n"
-        continue
+	im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: We have found an empty 'day' in line $cnt.<br>
+		Please correct the CSV file. 'day' is mandatory. Skipping line!</font></li>\n"
+	continue
     }
 
     # user_id is mandatory
     if {"" == $user_id} {
-            im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: We have found an empty 'user_id' in line $cnt.<br>
-                Please correct the CSV file. 'user_id' is mandatory. Skipping line!</font></li>\n"
-        continue
+	im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: We have found an empty 'user_id' in line $cnt.<br>
+		Please correct the CSV file. 'user_id' is mandatory. Skipping line!</font></li>\n"
+	continue
     }
 
     # either project_id, project_nr or project_path need to be provided 
     if {""eq $project_id && "" eq $project_nr_path && "" eq $project_nr } {
-            im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: $cnt.<br>
-                Please correct the CSV file. Import requires at least one of the following fields: 'project_id', 'project_nr' or 'project_nr_path'. Skipping line!</font></li>\n"
-        continue
+	im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: $cnt.<br>
+		Please correct the CSV file. Import requires a valid project_id from one of the fields: 'project_id', 'project_nr' or 'project_nr_path'. Skipping line</font></li>\n"
+	continue
     }
 
     # value for hours is mandatory
     if {"" == $hours } {
-            im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: We have found an empty 'hours' in line $cnt.<br>
-                Please correct the CSV file. 'hours' is mandatory. Skupping line!</font></li>\n"
-        continue
+	im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: We have found an empty 'hours' in line $cnt.<br>
+		Please correct the CSV file. 'hours' is mandatory. Skupping line!</font></li>\n"
+	continue
     }
 
     # Check permissions
     im_project_permissions $current_user_id $project_id view_p read_p write_p admin_p
     if {!$write_p} {
 	im_write_log $output_device_log $write_log_p "<li><font color=red>Error: You don't have write permissions for project #$project_id. Skipping line!</font></li>\n"
-        continue
+	continue
     }
 
     # -------------------------------------------------------
@@ -295,7 +293,7 @@ foreach csv_line_fields $values_list_of_lists {
 	if { "" eq $project_name } { set project_name * }
 
 	if { "-1" eq [lsearch -exact $missing_project_list "project_nr_path / $project_nr / $project_name" ] } {
-	    lappend missing_project_list "$project_nr_path / $project_nr / $project_name"	    
+	    lappend missing_project_list "$project_nr_path / $project_nr / $project_name"		
 	}
 	continue
     }
@@ -304,17 +302,16 @@ foreach csv_line_fields $values_list_of_lists {
     # Check if there is a conf object 
     #
     set conf_object_id_exist_p [db_string get_conf_object_id "
-        select  conf_object_id
-        from    im_hours h
-        where
-                h.day = :day and
-                h.user_id = :user_id and
-                h.project_id = :target_project_id
-    " -default 0]
+	select  count(conf_object_id)
+	from	im_hours h
+	where	h.day = :day and
+		h.user_id = :user_id and
+		h.project_id = :target_project_id
+	" -default 0]
 
-    if { $conf_object_id_exist_p } {
-       im_write_log $output_device_log $write_log_p  "<li>Merging hours: <font color=red>Conf Object exists, skipping project_id: $target_project_id, user_id: $user_id, day: $day</font></li>\n"
-       continue
+    if {$conf_object_id_exist_p} {
+	im_write_log $output_device_log $write_log_p  "<li>Merging hours: <font color=red>Timesheet hours already approved, skipping project_id: $target_project_id, user_id: $user_id, day: $day</font></li>\n"
+	continue
     }
 
     # -------------------------------------------------------
@@ -323,18 +320,17 @@ foreach csv_line_fields $values_list_of_lists {
     set hours_before [db_string get_hours "
 	select	coalesce(h.hours,0) as hours
 	from	im_hours h
-	where	 
- 		h.day = :day and
+	where	h.day = :day and
 		h.user_id = :user_id and
 		h.project_id = :target_project_id		
-    " -default ""]
-		
+	" -default 0]
+    
     if { $hours_before > 0  && $merge_p } {
 	# Update 
 	im_write_log $output_device_log $write_log_p  "<li>Merging hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
 	if { !$test_run_p } { 
 	    im_write_log $output_device_log $write_log_p  "<li>Updating ...</li>\n"
-	    db_dml sql "update im_hours h set (hours, note) values (h.hours + :hours_before, h.note || ', ' || :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" 
+	    db_dml sql "update im_hours h set (hours, note) = (h.hours + :hours_before, h.note || ', ' || :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" 
 	}
     } elseif { $hours_before > 0 && !$merge_p } {
 	# Overwrite 
@@ -356,7 +352,7 @@ foreach csv_line_fields $values_list_of_lists {
 	    }
 	}
     } else {
-	im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: not writing anything for: $target_project_id, user_id: $user_id, day: $day</font></li>\n"
+	im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: not writing anything for: $target_project_id, user_id: $user_id, day: $day, hours_before: '$hours_before'</font></li>\n"
     } 
 
 
@@ -387,9 +383,9 @@ if { "screen" == $output_device_log && $write_log_p } {
     im_write_log $output_device_log $write_log_p [im_footer]
 } elseif {"screen" != $output_device_log && $write_log_p } {
     ad_return_top_of_page "
-        [im_header]
-        [im_navbar]
-    "
+	[im_header]
+	[im_navbar]
+	"
     ns_write "Files imported. Logfile is located at: $path_tmp <br/>"
 
     set fp [open $path_tmp r]
@@ -401,9 +397,9 @@ if { "screen" == $output_device_log && $write_log_p } {
 } else {
 
     ad_return_top_of_page "
-        [im_header]
-        [im_navbar]
-    "
+	[im_header]
+	[im_navbar]
+	"
     ns_write "Import finished."
 
 }
