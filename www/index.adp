@@ -49,6 +49,17 @@
 </tr>
 
 <tr>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_user_absence'"]] %></td>
+  <td>Absence</td>
+  <td align=center>
+  </td>
+  <td>
+    Absence import is under active development at the moment.<br>
+    Please <a href="http://www.project-open.com/en/contact">contact us</a> for the current status or updates.
+  </td>
+</tr>
+
+<tr>
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_company'"]] %></td>
   <td>Company</td>
   <td align=center>
@@ -79,12 +90,24 @@
 </tr>
 
 <tr>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_invoice'"]] %></td>
+  <td>Financial Items</td>
+  <td align=center>
+  </td>
+  <td>
+    Financial Items import is under active development at the moment.<br>
+    Please <a href="http://www.project-open.com/en/contact">contact us</a> for the current status or updates.
+  </td>
+</tr>
+
+<tr>
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'person'"]] %></td>
   <td>Person</td>
   <td align=center>
   </td>
   <td>
     Person import is under active development at the moment.<br>
+    Please <a href="http://www.project-open.com/en/contact">contact us</a> for the current status or updates.
     Meanwhile, please use the old facilities for 
     <a href="<%= [export_vars -base "/intranet/users/upload-contacts" {return_url}] %>">importing users from MS-Outlook exports</a>.
   </td>
@@ -130,6 +153,16 @@
   </td>
 </tr>
 
+<tr>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_ticket'"]] %></td>
+  <td>Tickets</td>
+  <td align=center>
+  </td>
+  <td>
+    Tickets import is under active development at the moment.<br>
+    Please <a href="http://www.project-open.com/en/contact">contact us</a> for the current status or updates.
+  </td>
+</tr>
 
 <tr>
   <td colspan=4>
