@@ -170,8 +170,7 @@ set dynfield_sql "
 		and aa.attribute_name not like 'default%'
 		and aa.attribute_name not in (
 			'project_nr', 'project_path', 'parent_id', 'project_name', 'company_id', 'project_status_id', 'project_type_id',
-			'project_priority_id', 'percent_completed',
-			'project_budget', 'project_budget_hours', 'project_budget_currency'
+			'percent_completed', 'project_budget', 'project_budget_hours', 'project_budget_currency'
 		)
 	order by
 		aa.object_type,
@@ -199,7 +198,6 @@ select
 	acs_object__name(p.company_id) as customer_name,
 	im_category_from_id(p.project_status_id) as project_status,
 	im_category_from_id(p.project_type_id) as project_type,
-	im_category_from_id(p.project_priority_id) as project_priority,
 	to_char(p.start_date, :date_format) as project_start_date_pretty,
 	to_char(p.end_date, :date_format) as project_end_date_pretty,
 	im_name_from_user_id(p.company_contact_id) as company_contact_name,
