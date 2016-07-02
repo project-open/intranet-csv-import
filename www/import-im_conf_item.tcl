@@ -231,27 +231,13 @@ foreach csv_line_fields $values_list_of_lists {
 
     # conf_item_nr needs to be there
     if {"" == $conf_item_nr} {
-	set conf_item_nr [string trim [string tolower $conf_item_name]]
+	set conf_item_nr [regsub {[^a-z0-9_]} [string trim [string tolower $conf_item_name]] "_"]
     }
     if {"" == $conf_item_nr} {
 	if {$ns_write_p} {
 	    ns_write "<li><font color=red>Error: We have found an empty 'Conf_Item Nr' in line $cnt.<br>
 	    Please correct the CSV file. Every conf_item needs to have a unique Conf_Item Nr.</font>\n"
 	}
-	continue
-    }
-
-    # parent_nrs contains a space separated list
-    if {[catch {
-	set result [im_csv_import_convert_conf_item_parent_nrs $conf_item_parent_nrs]
-    } err_msg]} {
-	if {$ns_write_p} { ns_write "<li><font color=red>Error: We have found an error parsing Parent NRs '$conf_item_parent_nrs'.<pre>\n$err_msg</pre>" }
-	continue
-    }
-    set conf_item_parent_id [lindex $result 0]
-    set err [lindex $result 1]
-    if {"" != $err} {
-	if {$ns_write_p} { ns_write "<li><font color=red>Error: <pre>$err</pre></font>\n" }
 	continue
     }
 
@@ -277,47 +263,56 @@ foreach csv_line_fields $values_list_of_lists {
 	set conf_item_parent_id_sql "is null"
     }
 
-    set conf_item_id [db_string conf_item_id "
-	select	conf_item_id
-	from	im_conf_items
-	where	conf_item_parent_id $conf_item_parent_id_sql and
-		lower(trim(conf_item_nr)) = lower(trim(:conf_item_nr))
-    " -default ""]
-
-    set conf_item_id2 [db_string conf_item_id "
+    # Check if we find the same conf item by name with it's parent.
+    set conf_item_id_name [db_string conf_item_id "
 	select	conf_item_id
 	from	im_conf_items
 	where	conf_item_parent_id $conf_item_parent_id_sql and
 		lower(trim(conf_item_name)) = lower(trim(:conf_item_name))
     " -default ""]
 
-    if {$conf_item_id != $conf_item_id2 && "" != $conf_item_id && "" != $conf_item_id2} {
+    set conf_item_id_nr [db_string conf_item_id "
+		select	conf_item_id
+		from	im_conf_items
+		where	conf_item_parent_id $conf_item_parent_id_sql and
+			lower(trim(conf_item_nr)) = lower(trim(:conf_item_nr))
+    " -default ""]
+
+    set conf_item_id_code [db_string conf_item_id "
+		select	conf_item_id
+		from	im_conf_items
+		where	lower(trim(conf_item_code)) = lower(trim(:conf_item_code))
+    " -default ""]
+
+    set conf_item_id ""
+    if {"" eq $conf_item_id} { set conf_item_id $conf_item_id_name }
+    if {"" eq $conf_item_id} { set conf_item_id $conf_item_id_nr }
+    if {"" eq $conf_item_id} { set conf_item_id $conf_item_id_code }
+
+    set error_p 0
+    if {$conf_item_id_name ne "" && $conf_item_id_name ne $conf_item_id} { set error_p 1 }
+    if {$conf_item_id_nr ne "" && $conf_item_id_nr ne $conf_item_id} { set error_p 1 }
+    if {$conf_item_id_code ne "" && $conf_item_id_code ne $conf_item_id} { set error_p 1 }
+
+    if {$error_p} {
 	if {$ns_write_p} {
-	    ns_write "<li><font color=red>Error: We have found two different conf_items, one with
+	    ns_write "<li><font color=red>Warning: We have found two different conf_items, one with
 	    'Conf_Item Nr'=$conf_item_nr and a second one with 'Conf_Item Name'='$conf_item_name'.<br>
 	    Please change one of the two conf_items to avoid this ambiguity.
 	    </font>\n"
 	}
-	continue
-    }
-    if {"" == $conf_item_id} { set conf_item_id $conf_item_id2 }
-
-
-    # Check for problems with conf_item_code
-    set conf_item_code_exists_p [db_string conf_item_code_existis_p "
-	select	count(*)
-	from	im_conf_items p
-	where	p.conf_item_id != :conf_item_id and
-		lower(trim(conf_item_code)) = lower(trim(:conf_item_code))
-    "]
-    if {"" != $conf_item_code && $conf_item_code_exists_p} {
-	if {$ns_write_p} { ns_write "<li><font color=red>Error: conf_item_code='$conf_item_code' already exists in the system.</font>" }
-	continue
     }
 
     # Create a new conf_item if necessary
     if {"" == $conf_item_id} {
 	if {$ns_write_p} { ns_write "<li>Going to create conf_item: name='$conf_item_name', nr='$conf_item_nr'\n" }
+
+	# Default code for conf item.
+	# Conf item codes are unique system wide!
+	if {"" == $conf_item_code} {
+	    set conf_item_code [db_string code "select nextval('im_conf_item_code_seq') from dual"]
+	}
+
 	set var_hash(conf_item_name) $conf_item_name
 	set var_hash(conf_item_nr) $conf_item_nr
 	set var_hash(conf_item_code) $conf_item_code
@@ -332,6 +327,13 @@ foreach csv_line_fields $values_list_of_lists {
 	}
     } else {
 	if {$ns_write_p} { ns_write "<li>Conf_Item already exists: name='$conf_item_name', nr='$conf_item_nr', id='$conf_item_id'\n" }
+
+	# Make sure to use the right code, which is unique system wide
+	db_1row conf_item_info "
+		select	conf_item_code
+		from	im_conf_items
+		where	conf_item_id = :conf_item_id       
+	"
     }
 
     if {$ns_write_p} { ns_write "<li>Going to update the conf_item.\n" }
@@ -357,7 +359,7 @@ foreach csv_line_fields $values_list_of_lists {
 
     # Add the conf_item lead to the list of conf_item members
     if {"" != $conf_item_owner_id} {
-	set role_id [im_biz_object_role_conf_item_manager]
+	set role_id [im_biz_object_role_full_member]
 	im_biz_object_add_role $conf_item_owner_id $conf_item_id $role_id
     }
     

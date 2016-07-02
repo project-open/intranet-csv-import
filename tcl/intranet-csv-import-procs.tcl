@@ -44,6 +44,24 @@ ad_proc -public im_csv_import_guess_im_project { } {} {
     return $mapping
 }
 
+ad_proc -public im_csv_import_guess_im_conf_item { } {} {
+    set mapping {
+	{conf_item_name "Conf Item Name" no_change ""}
+	{conf_item_nr "Conf Item Nr" no_change ""}
+	{conf_item_code "Conf Item Code" no_change ""}
+	{conf_item_parent_id "Parent Conf Item Nr" conf_item_parent_nrs ""}
+	{conf_item_cost_center_id "Conf Item Cost Center Code" cost_center ""}
+	{conf_item_status_id "Conf Item Status" category "Intranet Conf Item Status"}
+	{conf_item_type_id "Conf Item Type" category "Intranet Conf Item Type"}
+	{conf_item_owner_id "Conf Item Owner" user_name ""}
+	{conf_item_owner_id "Conf Item Owner Email" user_name ""}
+	{conf_item_version "Conf Item Version" no_change ""}
+	{description "Description" no_change ""}
+	{note "Note" no_change ""}
+    }
+    return $mapping
+}
+
 ad_proc -public im_csv_import_guess_im_hour { } {} {
     set mapping {
 	{project_id "Parent Nrs" project_parent_nrs ""}
@@ -241,7 +259,7 @@ ad_proc -public im_csv_import_guess_map {
     <li>
 } {
     set field_name_lower [csv_norm $field_name]
-    ns_log Notice "im_csv_import_guess_map: trying to guess attribute_name for field_name=$field_name_lower"
+    ns_log Notice "im_csv_import_guess_map: trying to guess attribute_name for field_name=$field_name_lower of object_type=$object_type"
     im_security_alert_check_alphanum -location "im_csv_import_guess_map: object_type" -value $object_type
 
     # Check for manual override static mapping
