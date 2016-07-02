@@ -215,6 +215,10 @@ foreach csv_line_fields $values_list_of_lists {
 	}
 	incr i
     }
+
+    if {$ns_write_p} { ns_write "<li>Before conf_item_nr: name=$conf_item_name, code=$conf_item_code, nr=$conf_item_nr</font>\n" }
+
+
     
 
     # -------------------------------------------------------
@@ -230,10 +234,10 @@ foreach csv_line_fields $values_list_of_lists {
     }
 
     # conf_item_nr needs to be there
-    if {"" == $conf_item_nr} {
+    if {"" eq $conf_item_nr} {
 	set conf_item_nr [regsub {[^a-z0-9_]} [string trim [string tolower $conf_item_name]] "_"]
     }
-    if {"" == $conf_item_nr} {
+    if {"" eq $conf_item_nr} {
 	if {$ns_write_p} {
 	    ns_write "<li><font color=red>Error: We have found an empty 'Conf_Item Nr' in line $cnt.<br>
 	    Please correct the CSV file. Every conf_item needs to have a unique Conf_Item Nr.</font>\n"
@@ -302,6 +306,9 @@ foreach csv_line_fields $values_list_of_lists {
 	    </font>\n"
 	}
     }
+
+    if {$ns_write_p} { ns_write "<li>id=$conf_item_id, parent_id=$conf_item_parent_id, name='$conf_item_name', nr='$conf_item_nr'\n" }
+
 
     # Create a new conf_item if necessary
     if {"" == $conf_item_id} {
