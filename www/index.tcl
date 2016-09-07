@@ -27,3 +27,4 @@ set page_title [lang::message::lookup "" intranet-csv-import.Upload_file "Upload
 set context_bar [im_context_bar "" $page_title]
 set main_navbar_label [im_csv_import_label_from_object_type -object_type $object_type]
 
+if { "" eq $return_url } { set return_url "/intranet-csv-import/" }
