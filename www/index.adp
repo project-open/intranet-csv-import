@@ -16,7 +16,7 @@
 	      im_project "Project" \
 	      im_risk "Risk" \
 	      im_hour "Timesheet Hour" \
-	      im_timesheet_task "Timesheet Task" \
+	      im_timesheet_task "Gantt Task" \
 	      im_membership "Membership" \
 	] $object_type] %>
 	</td>
