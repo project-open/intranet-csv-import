@@ -190,7 +190,7 @@ foreach csv_line_fields $values_list_of_lists {
 	ns_log notice "upload-companies-2: varname([lindex $header_fields $j]) = $var_name"
 
 	set var_value [string trim [lindex $csv_line_fields $j]]
-	set var_value [string map -nocase {"\"" "'" "\[" "(" "\{" "(" "\}" ")" "\]" ")"} $var_value]
+	set var_value [string map -nocase {"\"" "'" "\[" "(" "\{" "(" "\}" ")" "\]" ")" "\$" ""} $var_value]
 	if {"NULL" eq $var_value} { set var_value ""}
 
 	# replace unicode characters by non-accented characters
@@ -271,7 +271,7 @@ foreach csv_line_fields $values_list_of_lists {
 
     # parent_nrs contains a space separated list
     if {[catch {
-	set result [im_csv_import_convert_project_parent_nrs $parent_nrs]
+	set result [im_csv_import_parser_project_parent_nrs $parent_nrs]
     } err_msg]} {
 	if {$ns_write_p} { ns_write "<li><font color=red>Error: We have found an error parsing Parent NRs '$parent_nrs'.<pre>\n$err_msg</pre>" }
 	continue
@@ -332,23 +332,26 @@ foreach csv_line_fields $values_list_of_lists {
     if { "" eq $project_lead_id } {
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: No project manager found. Will try to create project w/o PM. </font>\n" }
     } else {
-	# Check if project_lead_id contains integer 
-	if { ![string is digit $project_lead_id] } {
-	    set project_lead_id [im_id_from_user_name $project_lead_id]
-	    if { "" eq $project_lead_id } {
-		ns_write "<li><font color='red'>Warning: Didn't find a \]po\[ user for: '$project_lead_id'.</font>\n"
-	    } 
-	} 
-	# Check if project_lead_id can be found in DB
-	if { ![db_string sql "select count(*) from parties where party_id = :project_lead_id" -default 0] } {
-	    ns_write "<li><font color='red'>Warning: Didn't find a \]po\[ user for: '$project_lead_id'.</font>\n"
+	set project_lead $project_lead_id
+	set project_lead_tuple [im_csv_import_parser_user_name $project_lead]
+	set project_lead_id [lindex $project_lead_tuple 0]
+	set project_lead_error [lindex $project_lead_tuple 1]
+	if {"" ne $project_lead_error} {
+	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Error parsing project_lead '$project_lead':<br>$project_lead_error.</font>\n" }
 	}
     }
 
-    # ToDo: make import 'forgiving' -> see project_lead_id
-    set customer_contact_id [im_id_from_user_name $customer_contact]
-    if {"" == $customer_contact_id && "" != $customer_contact} {
-	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find customer contact '$customer_contact'.</font>\n"	}
+    set customer_contact_id ""
+    if {"" ne $customer_contact} {
+	set customer_contact_tuple [im_csv_import_parser_user_name $customer_contact]
+	set customer_contact_id [lindex $customer_contact_tuple 0]
+	set customer_contact_error [lindex $customer_contact_tuple 1]
+	if {"" == $customer_contact_id && "" != $customer_contact} {
+	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find customer contact '$customer_contact'.</font>\n"	}
+	}
+	if {"" ne $customer_contact_error} {
+	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Error parsing customer contact '$customer_contact':<br>$customer_contact_error.</font>\n" }
+	}
     }
 
     # -------------------------------------------------------
