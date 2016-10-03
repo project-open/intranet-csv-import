@@ -190,7 +190,7 @@ foreach csv_line_fields $values_list_of_lists {
 	ns_log notice "upload-companies-2: varname([lindex $header_fields $j]) = $var_name"
 
 	set var_value [string trim [lindex $csv_line_fields $j]]
-	set var_value [string map -nocase {"\"" "'" "\[" "(" "\{" "(" "\}" ")" "\]" ")" "\$" ""} $var_value]
+	set var_value [string map -nocase {"\"" "'" "\[" "(" "\{" "(" "\}" ")" "\]" ")" "\$" "" "\\" ""} $var_value]
 	if {"NULL" eq $var_value} { set var_value ""}
 
 	# replace unicode characters by non-accented characters
