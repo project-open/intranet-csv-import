@@ -63,7 +63,7 @@
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_company'"]] %></td>
   <td>Company</td>
   <td align=center>
-    <a href="examples/im_company.csv"><%= [im_gif zip-download] %></a>
+    <a href="examples/im_company.csv"><%= [im_gif csv-doc] %></a>
   </td>
   <td>
     Company Name, Company Path, Company Status, Company Type, Primary Contact, Accounting Contact, Note, VAT Number, 
@@ -78,7 +78,7 @@
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_conf_item'"]] %></td>
   <td>Conf Item</td>
   <td align=center>
-    <a href="examples/im_conf_item.csv"><%= [im_gif zip-download] %></a>
+    <a href="examples/im_conf_item.csv"><%= [im_gif csv-doc] %></a>
   </td>
   <td>
     Please note that this import requires exact naming of column headers.<br>
@@ -117,7 +117,7 @@
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_project'"]] %></td>
   <td>Project</td>
   <td align=center>
-    <a href="examples/im_project.csv"><%= [im_gif zip-download] %></a>
+    <a href="examples/im_project.csv"><%= [im_gif csv-doc] %></a>
   </td>
   <td>
     Parent Nrs, Project Nr, Project Name, Customer Name, Project Status, Project Type, Start Date, End Date, 
@@ -131,7 +131,7 @@
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_risk'"]] %></td>
   <td>Risk</td>
   <td align=center>
-    <a href="examples/im_risk.csv"><%= [im_gif zip-download] %></a>
+    <a href="examples/im_risk.csv"><%= [im_gif csv-doc] %></a>
   </td>
   <td>
     Risk Project Parent Nrs, Risk Name, Risk Probability, Risk Impact, Risk Status, Risk Type, Risk Description, 
@@ -145,7 +145,7 @@
   <td><%= [im_gif hourglass] %></td>
   <td>Timesheet Hour</td>
   <td align=center>
-    <a href="examples/im_hour.csv"><%= [im_gif zip-download] %></a>
+    <a href="examples/im_hour.csv"><%= [im_gif csv-doc] %></a>
   </td>
   <td>
     Hour Project Parent Nrs, Hour Name, Hour Probability, Hour Impact, Hour Status, Hour Type, Hour Description<br>
