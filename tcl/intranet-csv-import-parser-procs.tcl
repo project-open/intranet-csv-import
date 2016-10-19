@@ -32,7 +32,7 @@ ad_proc -public im_csv_import_parser_user_name {
 } {
     if {[regexp {'} $arg match]} {
        set err "Found a email (email) with single quote, consider removing single quotes from emails"
-       im_security_alert -location "im_csv_import_parser_project_nr" -message $err -value $arg
+       im_security_alert -location "im_csv_import_parser_user_name" -message $err -value $arg
        return [list $arg $err]
     }
 
@@ -80,7 +80,7 @@ ad_proc -public im_csv_import_parser_company_name {
 } {
     if {[regexp {'} $arg match]} { 
        set err "Found a company name ($arg) with single quote, consider removing single quotes from companies"
-       im_security_alert -location "im_csv_import_parser_project_nr" -message $err -value $arg 
+       im_security_alert -location "im_csv_import_parser_company_name" -message $err -value $arg 
        return [list $arg $err]
     }
 
@@ -110,13 +110,40 @@ ad_proc -public im_csv_import_parser_project_nr {
     set sql "
 	select	min(p.project_id)
 	from	im_projects p
-	where	p.project_nr = '$arg'
+	where	p.parent_id is null and
+		p.project_nr = '$arg'
     "
     set project_id [db_string project_id_from_nr $sql -default ""]
     set err ""
     if {"" == $project_id} { set err "Didn't find project with project_nr='$arg'" }
     return [list $project_id $err]
 }
+
+
+ad_proc -public im_csv_import_parser_project_name { 
+    {-parser_args "" }
+    arg 
+} {
+    Returns a project_id from project_name
+} {
+    if {[regexp {'} $arg match]} { 
+       set err "Found a Project Nr with single quote"
+       im_security_alert -location "im_csv_import_parser_project_name" -message $err -value $arg 
+       return [list $arg $err]
+    }
+
+    set sql "
+	select	min(p.project_id)
+	from	im_projects p
+	where	p.parent_id is null and
+		p.project_name = '$arg'
+    "
+    set project_id [db_string project_id_from_name $sql -default ""]
+    set err ""
+    if {"" == $project_id} { set err "Didn't find project with project_name='$arg'" }
+    return [list $project_id $err]
+}
+
 
 
 ad_proc -public im_csv_import_parser_date { 
