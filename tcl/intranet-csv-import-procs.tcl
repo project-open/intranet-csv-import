@@ -38,6 +38,7 @@ ad_proc -public im_csv_import_guess_im_project { } {} {
 	{start_date "Start Date" date ""}
 	{end_date "end Date" date ""}
 	{percent_completed "Percent Completed" number ""}
+	{project_lead_id "Project Manager" user_name ""}
 	{project_budget "Budget" number ""}
 	{project_budget_hours "Budget Hours" number ""}
     }

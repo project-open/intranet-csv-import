@@ -327,18 +327,8 @@ foreach csv_line_fields $values_list_of_lists {
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find customer_name='$customer_name', using 'internal' customer</font>\n" }
     }
 
-    # 'forgiving' routine -> project_lead_id might be empty or contain a name or email address. 
-    # Check if empty: 
     if { "" eq $project_lead_id } {
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: No project manager found. Will try to create project w/o PM. </font>\n" }
-    } else {
-	set project_lead $project_lead_id
-	set project_lead_tuple [im_csv_import_parser_user_name $project_lead]
-	set project_lead_id [lindex $project_lead_tuple 0]
-	set project_lead_error [lindex $project_lead_tuple 1]
-	if {"" ne $project_lead_error} {
-	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Error parsing project_lead '$project_lead':<br>$project_lead_error.</font>\n" }
-	}
     }
 
     set customer_contact_id ""
