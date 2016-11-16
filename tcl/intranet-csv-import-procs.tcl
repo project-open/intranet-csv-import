@@ -45,6 +45,14 @@ ad_proc -public im_csv_import_guess_im_project { } {} {
     return $mapping
 }
 
+ad_proc -public im_csv_import_guess_im_ticket { } {} {
+    set mapping {
+	{parent_id "SLA" project_parent_nrs ""}
+	{start_date "Date" date ""}
+    }
+    return $mapping
+}
+
 ad_proc -public im_csv_import_guess_im_conf_item { } {} {
     set mapping {
 	{conf_item_name "Conf Item Name" no_change ""}
@@ -499,6 +507,7 @@ ad_proc -public im_csv_import_label_from_object_type {
     switch $object_type {
         im_company { return "companies" }
         im_project { return "projects" }
+        im_ticket { return "helpdesk" }
         person { return "users" }
         default { return "" }
     }

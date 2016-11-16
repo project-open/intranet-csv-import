@@ -13,11 +13,12 @@
 	<%= [im_select object_type [list \
 	      im_company "Company" \
 	      im_conf_item "Configuration Item" \
+	      im_timesheet_task "Gantt Task" \
+	      im_membership "Membership" \
 	      im_project "Project" \
 	      im_risk "Risk" \
 	      im_hour "Timesheet Hour" \
-	      im_timesheet_task "Gantt Task" \
-	      im_membership "Membership" \
+	      im_ticket "Ticket" \
 	] $object_type] %>
 	</td>
      </tr>
