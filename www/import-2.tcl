@@ -172,7 +172,7 @@ foreach header_name $headers {
 
 # Redirect to a specific page for the import
 switch $object_type {
-    im_timesheet_task - im_ticket { 
+    im_timesheet_task {
 	set redirect_object_type "im_project" 
     }
     default {

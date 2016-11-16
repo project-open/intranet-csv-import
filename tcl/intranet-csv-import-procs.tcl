@@ -36,7 +36,7 @@ ad_proc -public im_csv_import_guess_im_project { } {} {
 	{parent_id "Parent Nrs" project_parent_nrs ""}
 	{company_id "Customer Name" company_name ""}
 	{start_date "Start Date" date ""}
-	{end_date "end Date" date ""}
+	{end_date "End Date" date ""}
 	{percent_completed "Percent Completed" number ""}
 	{project_lead_id "Project Manager" user_name ""}
 	{project_budget "Budget" number ""}
@@ -47,8 +47,20 @@ ad_proc -public im_csv_import_guess_im_project { } {} {
 
 ad_proc -public im_csv_import_guess_im_ticket { } {} {
     set mapping {
+	{parent_id "Ticket Container" project_parent_nrs ""}
+	{parent_id "Parent Nrs" project_parent_nrs ""}
 	{parent_id "SLA" project_parent_nrs ""}
+	{project_nr "Ticket Nr" no_change ""}
+	{project_name "Ticket Name" no_change ""}
+	{ticket_customer_contact_id "Customer Contact" user_name ""}
+	{ticket_assignee_id "Assignee" user_name ""}
+	{ticket_status_id "Ticket Status" category "Intranet Ticket Status"}
+	{ticket_type_id "Ticket Type" category "Intranet Ticket Type"}
+	{ticket_prio_id "Ticket Prio" category "Intranet Ticket Priority"}
 	{start_date "Date" date ""}
+	{ticket_dept_id "Department" cost_center ""}
+	{ticket_creation_date "Creation Date" date ""}
+	{creation_user "Creation User" user_name ""}
     }
     return $mapping
 }
