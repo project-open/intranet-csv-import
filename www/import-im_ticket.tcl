@@ -123,8 +123,8 @@ foreach csv_line_fields $values_list_of_lists {
     if {$ns_write_p} { ns_write "<li>Starting to parse line $cnt\n" }
 
     # Preset values, defined by CSV sheet:
-    set project_name		""
-    set project_nr		""
+    set ticket_name		""
+    set ticket_nr		""
     set customer_name		""
     set parent_nrs		""
     set parent_id		""
@@ -135,6 +135,7 @@ foreach csv_line_fields $values_list_of_lists {
     set ticket_queue		""
     set ticket_queue_id	 	""
     set ticket_customer_contact_id ""
+    set customer_contact        ""
     set start_date		""
     set end_date		""
     set description		""
@@ -393,7 +394,6 @@ foreach csv_line_fields $values_list_of_lists {
 		update im_tickets set
 			ticket_assignee_id	= :ticket_assignee_id,
 			ticket_customer_contact_id = :ticket_customer_contact_id,
-			ticket_dept_id		= :ticket_dept_id,
 			ticket_description	= :description,
 			ticket_note		= :note,
 			ticket_prio_id		= :ticket_prio_id,
