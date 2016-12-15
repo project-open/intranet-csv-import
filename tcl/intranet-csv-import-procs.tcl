@@ -41,6 +41,7 @@ ad_proc -public im_csv_import_guess_im_project { } {} {
 	{project_lead_id "Project Manager" user_name ""}
 	{project_budget "Budget" number ""}
 	{project_budget_hours "Budget Hours" number ""}
+	{sort_order "Sort Order" number ""}
     }
     return $mapping
 }

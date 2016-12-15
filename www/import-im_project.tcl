@@ -166,7 +166,6 @@ foreach csv_line_fields $values_list_of_lists {
     set planned_units		""
     set billable_units		""
     set priority		""
-    set sort_order		""
 
     foreach attribute_name $attribute_names {
 	set $attribute_name ""
@@ -432,6 +431,7 @@ foreach csv_line_fields $values_list_of_lists {
 			start_date		= :start_date,
 			end_date		= :end_date,
 			percent_completed	= :percent_completed,
+			sort_order		= :sort_order,
 			on_track_status_id	= :on_track_status_id,
 			project_budget		= :project_budget,
 			project_budget_currency	= :project_budget_currency,
