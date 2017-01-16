@@ -68,7 +68,7 @@
     <a href="examples/im_company.csv"><%= [im_gif csv-doc] %></a>
   </td>
   <td>
-    Company Name, Company Path, Company Status, Company Type, Primary Contact, Accounting Contact, Note, VAT Number, 
+    Available fields: Company Name, Company Path, Company Status, Company Type, Primary Contact, Accounting Contact, Note, VAT Number, 
     Phone, Fax, Address Line1, Address Line2, Address City, Address State, Address Postal Code, Address Country Code, 
     Default Payment Days, Default VAT.<br>
     Company <a href="/intranet-dynfield/object-type?object_type=im_company">DynFields</a> 
@@ -84,7 +84,7 @@
   </td>
   <td>
     Please note that this import requires exact naming of column headers.<br>
-    Conf Item Parent Nrs, Conf Item Name, Conf Item Code, Conf Item Nr, Conf Item Status, Conf Item Type, IP Address, 
+    Available fields: Conf Item Parent Nrs, Conf Item Name, Conf Item Code, Conf Item Nr, Conf Item Status, Conf Item Type, IP Address, 
     Conf Item Owner, Conf Item Cost Center, Description, Note<br>
     Conf Item <a href="/intranet-dynfield/object-type?object_type=im_conf_item">DynFields</a> 
     are also recognized by their "pretty name" or "column name".</p>
@@ -112,8 +112,10 @@
   <td>
     <a href="http://www.project-open.com/en/object-type-im-invoice" target="_blank">Financial Documents</a> are
     <a href="http://www.project-open.com/en/object-type-im-cost" target="_blank">cost items</a> with a header and
-    one more more lines and include invoices, quotes, purchase orders and others.<br>
-    Project Nrs, Name, Nr, Type, Status, Customer, Provider, Effective Date, Amount, Currency, Payment Days, Paid Amount, 
+    one more more lines. Financial documents include invoices, quotes, purchase orders and others.<br>
+    This import only imports the headers. You will have to import the financial document lines separately.<br>
+    This has not been implemented yet.<br>
+    Available fields: Project Nrs, Name, Nr, Type, Status, Customer, Provider, Effective Date, Amount, Currency, Payment Days, Paid Amount, 
     VAT, TAX, Description, Note, VAT Type, Cause Object, Customer Contact, Payment Method, Invoice Office<br>
     Cost Item <a href="/intranet-dynfield/object-type?object_type=im_invoice">DynFields</a> 
     are also recognized by their "pretty name" or "column name".</p>
@@ -140,7 +142,7 @@
     <a href="examples/im_project.csv"><%= [im_gif csv-doc] %></a>
   </td>
   <td>
-    Parent Nrs, Project Nr, Project Name, Customer Name, Project Status, Project Type, Start Date, End Date, 
+    Available fields: Parent Nrs, Project Nr, Project Name, Customer Name, Project Status, Project Type, Start Date, End Date, 
     Percent Completed, On Track Status, Budget, Budget Hours, Priority, Note, Project Manager, Description.<br>
     Project <a href="/intranet-dynfield/object-type?object_type=im_project">DynFields</a> 
     are also recognized by their "pretty name" or "column name".</p>
@@ -154,7 +156,7 @@
     <a href="examples/im_risk.csv"><%= [im_gif csv-doc] %></a>
   </td>
   <td>
-    Risk Project Parent Nrs, Risk Name, Risk Probability, Risk Impact, Risk Status, Risk Type, Risk Description, 
+    Available fields: Risk Project Parent Nrs, Risk Name, Risk Probability, Risk Impact, Risk Status, Risk Type, Risk Description, 
     Risk Mitigation Plan<br>
     Risk <a href="/intranet-dynfield/object-type?object_type=im_risk">DynFields</a> 
     are also recognized by their "pretty name" or "column name".</p>
@@ -168,7 +170,7 @@
     <a href="examples/im_hour.csv"><%= [im_gif csv-doc] %></a>
   </td>
   <td>
-    Hour Project Parent Nrs, Hour Name, Hour Probability, Hour Impact, Hour Status, Hour Type, Hour Description<br>
+    Available fields: Hour Project Parent Nrs, Hour Name, Hour Probability, Hour Impact, Hour Status, Hour Type, Hour Description<br>
     DynFields for hours are not supported.
   </td>
 </tr>
