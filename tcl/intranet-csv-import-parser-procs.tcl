@@ -87,12 +87,35 @@ ad_proc -public im_csv_import_parser_company_name {
     set sql "
 	select	min(c.company_id)
 	from	im_companies c
-	where	c.company_name = '$arg'
+	where	(c.company_name = '$arg' OR c.company_path = '$arg')
     "
     set company_id [db_string company_id_from_name $sql -default ""]
     set err ""
     if {"" == $company_id} { set err "Didn't find company with company_name ='$arg'" }
     return [list $company_id $err]
+}
+
+ad_proc -public im_csv_import_parser_office_name { 
+    {-parser_args "" }
+    arg 
+} {
+    Returns a office_id from im_companies
+} {
+    if {[regexp {'} $arg match]} { 
+       set err "Found a office name ($arg) with single quote, consider removing single quotes from companies"
+       im_security_alert -location "im_csv_import_parser_office_name" -message $err -value $arg 
+       return [list $arg $err]
+    }
+
+    set sql "
+	select	min(o.office_id)
+	from	im_offices o
+	where	(o.office_name = '$arg' OR o.office_path = '$arg')
+    "
+    set office_id [db_string office_id_from_name $sql -default ""]
+    set err ""
+    if {"" == $office_id} { set err "Didn't find office with office_name ='$arg'" }
+    return [list $office_id $err]
 }
 
 ad_proc -public im_csv_import_parser_project_nr { 
@@ -250,7 +273,15 @@ ad_proc -public im_csv_import_parser_number {
     There may be ambiguities between American and European number formats
     with decimal and thousands separators
 } {
-    if {[string is integer $arg]} { return [list $arg ""] }
+    set divisor 1
+    if {[regexp {^(.+)%$} $arg match number]} {
+	set divisor 100
+	set arg $number
+    }
+
+    if {[string is integer $arg]} { 
+	return [list [expr $arg / $divisor] ""] 
+    }
     # Now we know that there is a "." or a "," in the number
 
     # Check for a number with one or two decimal digits
@@ -258,15 +289,19 @@ ad_proc -public im_csv_import_parser_number {
 	if {"." eq $separator} {
 	    # American number format - remove "," from the main part of the number
 	    set main [string map -nocase {"," ""} $main]
-	    if {[string is integer $main]} { return [list "$main.$fraction" ""] }
+	    if {[string is integer $main]} { 
+		return [list [expr "$main.$fraction" / $divisor] ""] 
+	    }
 	    # "$main" is not an integer - no idea what is is...
 	} else {
 	    # European number format - remove "." from the main part of the number
 	    set main [string map -nocase {"." ""} $main]
-	    if {[string is integer $main]} { return [list "$main.$fraction" ""] }
+	    if {[string is integer $main]} { 
+		return [list [expr "$main.$fraction" / $divisor] ""] 
+	    }
 	    # "$main" is not an integer - no idea what is is...
 	}
-	return [list "$main.$fraction" ""]
+	return [list [expr "$main.$fraction" / $divisor] ""]
     }
 
     return [list 0 "Could not decide if this is a European or a US number - please use a specific parser"]

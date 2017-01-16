@@ -1,0 +1,300 @@
+Project Nrs;Name;Nr;Type;Status;Customer;Provider;Effective Date;Amount;Currency;Payment Days;Paid Amount;VAT;TAX;Description;Note;VAT Type;Cause Object;Customer Contact;Payment Method;Invoice Office
+;2015_02_0001;10743;Customer Invoice;Created;JediTec;;2015-08-01;1050,00;EUR;30;1050,00;0,0%;0,0%;;;;System Administrator;;Cheque EUR;
+;2015_03_0001;10921;Provider Bill;Paid;;Office World;2015-08-27;1800,00;EUR;30;1800,00;0,0%;0,0%;;;;System Administrator;;Cash;
+;2015_03_0002;10943;Provider Bill;Paid;;Office World;2015-08-27;123,00;EUR;30;123,00;0,0%;0,0%;;;;System Administrator;;Cash;
+;2015_03_0006;11024;Purchase Order;Created;;Freelance Angelique Picard;2015-08-28;718,00;EUR;60;;0,0%;0,0%;;;;Carlos Codificador;;Caja Ahorros EUR;
+;2015_03_0006a;11144;Provider Bill;Paid;;Freelance Angelique Picard;2015-08-28;718,00;EUR;60;718,00;0,0%;0,0%;;;;System Administrator;;Caja Ahorros EUR;
+;2015_03_0008;11078;Purchase Order;Created;;Freelance Alessandra Gil;2015-08-28;195,00;EUR;60;195,00;0,0%;0,0%;;;;Carlos Codificador;;;
+;2015_03_0009;11085;Purchase Order;Created;;Freelance Mar Fernandez Farhall;2015-08-28;117,00;EUR;60;;0,0%;0,0%;;;;Carlos Codificador;;;
+;2015_03_0009a;16122;Provider Bill;Paid;;Freelance Mar Fernandez Farhall;2015-08-28;117,00;EUR;60;117,00;0,0%;0,0%;;;;Ben Bigboss;;Cash;
+;2015_03_0011;11109;Purchase Order;Created;;Freelance Gretchen Verloop van der Meij;2015-08-28;1749,00;EUR;60;;0,0%;0,0%;;;;System Administrator;;;
+;2015_03_0011a;16124;Provider Bill;Paid;;Freelance Gretchen Verloop van der Meij;2015-08-28;1749,00;EUR;60;1749,00;0,0%;0,0%;;;;Ben Bigboss;;Cash;
+;2015_03_0012;11134;Purchase Order;Created;;Freelance Andre Oriola;2015-08-28;1930,00;EUR;60;;0,0%;0,0%;;;;System Administrator;;;
+;2015_03_0013a;11139;Customer Invoice;Created;JediTec;;2015-08-28;4892,00;EUR;30;4892,00;0,0%;0,0%;;;;System Administrator;;Cheque USD;
+;2015_03_0013b;11312;Customer Invoice;Created;金門有限公司 Beijing;;2015-08-28;4892,00;EUR;0;4892,00;0,0%;0,0%;;;;Ben Bigboss;;Cheque USD;
+;2015_03_0014;11168;Purchase Order;Created;;Freelance Melissa Taylor;2015-08-29;39,00;EUR;60;;0,0%;0,0%;;;;System Administrator;;;
+;2015_03_0015;11170;Purchase Order;Created;;Freelance Luisa Ramirez de la Cruz;2015-08-29;18,00;EUR;60;;0,0%;0,0%;;;;System Administrator;;;
+;2015_03_0019;11273;Purchase Order;Created;Big Customer;Freelance Menica Jimenez Martenez;2015-09-06;0,00;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_03_0020;11308;Provider Bill;Past Due;Big Customer;;2015-09-06;2,00;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;Cash
+;2015_03_0021;11310;Quote;Created;金門有限公司 Beijing;;2015-09-06;900,00;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_03_0022;11360;Quote;Created;金門有限公司 Beijing;;2015-09-07;5882,00;EUR;30;;7,6%;0,0%;;nixda;;Ben Bigboss;;Caja Ahorros EUR
+;2015_03_0022a;11753;Customer Invoice;Created;金門有限公司 Beijing;;2015-09-07;5882,00;EUR;30;5882,00;0,0%;0,0%;;;;Ben Bigboss;;Caja Ahorros EUR
+;2015_03_0023;11396;Quote;Created;Big Customer;;2015-09-09;2000,00;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_03_0024;11400;Customer Invoice;Created;ABC Translation;;2015-09-10;560,00;EUR;30;560,00;0,0%;0,0%;;Additional testing effort according to;;;;
+;2015_03_0025;11446;Purchase Order;Created;;Freelance Angelique Picard;2015-09-12;195,00;EUR;60;;0,0%;0,0%;;;;System Administrator;;
+;2015_03_0026;11501;Quote;Created;Grupo Gabinec Associats S.L.;;2015-09-21;1225,00;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_03_0026a;11735;Customer Invoice;Created;Grupo Gabinec Associats S.L.;;2015-09-21;1225,00;EUR;30;1225,00;0,0%;0,0%;;;;Larry Littleboss;;Cheque USD
+;2015_03_0027;11507;Quote;Created;Big Customer;;2015-09-21;;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_03_0028;11511;Customer Invoice;Created;adromIT;;2015-09-22;800,00;EUR;30;800,00;16,0%;0,0%;;;;Ben Bigboss;;ABC-Bank EUR
+;2015_03_0029;11715;Customer Invoice;Paid;Big Customer;;2015-09-24;250,00;EUR;30;250,00;0,0%;0,0%;;Notes here;;Ben Bigboss;;Undefined
+;2015_05_0003;12159;Provider Bill;Paid;Browne London;Freelance Mar Fernandez Farhall;2015-10-29;123,00;EUR;30;123,00;0,0%;0,0%;;;;System Administrator;;Undefined
+;2015_05_0004;12165;Provider Bill;Paid;Browne London;Freelance Melissa Taylor;2015-10-29;71,00;EUR;30;71,00;0,0%;0,0%;;;;System Administrator;;Undefined
+;2015_05_0005;12168;Provider Bill;Paid;Browne London;Freelance Luisa Ramirez de la Cruz;2015-10-29;175,00;EUR;30;175,00;0,0%;0,0%;;;;System Administrator;;Undefined
+2015_0002;2015_05_0009;12977;Customer Invoice;Created;Boom Consuling;;2015-11-06;1800,00;EUR;30;1800,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_05_0011;13125;Quote;Created;ABC Translation;;2015-11-13;1000,00;EUR;30;;0,0%;0,0%;;;;Larry Littleboss;;Undefined
+;2015_05_0011a;13127;Customer Invoice;Created;ABC Translation;;2015-11-13;1000,00;EUR;30;1000,00;0,0%;0,0%;;;;Larry Littleboss;;Undefined
+;2015_05_0011b;13283;Customer Invoice;Paid;ABC Translation;;2015-11-13;60000,00;EUR;30;60000,00;0,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_05_0013;13209;Customer Invoice;Paid;ABC Translation;;2015-11-14;;EUR;30;;0,0%;0,0%;;h;;Larry Littleboss;;Undefined
+;2015_05_0014;13212;Customer Invoice;Paid;ABC Translation;;2015-11-14;100,00;EUR;30;100,00;12,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_05_0015;13281;Customer Invoice;Paid;Browne Brussels;;2015-11-18;85,00;EUR;30;85,00;0,0%;0,0%;;;;Larry Littleboss;;Undefined
+;2015_05_0016;13285;Customer Invoice;Outstanding;Browne LA;;2015-11-18;350,00;EUR;30;350,00;0,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_05_0017;13288;Customer Invoice;Paid;ABC Translation;;2015-11-18;100,00;EUR;30;100,00;0,0%;0,0%;;tettt;;Ben Bigboss;;Undefined
+;2015_05_0019;13297;Provider Bill;Paid;;Dell Inc.;2015-11-18;460,00;EUR;30;460,00;20,0%;0,0%;;;;Larry Littleboss;;Undefined
+;2015_05_0020;13375;Quote;Created;ABC Translation;;2015-11-20;10000,00;EUR;30;;19,0%;0,0%;;;;Larry Littleboss;;Cash
+;2015_05_0021;13421;Quote;Created;Browne LA;;2015-11-21;50,00;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_05_0021a;13424;Customer Invoice;Paid;Browne LA;;2015-11-21;50,00;EUR;30;50,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_05_0021b;16607;Customer Invoice;Paid;Browne LA;;2015-11-21;50,00;USD;30;50,00;18,0%;0,0%;;;;Ben Bigboss;;ABC-Bank EUR
+;2015_05_0022;13428;Customer Invoice;Created;Big Customer;;2015-11-21;375,00;EUR;30;375,00;0,0%;0,0%;;;;Ben Bigboss;;
+2015_0003;2015_05_0023;13467;Quote;Created;adromIT;;2015-11-22;11925,00;EUR;0;;16,0%;0,0%;;;;System Administrator;;Undefined
+2015_0003;2015_05_0023c;16512;Customer Invoice;Paid;adromIT;;2015-11-22;11925,00;EUR;0;11925,00;16,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_05_0024;13490;Quote;Created;Big Customer;;2015-11-22;2600,00;EUR;30;;20,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_05_0024a;13492;Customer Invoice;Created;Big Customer;;2015-11-22;2600,00;EUR;30;2600,00;20,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_05_0025;13504;Customer Invoice;Created;RDX Batterley;;2015-11-23;;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_05_0027;13539;Customer Invoice;Created;Big Customer;;2015-11-24;;EUR;0;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_05_0028;13541;Customer Invoice;Created;ABC Translation;;2015-11-24;850,00;EUR;30;850,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_05_0029;13542;Customer Invoice;Created;ABC Translation;;2015-11-24;50,00;EUR;30;50,00;0,0%;0,0%;;;;Ben Bigboss;;Cheque USD
+;2015_05_0030;13564;Customer Invoice;Paid;ABC Translation;;2015-11-25;10,00;EUR;30;10,00;19,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_05_0031;13727;Customer Invoice;Paid;;;2015-11-26;600,00;EUR;30;600,00;14,0%;0,0%;;;;Ben Bigboss;;
+;2015_05_0032;13734;Customer Invoice;Paid;ABC Translation;;2015-11-26;0,00;EUR;30;0,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_06_0001;13818;Customer Invoice;Created;ABC Translation;;2015-11-28;;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0002;13821;Customer Invoice;Created;ABC Translation;;2015-11-28;;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+2014_0009;2015_06_0003;13931;Customer Invoice;Created;Browne London;;2015-11-30;;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0004;13939;Customer Invoice;Created;Boom Consuling;;2015-12-01;;EUR;30;;0,0%;0,0%;;bom;;Ben Bigboss;;ABC-Bank EUR
+;2015_06_0005;13941;Customer Invoice;Past Due;ABC Translation;;2015-12-01;24,00;EUR;30;24,00;0,0%;0,0%;;Notes;;Ben Bigboss;;Cheque EUR
+;2015_06_0006;13991;Customer Invoice;Paid;ABC Translation;;2015-12-02;;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0007;14052;Quote;Created;Big Customer;;2015-12-03;150,00;EUR;0;;0,0%;0,0%;;;;Ben Bigboss;;
+2015_0049;2015_06_0008;14055;Quote;Created;;;2015-12-03;150,00;EUR;0;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_06_0009;14063;Customer Invoice;Paid;ABC Translation;;2015-12-04;150,00;EUR;30;150,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_06_0010;14080;Customer Invoice;Paid;;;2015-12-04;26103,00;EUR;30;26103,00;20,0%;0,0%;;test;;Andrew Accounting;;Undefined
+;2015_06_0011;14149;Customer Invoice;Created;金門有限公司 Beijing;;2015-12-05;300,00;EUR;30;300,00;20,0%;0,0%;;;;Andrew Accounting;;
+;2015_06_0012;14151;Customer Invoice;Created;ABC Translation;;2015-12-05;250,00;EUR;30;250,00;20,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_06_0013;14153;Customer Invoice;Created;ABC Translation;;2015-12-05;;EUR;30;;16,0%;0,0%;;;;Andrew Accounting;;
+;2015_06_0015;14189;Quote;Created;Big Customer;;2015-12-06;;EUR;0;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_06_0015a;14191;Customer Invoice;Created;Big Customer;;2015-12-06;;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0016;14194;Quote;Created;Big Customer;;2015-12-06;2250,00;EUR;0;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_06_0016a;14199;Customer Invoice;Created;Big Customer;;2015-12-06;2250,00;EUR;0;2250,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0016b;14308;Customer Invoice;Created;Big Customer;;2015-12-06;2250,00;EUR;0;2250,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0016c;14461;Customer Invoice;Paid;Big Customer;;2015-12-06;2250,00;EUR;0;2250,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0017;14213;Customer Invoice;Created;Big Customer;;2015-12-06;120,00;EUR;30;120,00;0,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_06_0018;14263;Quote;Created;ABC Translation;;2015-12-07;50,00;EUR;30;;0,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_06_0019;14271;Quote;Created;ABC Translation;;2015-12-08;0,00;EUR;30;;0,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_06_0020;14275;Customer Invoice;Created;Browne LA;;2015-12-09;3399,00;EUR;30;3399,00;16,0%;0,0%;;;;Andrew Accounting;;ABC-Bank EUR
+;2015_06_0021;14286;Quote;Created;;;2015-12-09;;EUR;0;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_06_0022;14288;Quote;Created;Everyday Interactive Networks;;2015-12-09;100000,00;EUR;30;;16,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0023;14327;Quote;Created;ABC Translation;;2015-12-11;3000,00;EUR;7;;17,5%;0,0%;;;;Ben Bigboss;;Cheque EUR
+;2015_06_0023a;14328;Customer Invoice;Paid;ABC Translation;;2015-12-11;3000,00;EUR;7;3000,00;17,5%;0,0%;;;;Ben Bigboss;;Cheque EUR
+;2015_06_0024;14398;Customer Invoice;Paid;Big Customer;;2015-12-12;3200,00;EUR;30;3200,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_06_0025;14407;Quote;Created;adromIT;;2015-12-13;82500,00;EUR;0;;16,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0025a;14766;Customer Invoice;Created;adromIT;;2015-12-13;82500,00;EUR;0;82500,00;16,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_06_0025b;14873;Customer Invoice;Created;adromIT;;2015-12-13;82500,00;EUR;0;82500,00;16,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_06_0025c;16045;Customer Invoice;Created;adromIT;;2015-12-13;82500,00;EUR;0;82500,00;16,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_06_0026;14414;Customer Invoice;Paid;Big Customer;;2015-12-13;290,00;EUR;30;290,00;20,0%;0,0%;;Online Software Consulting;;Ben Bigboss;;Undefined
+;2015_06_0027;14419;Quote;Created;Big Customer;;2015-12-13;163,00;EUR;0;;16,0%;0,0%;;;;Larry Littleboss;;Undefined
+;2015_06_0027a;14726;Customer Invoice;Created;Big Customer;;2015-12-13;163,00;EUR;0;163,00;16,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_06_0028;14431;Customer Invoice;Created;ABC Translation;;2015-12-13;20,00;EUR;30;20,00;20,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0029;14434;Customer Invoice;Created;ABC Translation;;2015-12-13;2750,00;EUR;30;2750,00;16,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0030;14441;Customer Invoice;Created;Big Customer;;2015-12-14;150,00;EUR;30;150,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0031;14443;Customer Invoice;Created;ABC Translation;;2015-12-14;15,00;EUR;30;15,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0032;14451;Customer Invoice;Created;ABC Translation;;2015-12-15;;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0033;14453;Customer Invoice;Created;ABC Translation;;2015-12-15;1000,00;EUR;30;1000,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0034;14460;Customer Invoice;Created;ABC Translation;;2015-12-15;40,00;EUR;30;40,00;0,0%;0,0%;;;;Andrew Accounting;;Undefined
+2015_0001;2015_06_0035;14476;Customer Invoice;Paid;adromIT;;2015-12-16;2280,00;EUR;30;2280,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0036;14478;Customer Invoice;Paid;;;2015-12-16;;EUR;30;;0,0%;0,0%;;;;Larry Littleboss;;
+2004_0002a;2015_06_0037;14485;Customer Invoice;Paid;Boom Consuling;;2015-12-17;5700,00;EUR;30;5700,00;0,0%;0,0%;;;;Andrew Accounting;;
+;2015_06_0038;14500;Customer Invoice;Paid;Boom Consuling;;2015-12-17;625,00;EUR;30;625,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0039;14536;Customer Invoice;Past Due;ABC Translation;;2015-12-17;375,00;EUR;30;375,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_06_0040;14568;Quote;Created;Big Customer;;2015-12-18;;EUR;0;;0,0%;0,0%;;;;Larry Littleboss;;
+;2015_06_0041;14611;Customer Invoice;Created;Big Customer;;2015-12-19;0,00;EUR;30;0,00;0,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_06_0042;14782;Quote;Created;;;2015-12-23;3762,00;EUR;30;;16,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0042a;14783;Customer Invoice;Created;;;2015-12-23;2376,00;EUR;30;2376,00;16,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0044;14855;Customer Invoice;Created;Big Customer;;2015-12-25;;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_06_0045;14862;Customer Invoice;Created;Cicso Frameworks Inc.;;2015-12-25;2000,00;EUR;30;2000,00;20,0%;0,0%;;;;Andrew Accounting;;ABC-Bank EUR
+;2015_06_0046;14864;Customer Invoice;Created;Big Customer;;2015-12-25;960,00;EUR;30;960,00;20,0%;0,0%;;;;Ben Bigboss;;Undefined
+2015_sales;2015_06_0047;14866;Customer Invoice;Created;;;2015-12-25;1800,00;EUR;30;1800,00;20,0%;0,0%;;;;Ben Bigboss;;
+;2015_06_0048;14869;Customer Invoice;Created;Big Customer;;2015-12-25;5200,00;EUR;30;5200,00;20,0%;0,0%;;Besuchen Sie unsere Homepage!;;Ben Bigboss;;ABC-Bank EUR
+2015_0001;2015_06_0049;14899;Customer Invoice;Created;Browne London;;2015-12-25;1000,00;EUR;30;1000,00;16,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0050;14929;Customer Invoice;Created;adromIT;;2015-12-25;3500,00;EUR;30;3500,00;16,0%;0,0%;;dsfsadfasdfdsf;;Ben Bigboss;;Undefined
+;2015_06_0051;14931;Customer Invoice;Created;adromIT;;2015-12-25;67,00;EUR;30;67,00;16,0%;0,0%;;;;Ben Bigboss;;ABC-Bank EUR
+;2015_06_0052;14938;Quote;Created;adromIT;;2015-12-25;;EUR;30;;0,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_06_0053;14977;Customer Invoice;Created;adromIT;;2015-12-25;1725,00;EUR;30;1725,00;16,0%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_06_0054;15006;Customer Invoice;Created;ABC Translation;;2015-12-26;;EUR;30;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_06_0055;15033;Customer Invoice;Created;Cicso Frameworks Inc.;;2015-12-26;310,00;EUR;30;310,00;16,0%;0,0%;;;;Ben Bigboss;;ABC-Bank EUR
+;2015_06_0056;15041;Customer Invoice;Created;Big Customer;;2015-12-26;375,00;EUR;14;375,00;16,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_06_0057;15043;Quote;Created;adromIT;;2015-12-26;10000,00;EUR;30;10000,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+2005_0108;2015_06_0059;15118;Customer Invoice;Created;Grupo Gabinec Associats S.L.;;2015-12-26;600,00;EUR;30;600,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+;2015_07_0001;15168;Customer Invoice;Paid;ABC Translation;;2015-12-27;75,00;EUR;30;75,00;0,0%;0,0%;;;;Ben Bigboss;;
+2015_0001;2015_07_0002;15315;Quote;Created;adromIT;;2015-12-28;13850,00;EUR;0;;0,0%;0,0%;;;;System Administrator;;
+2015_0001;2015_07_0003;15327;Customer Invoice;Paid;adromIT;;2015-12-29;11000,00;EUR;30;11000,00;0,0%;0,0%;;;;System Administrator;;
+2015_0001;2015_07_0005;15344;Quote;Created;adromIT;;2015-12-29;10500,00;EUR;0;;0,0%;0,0%;;;;System Administrator;;Undefined
+2015_0001;2015_07_0005a;15479;Customer Invoice;Created;adromIT;;2015-12-29;10500,00;EUR;0;10500,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+2015_0049;2015_07_0006;15360;Customer Invoice;Paid;;;2015-12-29;350,00;EUR;30;350,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0007;15363;Customer Invoice;Paid;adromIT;;2015-12-30;375,00;USD;30;375,00;0,0%;0,0%;;;;Ben Bigboss;;Cheque USD
+;2015_07_0008;15364;Quote;Created;;;2015-12-30;;EUR;0;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0010;15394;Customer Invoice;Created;adromIT;;2015-12-30;50,00;EUR;30;50,00;0,0%;0,0%;;;;Larry Littleboss;;Cash
+2015_0096;2015_07_0011;15439;Customer Invoice;Created;;;2015-12-30;1200,00;EUR;30;1200,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0012;15449;Customer Invoice;Created;;;2015-12-30;2325,00;EUR;30;2325,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0013;15546;Customer Invoice;Created;adromIT;;2015-12-31;450,00;EUR;30;450,00;16,0%;0,0%;;;;Larry Littleboss;;Cash
+2015_0106;2015_07_0016;15683;Quote;Created;Grupo Gabinec Associats S.L.;;2015-01-01;136525,00;EUR;0;136525,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0017;15765;Provider Bill;Paid;Big Customer;Dell Inc.;2015-01-02;10,00;EUR;30;10,00;19,0%;0,0%;;;;Ben Bigboss;;ABC-Bank EUR
+;2015_07_0018;15768;Customer Invoice;Created;Big Customer;;2015-01-02;790,00;EUR;30;790,00;0,0%;0,0%;;;;Ben Bigboss;;Cash
+;2015_07_0019;15805;Customer Invoice;Created;adromIT;;2015-01-02;8000,00;EUR;30;8000,00;0,0%;0,0%;;;;Ben Bigboss;;ABC-Bank EUR
+2004_0002a;2015_07_0020;15969;Customer Invoice;Created;Boom Consuling;;2015-01-02;12,00;EUR;30;12,00;16,0%;0,0%;;;;Ben Bigboss;;Cash
+;2015_07_0021;16015;Quote;Created;Big Customer;;2015-01-02;75,00;USD;30;;0,0%;0,0%;;;;Ben Bigboss;;Cash
+2015_0126;2015_07_0022;16026;Customer Invoice;Created;Big Customer;;2015-01-03;28500,00;EUR;30;28500,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0023;16044;Customer Invoice;Created;adromIT;;2015-01-03;100,00;EUR;30;100,00;16,0%;0,0%;;;;Andrew Accounting;;Caja Ahorros EUR
+;2015_07_0024;16048;Provider Bill;Paid;;Dell Inc.;2015-01-03;20,00;EUR;30;20,00;16,0%;0,0%;;;;Andrew Accounting;;Caja Ahorros EUR
+2015_0006;2015_07_0025;16051;Quote;Created;adromIT;;2015-01-03;2700,00;EUR;30;2700,00;0,0%;0,0%;;;;Larry Littleboss;;ABC-Bank EUR
+2015_0006;2015_07_0026a;16067;Customer Invoice;Created;adromIT;;2015-01-03;3025,00;EUR;30;3025,00;21,0%;0,0%;;;;Ben Bigboss;;ABC-Bank EUR
+2015_0006;2015_07_0026b;16073;Customer Invoice;Created;adromIT;;2015-01-03;3025,00;EUR;0;3025,00;21,0%;0,0%;;;;Ben Bigboss;;Cash
+;2015_07_0027;16076;Quote;Created;;;2015-01-03;;EUR;0;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0028;16089;Quote;Created;;;2015-01-04;200,00;EUR;0;;19,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0029;16100;Quote;Created;Cicso Frameworks Inc.;;2015-01-04;27525,00;EUR;0;;19,0%;0,0%;;;;Ben Bigboss;;
+2005_0057;2015_07_0030;16103;Customer Invoice;Created;;;2015-01-04;50488,00;EUR;30;50488,00;19,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0035;16259;Customer Invoice;Paid;JediTec;;2015-01-08;9600,00;EUR;30;9600,00;0,0%;0,0%;;;;Ben Bigboss;;
+2015_0002;2015_07_0036;16277;Customer Invoice;Paid;Boom Consuling;;2015-01-09;27750,00;EUR;30;27750,00;0,0%;0,0%;;;;Larry Littleboss;;
+2015_0154;2015_07_0037;16548;Customer Invoice;Paid;adromIT;;2015-01-10;500,00;EUR;30;500,00;0,0%;0,0%;;;;Ben Bigboss;;Cash
+;2015_07_0038;16626;Provider Bill;Paid;JediTec;Freelance Angelique Picard;2015-01-13;1725,00;EUR;30;1725,00;0,0%;0,0%;;;;Andrew Accounting;;Cheque EUR
+;2015_07_0039;16637;Customer Invoice;Paid;JediTec;;2015-01-13;1050,00;EUR;30;1050,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0040;16679;Customer Invoice;Paid;Cicso Frameworks Inc.;;2015-01-13;1440,00;EUR;30;1440,00;0,0%;0,0%;;Please pay your rent!;;Andrew Accounting;;ABC-Bank EUR
+;2015_07_0041;16754;Quote;Created;;;2015-01-15;;EUR;0;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0042;16865;Customer Invoice;Filed;;;2015-01-16;;EUR;30;;17,5%;0,0%;;;;Andrew Accounting;;Undefined
+;2015_07_0043;16867;Customer Invoice;Created;Browne London;;2015-01-16;1350,00;EUR;30;1350,00;0,0%;0,0%;;;;Andrew Accounting;;Cheque EUR
+;2015_07_0044;16885;Customer Invoice;Created;Everyday Interactive Networks;;2015-01-16;600,00;EUR;0;600,00;0,0%;0,0%;;;;Larry Littleboss;;Cash
+;2015_07_0045;16891;Quote;Created;Big Customer;;2015-01-16;1200,00;EUR;30;;15,0%;0,0%;;dgd;;Ben Bigboss;;ABC-Bank EUR
+;2015_07_0047;16925;Customer Invoice;Created;Browne LA;;2015-01-17;4765,00;EUR;30;4765,00;0,0%;0,0%;;;;Ben Bigboss;;Undefined
+2015_0154;2015_07_0048;16928;Customer Invoice;Created;adromIT;;2015-01-17;5550,00;EUR;30;5550,00;0,0%;0,0%;;;;Ben Bigboss;;
+2015_0154;2015_07_0049;16936;Quote;Created;adromIT;;2015-01-17;10800,00;EUR;0;;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0050;16947;Customer Invoice;Past Due;Browne London;;2015-01-17;50,00;EUR;30;50,00;0,0%;0,0%;;;;Ben Bigboss;;Cash
+;2015_07_0051;16965;Customer Invoice;Paid;;;2015-01-17;0,00;EUR;30;0,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0052;16969;Customer Invoice;Paid;;;2015-01-17;0,00;EUR;30;0,00;0,0%;0,0%;;;;Ben Bigboss;;
+2005_0027;2015_07_0053;16974;Customer Invoice;Created;;;2015-01-17;0,00;EUR;30;0,00;0,0%;0,0%;;;;Andrew Accounting;;
+2005_0027;2015_07_0054;16981;Quote;Created;;;2015-01-17;0,00;EUR;30;;0,0%;0,0%;;;;Andrew Accounting;;
+2005_0027;2015_07_0055;16985;Customer Invoice;Created;;;2015-01-17;69500,00;EUR;30;69500,00;0,0%;0,0%;;;;Andrew Accounting;;
+;2015_07_0056;16988;Customer Invoice;Created;Big Customer;;2015-01-17;12650,00;USD;30;12650,00;0,0%;0,0%;;;;Ben Bigboss;;Cash
+;2015_07_0057;17025;Quote;Created;;;2015-01-18;2000,00;EUR;0;;16,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0057a;17060;Customer Invoice;Created;Big Customer;;2015-01-18;2000,00;EUR;0;2000,00;16,0%;0,0%;;;;Larry Littleboss;;Cheque EUR
+;2015_07_0058;17028;Customer Invoice;Created;;;2015-01-18;2000,00;EUR;0;2000,00;16,0%;0,0%;;;;Ben Bigboss;;
+2005_0108;2015_07_0059;17079;Quote;Created;Grupo Gabinec Associats S.L.;;2015-01-20;138125,00;EUR;0;;0,0%;0,0%;;;;System Administrator;;
+2015_0002;2015_07_0061;17167;Customer Invoice;Paid;Boom Consuling;;2015-01-21;0,00;EUR;30;0,00;0,0%;0,0%;;;;Larry Littleboss;;Cheque EUR
+;2015_07_0062;17180;Customer Invoice;Past Due;Cicso Frameworks Inc.;;2015-01-21;150,00;EUR;30;150,00;17,5%;0,0%;;;;Ben Bigboss;;
+;2015_07_0063;17186;Customer Invoice;Paid;Cicso Frameworks Inc.;;2015-01-21;91750,00;EUR;30;91750,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0064;17216;Provider Bill;Paid;Cicso Frameworks Inc.;;2015-01-22;6832,00;EUR;30;6832,00;22,0%;0,0%;;ljhgui;;Ben Bigboss;;Cash
+;2015_07_0065;17219;Provider Bill;Paid;;Freelance Luisa Ramirez de la Cruz;2015-01-22;1111,00;EUR;30;1111,00;22,0%;0,0%;;eeeee;;Ben Bigboss;;Cash
+;2015_07_0066;17228;Quote;Created;adromIT;;2015-01-22;2000,00;EUR;30;;18,0%;0,0%;;;;Ben Bigboss;;Cash
+;2015_07_0066a;17230;Customer Invoice;Paid;adromIT;;2015-01-22;200,00;EUR;30;200,00;18,0%;0,0%;;;;Ben Bigboss;;Cash
+;2015_07_0067;17234;Customer Invoice;Created;The Sample Company;;2015-01-22;100,00;EUR;30;100,00;19,6%;0,0%;;;;Ben Bigboss;;Cheque EUR
+;2015_07_0068;17237;Customer Invoice;Created;Big Customer;;2015-01-22;800,00;EUR;30;800,00;4,0%;0,0%;;;;Andrew Accounting;;
+;2015_07_0070;17273;Customer Invoice;Created;;;2015-01-23;375,00;EUR;30;375,00;0,0%;0,0%;;;;Ben Bigboss;;Cash
+;2015_07_0071;17301;Customer Invoice;Created;;Dell Inc.;2015-01-23;400,00;CAD;30;400,00;0,0%;0,0%;;rtest;;Andrew Accounting;;Cash
+;2015_07_0073;17361;Customer Invoice;Created;adromIT;;2015-01-23;0,00;EUR;0;0,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0074;17364;Customer Invoice;Created;adromIT;;2015-01-23;0,00;EUR;0;0,00;0,0%;0,0%;;;;Ben Bigboss;;
+;2015_07_0075;17377;Customer Invoice;Created;adromIT;;2015-01-23;;EUR;30;;0,0%;0,0%;;;;Larry Littleboss;;
+;2015_07_0076;17386;Customer Invoice;Created;Big Customer;;2015-01-24;100,00;EUR;30;100,00;0,0%;0,0%;;;;Ben Bigboss;;Cash
+;2015_07_0077;17394;Customer Invoice;Created;The Sample Company;;2015-01-24;1332,00;EUR;30;1332,00;0,0%;0,0%;;;;Ben Bigboss;;Cash;
+;2015_07_0078;17413;Customer Invoice;Created;金門有限公司 Beijing;;2015-01-24;100,00;EUR;30;100,00;0,0%;0,0%;;;;Ben Bigboss;;Cash;
+;2015_07_0079;17430;Customer Invoice;Created;Big Customer;;2015-01-25;100,00;USD;30;100,00;0,0%;0,0%;;;;Andrew Accounting;;Cheque USD;
+;2015_08_0001;17518;Customer Invoice;Outstanding;Browne Brussels;;2015-02-20;72,00;EUR;30;;0,0%;0,0%;;2dadadfds;;Andrew Accounting;;Cash;
+;2015_08_0002;17551;Customer Invoice;Created;Browne London;;2015-02-21;13200,00;EUR;30;13200,00;12,0%;0,0%;;;;Ben Bigboss;;;
+;2015_08_0003;17554;Quote;Created;Boom Consuling;;2015-02-21;33000,00;EUR;30;;17,5%;0,0%;;Note 1: Simon says ...;;Ben Bigboss;;Undefined;
+;2015_08_0005;17594;Provider Bill;Paid;;Freelance Luisa Ramirez de la Cruz;2015-02-01;23,00;EUR;30;23,00;12,0%;0,0%;;asdfasd;;Ben Bigboss;;Undefined;
+;2015_08_0006;17609;Customer Invoice;Created;Boom Consuling;;2015-02-02;1546,00;USD;30;1546,00;0,0%;0,0%;;Thanks for the business;;Ben Bigboss;;Cash;
+;2015_08_0010;17683;Customer Invoice;Created;Boom Consuling;;2015-02-04;3200,00;EUR;30;3200,00;0,0%;0,0%;;;;Ben Bigboss;;Cheque USD;
+;2015_08_0012;17732;Customer Invoice;Created;RDX Batterley;;2015-02-05;1015,00;EUR;30;1015,00;0,0%;0,0%;;hallo zemen!;;Andrew Accounting;;Cash;
+;2015_08_0013;17756;Quote;Created;adromIT;;2015-02-05;;;30;;0,0%;0,0%;;;;Ben Bigboss;;;
+;2015_08_0015;17775;Quote;Outstanding;Big Customer;;2015-02-06;;;30;;0,0%;0,0%;;;;Ben Bigboss;;Cash;
+2015_0003;B2015_04_0001;18384;Purchase Order;Created;adromIT;Freelance Thomas Avellino;2015-09-28;3375,00;EUR;30;;0,0%;0,0%;;;;System Administrator;Thomas Avellino;Cheque EUR;
+2015_0003;B2015_04_0002;18386;Provider Bill;Paid;;Freelance Thomas Avellino;2015-09-28;3375,00;EUR;30;3375,00;0,0%;0,0%;;;;System Administrator;Thomas Avellino;Cheque EUR;
+2015_0003;B2015_11_0003;18382;Purchase Order;Created;adromIT;Freelance Daniel Damnfast;2015-10-22;1500,00;EUR;30;;0,0%;0,0%;;;;System Administrator;Daniel Damnfast;Cheque EUR;Freelance Daniel Damnfast Hauptsitz
+;I2015_03_0001;35350;Customer Invoice;Paid;ABC Translation;;2015-05-01;20000,00;EUR;30;20000,00;0,0%;0,0%;;;;;Sheila Carter;ABC-Bank EUR;ABC Translation Main Office
+;I2015_03_0010a;11098;Customer Invoice;Created;RDX Batterley;;2015-08-28;267,00;EUR;30;267,00;0,0%;0,0%;;;;Carlos Codificador;Patricia Whitney;Caja Ahorros EUR;RDX Batterley Hauptsitz
+2015_0004;I2015_04_0001;27008;Customer Invoice;Paid;ABC Translation;;2015-04-24;40,00;EUR;30;40,00;0,0%;0,0%;;;;;Antonio Salas;ABC-Bank EUR;ABC Translation Main Office
+2015_0128;I2015_05_0001;18393;Customer Invoice;Created;RDX Batterley;;2015-05-03;53200,00;EUR;30;53200,00;0,0%;0,0%;;;;System Administrator;;Caja Ahorros EUR;
+2015_0006;I2015_05_0002;18412;Customer Invoice;Created;;;2015-05-05;9600,00;EUR;30;9600,00;0,0%;0,0%;;;;System Administrator;;;
+2015_0003;I2015_05_0003;18420;Customer Invoice;Created;adromIT;;2015-05-06;2700,00;EUR;30;2700,00;0,0%;0,0%;;;;System Administrator;;ABC-Bank EUR;
+2015_0003;I2015_05_0004;18425;Customer Invoice;Created;adromIT;;2015-05-06;75,00;EUR;30;75,00;0,0%;0,0%;;;;System Administrator;;;
+2015_0006;I2015_05_0005;18427;Customer Invoice;Created;;;2015-05-06;0,00;EUR;30;0,00;0,0%;0,0%;;;;System Administrator;;ABC-Bank EUR;
+2015_0003;I2015_05_0006;18430;Customer Invoice;Created;adromIT;;2015-05-06;300,00;EUR;30;300,00;0,0%;0,0%;;;;System Administrator;;ABC-Bank EUR;
+2015_0006;I2015_05_0007;18432;Customer Invoice;Created;;;2015-05-06;150,00;EUR;30;150,00;0,0%;0,0%;;;;System Administrator;;Cash;
+2005_0113;I2015_07_0015;15662;Customer Invoice;Created;Grupo Gabinec Associats S.L.;;2015-01-01;130225,00;EUR;30;130225,00;0,0%;0,0%;;;;Ben Bigboss;Helena Rodriguez;ABC-Bank EUR;Grupo Gabinec Associats S.L. Main Office
+2005_0113;I2015_07_0032;16183;Customer Invoice;Paid;Grupo Gabinec Associats S.L.;;2015-01-07;1000,00;EUR;30;1000,00;0,0%;0,0%;;;;System Administrator;;ABC-Bank EUR;Grupo Gabinec Associats S.L. Main Office
+2015_0106;I2015_07_0034;16219;Customer Invoice;Paid;Grupo Gabinec Associats S.L.;;2015-01-08;3000,00;EUR;30;3000,00;0,0%;0,0%;;;;Ben Bigboss;Helena Rodriguez;ABC-Bank EUR;Grupo Gabinec Associats S.L. Main Office
+2015_0200;I2015_08_0001;18940;Customer Invoice;Created;Browne Brussels;;2015-05-05;80,00;EUR;0;80,00;17,5%;0,0%;;;;Ben Bigboss;Kirsten Robinshaw;Cheque EUR;Browne Brussels Main Office
+2015_0126;I2015_08_0002;19013;Customer Invoice;Created;Big Customer;;2015-08-25;378,00;USD;0;378,00;0,0%;0,0%;;;;Ben Bigboss;Eva Bazire;Cash;
+2015_0106;I2015_08_0014;17770;Customer Invoice;Created;Big Customer;;2015-02-06;188,00;EUR;60;188,00;16,0%;0,0%;;;;Andrew Accounting;Eva Bazire;Undefined;Big Customer Main Office
+2015_0106;I2015_09_0003;19437;Customer Invoice;Paid;Grupo Gabinec Associats S.L.;;2015-09-10;1230,00;EUR;30;1230,00;0,0%;0,0%;;;;Petra Projectmanager;Helena Rodriguez;Caja Ahorros EUR;Grupo Gabinec Associats S.L. Main Office
+2015_0106;I2015_09_0004;19474;Customer Invoice;Paid;Grupo Gabinec Associats S.L.;;2015-09-11;123,00;EUR;30;123,00;0,0%;0,0%;;;;Petra Projectmanager;Helena Rodriguez;ABC-Bank EUR;Grupo Gabinec Associats S.L. Main Office
+2015_sales;I2016_06_0001;40735;Customer Invoice;Paid;;;2016-06-08;240,00;EUR;30;240,00;0,0%;0,0%;;;;;;;
+task_24;I2016_06_0002;40737;Customer Invoice;Paid;ABC Translation;;2016-06-08;0,00;EUR;30;0,00;0,0%;0,0%;;;;;;;
+task_24;I2016_06_0003;40739;Customer Invoice;Paid;ABC Translation;;2016-06-08;0,00;EUR;30;0,00;0,0%;0,0%;;;;;;;
+task_14;I2016_06_0004;41510;Customer Invoice;Paid;adromIT;;2016-06-09;0,00;EUR;30;0,00;0,0%;0,0%;;;;;;;
+task_3;I2016_06_0005;42686;Customer Invoice;Paid;ABC Translation;;2016-05-25;0,00;EUR;30;0,00;0,0%;0,0%;;;;;;;
+task_12;I2016_06_0006;42714;Customer Invoice;Paid;ABC Translation;;2016-05-20;0,00;EUR;30;0,00;0,0%;0,0%;;;;;;;
+2015_0049;I2016_06_0007;42716;Customer Invoice;Paid;;;2016-05-20;0,00;EUR;30;0,00;0,0%;0,0%;;;;;;;
+task_8;I2016_06_0008;42718;Customer Invoice;Paid;adromIT;;2016-05-17;0,00;EUR;30;0,00;0,0%;0,0%;;;;;;;
+task_19;I2016_06_0009;42740;Customer Invoice;Paid;ABC Translation;;2016-05-19;0,00;EUR;30;0,00;0,0%;0,0%;;;;;;;
+task_7;I2016_06_0010;42742;Customer Invoice;Paid;ABC Translation;;2016-05-19;0,00;EUR;30;0,00;0,0%;0,0%;;;;;;;
+task_0;I2016_06_0011;42744;Customer Invoice;Paid;ABC Translation;;2016-05-19;0,00;EUR;30;0,00;0,0%;0,0%;;;;;;;
+2015_0010;I2016_06_0012;42846;Customer Invoice;Paid;ABC Translation;;2016-05-23;0,00;EUR;30;0,00;0,0%;0,0%;;;;;;;
+2015_0088;I2016_06_0013;42848;Customer Invoice;Paid;;;2016-05-23;0,00;EUR;30;0,00;0,0%;0,0%;;;;;;;
+2004_0002a;I2016_06_0014;42868;Customer Invoice;Paid;Boom Consuling;;2016-05-26;480,00;EUR;30;480,00;0,0%;0,0%;;;;;;;
+2015_0096;I2016_06_0015;42870;Customer Invoice;Paid;;;2016-05-27;930,00;EUR;30;930,00;0,0%;0,0%;;;;;;;
+2004_0002d;I2016_06_0016;43039;Customer Invoice;Paid;Boom Consuling;;2016-06-15;600,00;EUR;30;600,00;0,0%;0,0%;;;;;;;
+2015_0200;I2016_06_0017;43041;Customer Invoice;Paid;Browne Brussels;;2016-06-15;300,00;EUR;30;300,00;0,0%;0,0%;;;;;;;
+2015_0200;I2016_06_0018;43043;Customer Invoice;Paid;Browne Brussels;;2016-06-15;300,00;EUR;30;300,00;0,0%;0,0%;;;;;;;
+2015_0003;I2016_06_0019;43062;Customer Invoice;Created;adromIT;;2016-06-16;1680,00;EUR;30;1680,00;0,0%;0,0%;;;;;;;
+2015_0006;I2016_06_0020;43064;Customer Invoice;Created;;;2016-06-17;2490,00;EUR;30;2490,00;0,0%;0,0%;;;;;Andrew Accounting;ABC-Bank EUR;Tigerpond Inc. Main Office
+2015_0006;I2016_06_0021;43066;Customer Invoice;Created;;;2016-06-17;2490,00;EUR;30;2490,00;0,0%;0,0%;;;;;;;
+2015_0128;I2016_07_0001;44145;Customer Invoice;Created;RDX Batterley;;2016-07-28;2988,00;EUR;0;2988,00;0,0%;0,0%;;;;;Patricia Whitney;;RDX Batterley Hauptsitz
+2004_0002i;I2016_10_0001;44390;Customer Invoice;Paid;Boom Consuling;;2016-06-22;1200,00;EUR;30;1200,00;0,0%;0,0%;;;;;;;
+2015_0002;I2016_10_0002;44392;Customer Invoice;Paid;Boom Consuling;;2016-06-22;3000,00;EUR;30;3000,00;0,0%;0,0%;;;;;;;
+2005_0114;I2016_10_0003;44394;Customer Invoice;Paid;Grupo Gabinec Associats S.L.;;2016-06-22;3840,00;EUR;30;3840,00;0,0%;0,0%;;;;;;;
+2015_0154;I2016_10_0004;44410;Customer Invoice;Paid;adromIT;;2016-06-23;2100,00;EUR;30;2100,00;0,0%;0,0%;;;;;;;
+2015_0128;I2016_10_0005;44412;Customer Invoice;Paid;RDX Batterley;;2016-06-23;4800,00;EUR;30;4800,00;0,0%;0,0%;;;;;;;
+task_43318;I2016_10_0006;44912;Customer Invoice;Created;Cicso Frameworks Inc.;;2016-10-11;1440,00;EUR;30;;0,0%;0,0%;;;;;;;
+task_43317;I2016_10_0007;44914;Customer Invoice;Created;Cicso Frameworks Inc.;;2016-10-12;2400,00;EUR;30;;0,0%;0,0%;;;;;;;
+task_0011;I2016_10_0008;44916;Customer Invoice;Created;Grupo Gabinec Associats S.L.;;2016-10-12;4800,00;EUR;30;;0,0%;0,0%;;;;;;;
+2005_0108;I2016_10_0009;44932;Customer Invoice;Created;Grupo Gabinec Associats S.L.;;2016-10-13;11460,00;EUR;30;;0,0%;0,0%;;;;;;;
+2005_0108;I2016_10_0010;44934;Customer Invoice;Created;Grupo Gabinec Associats S.L.;;2016-10-13;11460,00;EUR;30;;0,0%;0,0%;;;;;;;
+task_43316;I2016_10_0011;45036;Customer Invoice;Created;Cicso Frameworks Inc.;;2016-10-17;7200,00;EUR;30;;0,0%;0,0%;;;;;;;
+task_0002;I2016_10_0012;45038;Customer Invoice;Created;Grupo Gabinec Associats S.L.;;2016-10-17;360,00;EUR;30;;0,0%;0,0%;;;;;;;
+task_0002;I2016_10_0013;45040;Customer Invoice;Created;Grupo Gabinec Associats S.L.;;2016-10-17;360,00;EUR;30;;0,0%;0,0%;;;;;;;
+task_0002;I2016_10_0014;45042;Customer Invoice;Created;Grupo Gabinec Associats S.L.;;2016-10-17;360,00;EUR;30;;0,0%;0,0%;;;;;;;
+task_0002;I2016_10_0015;45044;Customer Invoice;Created;Grupo Gabinec Associats S.L.;;2016-10-17;360,00;EUR;30;;0,0%;0,0%;;;;;;;
+task_0002;I2016_10_0016;45046;Customer Invoice;Created;Grupo Gabinec Associats S.L.;;2016-10-17;360,00;EUR;30;;0,0%;0,0%;;;;;;;
+task_0002;I2016_10_0017;45048;Customer Invoice;Created;Grupo Gabinec Associats S.L.;;2016-10-17;360,00;EUR;30;;0,0%;0,0%;;;;;;;
+task_0035;I2016_10_0018;45050;Customer Invoice;Created;Grupo Gabinec Associats S.L.;;2016-10-18;1440,00;EUR;30;;0,0%;0,0%;;;;;;;
+2016_0005;I2016_12_0001;53180;Customer Invoice;Created;ABC Translation;;2016-12-20;1800,00;EUR;30;;21,0%;0,0%;;;;;Antonio Salas;ABC-Bank EUR;ABC Translation Main Office
+2016_0005;I2016_12_0002;53183;Customer Invoice;Created;ABC Translation;;2016-12-20;7075,00;EUR;0;;0,0%;0,0%;;;;;Antonio Salas;ABC-Bank EUR;ABC Translation Main Office
+;P2015_03_0007;11056;Purchase Order;Created;;Freelance Alessandra Gil;2015-08-28;195,00;EUR;60;;0,0%;0,0%;;;;Carlos Codificador;Alessandra Gil;;Freelance Alessandra Gil Main Office
+;P2015_11_0001;20522;Purchase Order;Created;;Freelance Angelique Picard;2015-11-01;45,00;EUR;;;0,0%;0,0%;;;;System Administrator;Angelique Picard;;Freelance Angelique Picard Main Office
+2015_0010;Q2015_02_0002;25586;Quote;Created;ABC Translation;;2015-02-12;17500,00;EUR;30;;19,0%;0,0%;;Röntgenstraße;;;Antonio Salas;Cash;ABC Translation Main Office
+2015_0200;Q2015_05_0002;18408;Quote;Created;Browne Brussels;;2015-05-05;400,00;EUR;0;;0,0%;0,0%;;;;System Administrator;;;
+2015_0200;Q2015_05_0003;18414;Quote;Created;Browne Brussels;;2015-05-04;400,00;EUR;0;;0,0%;0,0%;;;;System Administrator;Kirsten Robinshaw;;Browne Brussels Main Office
+2015_0200;Q2015_05_0004;18422;Quote;Created;Browne Brussels;;2015-05-06;80,00;EUR;0;;0,0%;0,0%;;;;System Administrator
+2015_0200;Q2015_05_0005;18436;Quote;Created;Browne Brussels;;2015-05-06;80,00;EUR;0;;0,0%;0,0%;;;;System Administrator
+2015_0002;Q2015_05_0006;18458;Quote;Created;Boom Consuling;;2015-05-17;12600,00;EUR;0;;0,0%;0,0%;;;;Ben Bigboss
+2015_0126;Q2015_08_0001;19009;Quote;Created;Big Customer;;2015-08-25;378,00;EUR;0;;0,0%;0,0%;;;;Ben Bigboss
+2015_0106;Q2015_09_0001;19439;Quote;Created;Grupo Gabinec Associats S.L.;;2015-09-11;247650,00;EUR;0;;0,0%;0,0%;;;;Petra Projectmanager
+2016_0015;Q2016_06_0001;39146;Quote;Created;Everyday Interactive Networks;;2016-06-03;13532,00;EUR;30;;0,0%;0,0%;;;;
+2016_0027;Q2016_06_0002;39965;Quote;Created;Grupo Gabinec Associats S.L.;;2016-06-07;3960,00;EUR;30;;0,0%;0,0%;;;;
+2016_0027;Q2016_06_0003;39967;Quote;Created;Grupo Gabinec Associats S.L.;;2016-06-07;3960,00;EUR;30;;0,0%;0,0%;;;;
+2016_0028;Q2016_06_0004;40729;Quote;Created;RDX Batterley;;2016-06-08;58320,00;EUR;30;;0,0%;0,0%;;;;
+2016_0028;Q2016_06_0005;40731;Quote;Created;RDX Batterley;;2016-06-08;58320,00;EUR;30;;0,0%;0,0%;;;;
+2016_0028;Q2016_06_0006;40733;Quote;Created;RDX Batterley;;2016-06-08;58320,00;EUR;30;;0,0%;0,0%;;;;
+2016_0033;Q2016_06_0007;41439;Quote;Created;日本語 Nippon Translations;;2016-06-09;2580,00;EUR;30;;0,0%;0,0%;;;;
+2016_0017;Q2016_06_0008;41441;Quote;Created;Grupo Gabinec Associats S.L.;;2016-06-09;9480,00;EUR;30;;0,0%;0,0%;;;;
+2016_0017;Q2016_06_0009;41443;Quote;Created;Grupo Gabinec Associats S.L.;;2016-06-09;9480,00;EUR;30;;0,0%;0,0%;;;;
+2016_0004;Q2016_06_0010;41445;Quote;Created;Browne LA;;2016-06-09;32057,00;EUR;30;;0,0%;0,0%;;;;
+2016_0004;Q2016_06_0011;41447;Quote;Created;Browne LA;;2016-06-09;32057,00;EUR;30;;0,0%;0,0%;;;;
+2016_0004;Q2016_06_0012;41449;Quote;Created;Browne LA;;2016-06-09;32057,00;EUR;30;;0,0%;0,0%
+2016_0039;Q2016_06_0013;41747;Quote;Created;RDX Batterley;;2016-06-10;9480,00;EUR;30;;0,0%;0,0%
+2016_0039;Q2016_06_0014;41749;Quote;Created;RDX Batterley;;2016-06-10;9480,00;EUR;30;;0,0%;0,0%
+2016_0044;Q2016_06_0015;42972;Quote;Created;ABC Translation;;2016-06-13;13532,00;EUR;30;;0,0%;0,0%
+2016_0044;Q2016_06_0016;42974;Quote;Created;ABC Translation;;2016-06-13;13532,00;EUR;30;;0,0%;0,0%
+2016_0044;Q2016_06_0017;42976;Quote;Created;ABC Translation;;2016-06-13;13532,00;EUR;30;;0,0%;0,0%
+2016_0001;Q2016_10_0001;44496;Quote;Created;Browne Brussels;;2016-09-26;0,00;EUR;30;;0,0%;0,0%
+2016_0001;Q2016_10_0002;44498;Quote;Created;Browne Brussels;;2016-09-26;0,00;EUR;30;;0,0%;0,0%
+2016_0001;Q2016_10_0003;44500;Quote;Created;Browne Brussels;;2016-09-26;0,00;EUR;30;;0,0%;0,0%
+2016_0001;Q2016_10_0004;44644;Quote;Created;Browne Brussels;;2016-10-03;0,00;EUR;30;;0,0%;0,0%
+2016_0001;Q2016_10_0005;44646;Quote;Created;Browne Brussels;;2016-10-03;0,00;EUR;30;;0,0%;0,0%
+2016_0001;Q2016_10_0006;44648;Quote;Created;Browne Brussels;;2016-10-03;0,00;EUR;30;;0,0%;0,0%

@@ -31,6 +31,35 @@ ad_proc -public im_csv_import_guess_im_company { } {} {
     return $mapping
 }
 
+ad_proc -public im_csv_import_guess_im_invoice { } {} {
+    set mapping {
+	{project_id "Project Nrs" project_parent_nrs ""}
+	{cost_name "Name" no_change ""}
+	{cost_nr "Nr" no_change ""}
+	{cost_status_id "Status" category "Intranet Cost Status"}
+	{cost_type_id "Type" category "Intranet Cost Type"}
+	{customer_id "Customer" company_name ""}
+	{provider_id "Provider" company_name ""}
+	{effective_date "Effective Date" date ""}
+	{amount "Amount" number ""}
+	{currency "Currency" no_change ""}
+	{payment_days "Payment Days" number ""}
+	{paid_amount "Paid Amount" number ""}
+	{vat "VAT" number ""}
+	{tax "TAX" number ""}
+	{description "Description" no_change ""}
+	{note "Note" no_change ""}
+	{vat_type_id "VAT Type" category "Intranet VAT Type"}
+	{company_contact_id "Customer Contact" user_name ""}
+	{cause_object_id "Cause Object" user_name ""}
+	{payment_method_id "Payment Method" category "Intranet Invoice Payment Method"}
+	{invoice_office_id "Invoice Office" office_name ""}
+    }
+    return $mapping
+}
+
+
+
 ad_proc -public im_csv_import_guess_im_project { } {} {
     set mapping {
 	{parent_id "Parent Nrs" project_parent_nrs ""}
@@ -116,6 +145,9 @@ ad_proc -public im_csv_import_guess_im_risk { } {} {
     return $mapping
 }
 
+
+
+
 # ---------------------------------------------------------------------
 # Available Parsers
 # ---------------------------------------------------------------------
@@ -126,7 +158,7 @@ ad_proc -public im_csv_import_parsers {
     Returns the list of available parsers
 } {
     switch $object_type {
-	im_project - im_company - im_conf_item - im_risk - im_timesheet_task - im_ticket - im_hour {
+	im_project - im_company - im_conf_item - im_cost - im_invoice - im_risk - im_timesheet_task - im_ticket - im_hour {
 	    set parsers {
 		no_change		"No Change"
 		hard_coded		"Hard Coded Functionality"
@@ -144,6 +176,7 @@ ad_proc -public im_csv_import_parsers {
 		project_name		"Project from Project Name"
 		project_parent_nrs      "Project from Parent Nrs"
 		company_name    	"Company ID from Company Name"
+		office_name    	        "Office ID from Office Name"
 		user_name		"User ID from email, username or full name"
 		conf_item_parent_nrs    "Conf Item Parent Nrs"
 	    }

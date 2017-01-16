@@ -13,6 +13,7 @@
 	<%= [im_select object_type [list \
 	      im_company "Company" \
 	      im_conf_item "Configuration Item" \
+	      im_invoice "Financial Document" \
 	      im_timesheet_task "Gantt Task" \
 	      im_membership "Membership" \
 	      im_project "Project" \
@@ -90,14 +91,32 @@
   </td>
 </tr>
 
+<!--
+<tr>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_cost'"]] %></td>
+  <td>Cost Item</td>
+  <td align=center><a href="examples/im_cost.csv"><%= [im_gif csv-doc] %></a></td>
+  <td>
+    Project Nrs, Name, Nr, Type, Status, Customer, Provider, Effective Date, Amount, Currency, Payment Days, Paid Amount, 
+    VAT, TAX, Description, Note, VAT Type<br>
+    Cost Item <a href="/intranet-dynfield/object-type?object_type=im_cost">DynFields</a> 
+    are also recognized by their "pretty name" or "column name".</p>
+  </td>
+</tr>
+-->
+
 <tr>
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_invoice'"]] %></td>
-  <td>Financial Items</td>
-  <td align=center>
-  </td>
+  <td>Financial Documents ("Invoices")</td>
+  <td align=center><a href="examples/im_invoice.csv"><%= [im_gif csv-doc] %></a></td>
   <td>
-    Financial Items import is under active development at the moment.<br>
-    Please <a href="http://www.project-open.com/en/contact">contact us</a> for the current status or updates.
+    <a href="http://www.project-open.com/en/object-type-im-invoice" target="_blank">Financial Documents</a> are
+    <a href="http://www.project-open.com/en/object-type-im-cost" target="_blank">cost items</a> with a header and
+    one more more lines and include invoices, quotes, purchase orders and others.<br>
+    Project Nrs, Name, Nr, Type, Status, Customer, Provider, Effective Date, Amount, Currency, Payment Days, Paid Amount, 
+    VAT, TAX, Description, Note, VAT Type, Cause Object, Customer Contact, Payment Method, Invoice Office<br>
+    Cost Item <a href="/intranet-dynfield/object-type?object_type=im_invoice">DynFields</a> 
+    are also recognized by their "pretty name" or "column name".</p>
   </td>
 </tr>
 
