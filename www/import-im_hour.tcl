@@ -17,7 +17,7 @@ ad_page_contract {
     { mapping_name "" }
     { ns_write_p "" }
     { write_log_p 1 } 
-    { merge_p 1 }
+    { merge_p:optional }
     { test_run_p 0 }
     { output_device_log "screen"}
     column:array
@@ -180,10 +180,11 @@ foreach csv_line_fields $values_list_of_lists {
 	set proc_name "im_csv_import_parser_$p"
 	if {"" != $var_value} {
 	    if {[catch {
+		ns_log Notice "import-im_hour: Starting parser: '$proc_name -args $p_args value: $var_value'"
 		set result [$proc_name -parser_args $p_args $var_value]
+		ns_log Notice "import-im_hour: Result parser: $result"
 		set var_value [lindex $result 0]
 		set err [lindex $result 1]
-		ns_log Notice "import-im_hour: Parser: '$p -args $p_args $var_value' -> $target_var_name=$var_value, err=$err"
 		if {"" != $err} {
 		    im_write_log $output_device_log $write_log_p  "<li><font color=brown>Warning: Error parsing field='$target_var_name' using parser '$p':<pre>$err</pre></font></li>\n" 
 		}
@@ -228,8 +229,14 @@ foreach csv_line_fields $values_list_of_lists {
     # value for hours is mandatory
     if {"" == $hours } {
 	im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: We have found an empty 'hours' in line $cnt.<br>
-		Please correct the CSV file. 'hours' is mandatory. Skupping line!</font></li>\n"
+		Please correct the CSV file. 'hours' is mandatory. Skipping line!</font></li>\n"
 	continue
+    } else {
+	if { 0 == $hours } {
+	    im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: We have found '0' or a non-numeric value for 'hours' in line $cnt.<br>
+		Please correct the CSV file. 'hours' needs to be numeric and contain a value > 0 - Skipping line!</font></li>\n"
+	    continue
+	}
     }
 
     # Check permissions
@@ -318,32 +325,32 @@ foreach csv_line_fields $values_list_of_lists {
     # Check if there are hours booked for that day 
     #
     set hours_before [db_string get_hours "
-	select	coalesce(h.hours,0) as hours
+	select	coalesce(h.hours,0) as hours_before
 	from	im_hours h
 	where	h.day = :day and
 		h.user_id = :user_id and
 		h.project_id = :target_project_id		
 	" -default 0]
-    
-    if { $hours_before > 0  && $merge_p } {
+
+    if { $hours_before > 0 && [info exists merge_p] } {
 	# Update 
 	im_write_log $output_device_log $write_log_p  "<li>Merging hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
 	if { !$test_run_p } { 
-	    im_write_log $output_device_log $write_log_p  "<li>Updating ...</li>\n"
-	    db_dml sql "update im_hours h set (hours, note) = (h.hours + :hours_before, h.note || ', ' || :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" 
+	    im_write_log $output_device_log $write_log_p  "<li>No test run - Merging ...</li>\n"
+	    db_dml sql "update im_hours h set (hours, note) = (to_number('$hours','999999.99') + :hours_before, h.note || ', ' || :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" 
 	}
-    } elseif { $hours_before > 0 && !$merge_p } {
+    } elseif { $hours_before > 0 && ![info exists merge_p] } {
 	# Overwrite 
 	im_write_log $output_device_log $write_log_p  "<li>Overwrite hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
 	if { !$test_run_p } { 
-	    im_write_log $output_device_log $write_log_p  "<li>Updating ...</li>\n"
-	    db_dml sql "update im_hours h set (hours, note) values (:hours, :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" 
+	    im_write_log $output_device_log $write_log_p  "<li>No test run: Overwriting ...</li>\n"
+	    db_dml sql "update im_hours h set (hours, note) = (:hours, :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" 
 	}
     } elseif { $hours_before == 0 } {
 	# create im_hours record 
 	if { !$test_run_p } {
 	    if {[catch {
-		im_write_log $output_device_log $write_log_p "<li>Create new hour record: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"	
+		im_write_log $output_device_log $write_log_p "<li>No test run: Create new hour record: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"	
 		db_dml insert_hour "insert into im_hours (user_id,project_id,day,hours,note) values (:user_id,:target_project_id,:day,:hours,:note)"
 	    } err_msg]} {
 		global errorInfo
