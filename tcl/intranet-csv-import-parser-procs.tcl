@@ -375,6 +375,35 @@ ad_proc -public im_csv_import_parser_cost_center {
     }
 }
 
+
+ad_proc -public im_csv_import_parser_material { 
+    {-parser_args "" }
+    arg 
+} {
+    Parses a material name or nr into a material_id
+} {
+    # Empty input - empty output
+    if {"" == $arg} { return [list "" ""] }
+
+    # Parse the category
+    set arg [string trim [string tolower $arg]]
+    set ccids [db_list ccid1 "
+	select	material_id
+	from	im_materials
+	where	lower(material_nr) = :arg OR 
+		lower(material_name) = :arg 
+	order by material_id
+    "]
+    set result [lindex $ccids 0]
+    if {"" == $result} {
+	return [list "" "Material parser: We did not find any material nr or name matching the value='$arg'."]
+    } else {
+	return [list $result ""]
+    }
+}
+
+
+
 ad_proc -public im_csv_import_parser_hard_coded { 
     {-parser_args "" }
     arg 

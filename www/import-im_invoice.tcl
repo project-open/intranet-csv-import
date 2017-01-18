@@ -116,8 +116,10 @@ if {$ns_write_p} {
 # ------------------------------------------------------------
 
 set cnt 1
+set old_cost_name ""
 foreach csv_line_fields $values_list_of_lists {
     incr cnt
+    # if {$cnt > 50} { break }
 
     if {$ns_write_p} { ns_write "</ul><hr><ul>\n" }
     if {$ns_write_p} { ns_write "<li>Starting to parse line $cnt\n" }
@@ -163,6 +165,14 @@ foreach csv_line_fields $values_list_of_lists {
     set payment_method_id	""
     set invoice_office          ""
     set invoice_office_id       ""
+
+    # im_invoice_items
+    set sort_order              ""
+    set item_name               ""
+    set item_units              ""
+    set item_uom_id             ""
+    set price_per_unit          ""
+    set item_material_id        ""
 
     foreach attribute_name $attribute_names {
 	set $attribute_name	""
@@ -234,7 +244,105 @@ foreach csv_line_fields $values_list_of_lists {
     if {$ns_write_p} { ns_write "<li>Before cost_nr: name=$cost_name, nr=$cost_nr</font>\n" }
 
 
-    
+    # Use the current cost_name in the next line.
+    # That's useful for invoice_items right after the respective Financial Document
+    if {"" ne $cost_name} { set old_cost_name $cost_name }
+
+
+    # -------------------------------------------------------
+    # Check if the cost already exists
+
+    # Check if we find the same cost by name with it's project.
+    set cost_id [db_string cost_id "select cost_id from im_costs where lower(trim(cost_nr)) = lower(trim(:cost_nr))" -default ""]
+    if {"" eq $cost_id} {
+	set cost_id [db_string cost_id "select cost_id from im_costs where lower(trim(cost_name)) = lower(trim(:cost_name))" -default ""]
+    }
+    if {$ns_write_p} { ns_write "<li>id=$cost_id, name='$cost_name', nr='$cost_nr'\n" }
+
+
+
+    # -------------------------------------------------------
+    # Check if we've got an invoice item
+    set item_field_count 0
+    if {"" ne $item_name} { incr item_field_count }
+    if {"" ne $item_units} { incr item_field_count }
+    if {"" ne $item_uom_id} { incr item_field_count }
+    if {"" ne $price_per_unit} { incr item_field_count }
+    # We should get either 1 (cost item) or 5 (line). 
+    # Everything else is something incomplete
+    if {$item_field_count > 0} {
+
+	# Check for an incomplete line
+	if {$item_field_count < 4} {
+	    if {$ns_write_p} {
+		ns_write "<li><font color=red>Error: We have found line $cnt with data from an invoice line<br>
+		including Cost Name, Item name, Item Units, Item UoM and Price per Unit.<br>
+		However, some of these required fields are missing. Please complete the line.</font>\n"
+	    }
+	    continue
+	}
+	
+	# Special logic for invoice_items:
+	# If no cost_name was specified, just use the cost_name from the last lin
+	if {"" eq $cost_name} { 
+	    set cost_name $old_cost_name 
+	    set cost_id [db_string cost_id "select cost_id from im_costs where lower(trim(cost_name)) = lower(trim(:cost_name))" -default ""]
+	}
+
+	# We've got a complete invoice_item.
+	# Check for identity
+	if {"" eq $cost_id} {
+	    if {$ns_write_p} {
+		ns_write "<li><font color=red>Error: We didn't find a financial document to reference</font>\n"
+	    }
+	    continue
+	}
+
+	set item_id [db_string item_id "select min(item_id) from im_invoice_items where invoice_id = :cost_id and item_name = :item_name" -default ""]
+	if {"" eq $currency} { set currency [db_string cur "select currency from im_costs where cost_id = :cost_id" -default $default_currency] }
+	if {"" eq $sort_order} {
+	    # Create a new sort order based on the existing number of invoice_items
+	    set sort_order [db_string sort_order "select 1+count(*) from im_invoice_items where invoice_id = :cost_id"]
+	}
+	if {"" eq $item_id} {
+	    # Item doesn't exist yet - insert
+	    if {$ns_write_p} { ns_write "<li>Going to create line: cost_name='$cost_name', item_name='$item_name'\n" }
+	    db_dml insert_item "
+		insert into im_invoice_items (
+			item_id,
+			invoice_id, sort_order, item_name, item_units, item_uom_id, price_per_unit, item_material_id, currency
+		) values (
+			nextval('im_invoice_items_seq'),
+			:cost_id, :sort_order, :item_name, :item_units, :item_uom_id, :price_per_unit, :item_material_id, :currency
+		)
+	    "
+	} else {
+	    # Item already exists - update
+	    if {$ns_write_p} { ns_write "<li>Going to update line: cost_name='$cost_name', item_name='$item_name'\n" }
+	    db_dml update_item "
+		update im_invoice_items set
+			invoice_id = :cost_id, 
+			sort_order = :sort_order, 
+			item_name = :item_name, 
+			item_units = :item_units, 
+			item_uom_id = :item_uom_id, 
+			price_per_unit = :price_per_unit, 
+			item_material_id = :item_material_id, 
+			currency = :currency
+		where
+			item_id = :item_id;
+	    "
+	}
+
+	# Skip the rest of the code dealing with im_invoices
+	continue
+    }
+
+
+    # ------------------------------------------------------------------------
+    # We have found a line with a normal invoice (quote, invoice, purchase order, ...)
+    #
+
 
     # -------------------------------------------------------
     # Specific field transformations
@@ -253,19 +361,18 @@ foreach csv_line_fields $values_list_of_lists {
 	set cost_nr [regsub {[^a-z0-9_]} [string trim [string tolower $cost_name]] "_"]
     }
 
-    # Status is optional
-    if {"" == $cost_status_id} {
-	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find cost status '$cost_status', using default status 'Created'</font>\n" }
-	set cost_status_id [im_cost_status_created]
-    }
-
-    # Type is a required field
     if {"" == $cost_type_id} {
 	if {$ns_write_p} { 
 	    ns_write "<li><font color=red>Error: We have found an empty 'Cost Type' in line $cnt.<br>
 	        Please correct the CSV file.</font>\n"
 	}
 	continue
+    }
+
+    # Status is optional
+    if {"" == $cost_status_id} {
+	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find cost status '$cost_status', using default status 'Created'</font>\n" }
+	set cost_status_id [im_cost_status_created]
     }
 
     # Customer and provider are required
@@ -312,25 +419,6 @@ foreach csv_line_fields $values_list_of_lists {
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find currency, using default currency='$default_currency'</font>\n" }
 	set currency $default_currency
     }
-
-
-    # -------------------------------------------------------
-    # Check if the cost already exists
-
-    # Check if we find the same cost by name with it's project.
-    set cost_id [db_string cost_id "
-	select	cost_id from im_costs
-	where	lower(trim(cost_nr)) = lower(trim(:cost_nr))
-    " -default ""]
-
-    if {"" eq $cost_id} {
-	set cost_id [db_string cost_id "
-		select	cost_id from im_costs
-		where	lower(trim(cost_name)) = lower(trim(:cost_name))
-	" -default ""]
-    }
-    if {$ns_write_p} { ns_write "<li>id=$cost_id, name='$cost_name', nr='$cost_nr'\n" }
-
 
     # -------------------------------------------------------
     # Create a new cost if necessary

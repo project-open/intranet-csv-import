@@ -33,11 +33,18 @@ ad_proc -public im_csv_import_guess_im_company { } {} {
 
 ad_proc -public im_csv_import_guess_im_invoice { } {} {
     set mapping {
+	{project_id "Project Nr" project_parent_nrs ""}
 	{project_id "Project Nrs" project_parent_nrs ""}
+	{project_id "Cost Project Nrs" project_parent_nrs ""}
 	{cost_name "Name" no_change ""}
+	{cost_name "Cost Name" no_change ""}
 	{cost_nr "Nr" no_change ""}
+	{cost_nr "Cost Nr" no_change ""}
+	{cost_center_id "Cost Center" cost_center ""}
 	{cost_status_id "Status" category "Intranet Cost Status"}
+	{cost_status_id "Cost Status" category "Intranet Cost Status"}
 	{cost_type_id "Type" category "Intranet Cost Type"}
+	{cost_type_id "Cost Type" category "Intranet Cost Type"}
 	{customer_id "Customer" company_name ""}
 	{provider_id "Provider" company_name ""}
 	{effective_date "Effective Date" date ""}
@@ -53,7 +60,15 @@ ad_proc -public im_csv_import_guess_im_invoice { } {} {
 	{company_contact_id "Customer Contact" user_name ""}
 	{cause_object_id "Cause Object" user_name ""}
 	{payment_method_id "Payment Method" category "Intranet Invoice Payment Method"}
+	{template_id "Template" category "Intranet Invoice Templates"}
 	{invoice_office_id "Invoice Office" office_name ""}
+	{item_name "Item Name" no_change ""}
+	{sort_order "Item Sort Order" number ""}
+	{item_units "Item Units" number ""}
+	{price_per_unit "Item Price" number ""}
+	{price_per_unit "Price Per Unit" number ""}
+	{item_uom_id "Item UoM" category "Intranet UoM"}
+	{item_material_id "Item Material" material ""}
     }
     return $mapping
 }
@@ -160,25 +175,26 @@ ad_proc -public im_csv_import_parsers {
     switch $object_type {
 	im_project - im_company - im_conf_item - im_cost - im_invoice - im_risk - im_timesheet_task - im_ticket - im_hour {
 	    set parsers {
-		no_change		"No Change"
-		hard_coded		"Hard Coded Functionality"
 		boolean		        "Boolean"
+		category		"Category ID from Category Name"
+		company_name    	"Company ID from Company Name"
+		conf_item_parent_nrs    "Conf Item Parent Nrs"
+		cost_center		"Cost Center"
 		date		        "Date (generic)"
+		date_american		"Date US (MM/DD/YYYY)"
 		date_european		"Date European (DD.MM.YYYY)"
 		date_european_dashes	"Date ISO (YYYY-MM-DD)"
-		date_american		"Date US (MM/DD/YYYY)"
+		hard_coded		"Hard Coded Functionality"
+		no_change		"No Change"
+		material	        "Material"
 		number		        "Number (generic)"
-		number_european		"Number European (20.000,00)"
 		number_american		"Number US (20,000.00)"
-		category		"Category ID from Category Name"
-		cost_center		"Cost Center Parser"
-		project_nr		"Project from Project Nr"
-		project_name		"Project from Project Name"
-		project_parent_nrs      "Project from Parent Nrs"
-		company_name    	"Company ID from Company Name"
+		number_european		"Number European (20.000,00)"
 		office_name    	        "Office ID from Office Name"
+		project_name		"Project from Project Name"
+		project_nr		"Project from Project Nr"
+		project_parent_nrs      "Project from Parent Nrs"
 		user_name		"User ID from email, username or full name"
-		conf_item_parent_nrs    "Conf Item Parent Nrs"
 	    }
 	}
 	im_membership {
@@ -208,7 +224,6 @@ ad_proc -public im_csv_import_object_fields {
 } {
     Returns a list of database columns for the specified object type.
 } {
-
     # Special case: im_hour is not an object
     if { "im_hour" == $object_type } {
 	return "project_id project_nr project_nr_path user_id day hours note"
@@ -276,12 +291,19 @@ ad_proc -public im_csv_import_object_fields {
 	lappend selected_tables $table_name
 	incr cnt
     }
+
+    # Check for static mapping additions
+    set static_mapping_lol {}
+    catch { set static_mapping_lol [im_csv_import_guess_$object_type] }
+    foreach static_mapping_tuple $static_mapping_lol {
+	set field_name [lindex $static_mapping_tuple 0]
+	if {[lsearch $selected_columns $field_name] < 0} {
+	    lappend selected_columns $field_name
+	}
+    }
+
     return [lsort $selected_columns]
 }
-
-
-
-
 
 
 # ---------------------------------------------------------------------
