@@ -60,7 +60,7 @@ ad_proc -public im_csv_import_guess_im_invoice { } {} {
 	{company_contact_id "Customer Contact" user_name ""}
 	{cause_object_id "Cause Object" user_name ""}
 	{payment_method_id "Payment Method" category "Intranet Invoice Payment Method"}
-	{template_id "Template" category "Intranet Cost Templates"}
+	{template_id "Template" category "Intranet Cost Template"}
 	{invoice_office_id "Invoice Office" office_name ""}
 	{item_name "Item Name" no_change ""}
 	{sort_order "Item Sort Order" number ""}
