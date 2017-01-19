@@ -157,6 +157,7 @@ foreach csv_line_fields $values_list_of_lists {
     set tax			""
     set vat_type_id		""
     set cause_object_id		""
+    set template_id		""
 
     # im_invoices values
     set customer_contact	""
@@ -458,7 +459,7 @@ foreach csv_line_fields $values_list_of_lists {
 
 			:cost_status_id,		-- active or inactive or for WF stages
 			:cost_type_id,			-- user defined type of cost. Determines WF.
-			null,				-- template_id
+			:template_id,			-- template_id
 
 			:effective_date,		-- 
 			:payment_days,			--
