@@ -546,7 +546,7 @@ foreach csv_line_fields $values_list_of_lists {
                 where   p.project_id = :project_id and
                         sub_p.tree_sortkey between p.tree_sortkey and tree_right(p.tree_sortkey) and
                         r.object_id_one = sub_p.project_id and
-                        r.object_id_two = :invoice_id
+                        r.object_id_two = :cost_id
         "]
 
 	if {!$v_rel_exists_p} {
