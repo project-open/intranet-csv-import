@@ -127,9 +127,8 @@ foreach csv_line_fields $values_list_of_lists {
     # im_costs values
     set cost_name		""
     set cost_nr			""
-    set project_nrs	""
-    set cost_project_nrs	""
-    set cost_project_id		""
+    set project_nrs		""
+    set project_id		""
     set cost_status		""
     set cost_status_id		""
     set cost_type		""
@@ -398,24 +397,6 @@ foreach csv_line_fields $values_list_of_lists {
 	continue
     }
 
-    # project_nrs contains a space separated list
-    if {[info exists cost_project_nrs] && "" eq $project_nrs} { set project_nrs $cost_project_nrs }
-    if {"" ne $project_nrs} {
-	if {[catch {
-	    set result [im_csv_import_parser_project_parent_nrs $project_nrs]
-	} err_msg]} {
-	    if {$ns_write_p} { ns_write "<li><font color=red>Error: We have found an error parsing Project NRs '$project_nrs'.<pre>\n$err_msg</pre>" }
-	    continue
-	}
-	set cost_project_id [lindex $result 0]
-	set err [lindex $result 1]
-	if {"" != $err} {
-	    if {$ns_write_p} { ns_write "<li><font color=red>Error: <pre>$err</pre></font>\n" }
-	    continue
-	}
-    }
-
-
     if {"" eq $currency} { 
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find currency, using default currency='$default_currency'</font>\n" }
 	set currency $default_currency
@@ -452,7 +433,7 @@ foreach csv_line_fields $values_list_of_lists {
 
 			:cost_name,			-- Unique name of cost
 			null, 		    		-- parent_id (?)
-			:cost_project_id,		-- cost container project
+			:project_id,			-- cost container project
 			:customer_id,			-- who will receive the money?
 			:provider_id,			-- who pays?
 			null,				-- investment_id (not supported)
@@ -510,7 +491,7 @@ foreach csv_line_fields $values_list_of_lists {
 		update im_costs set
 			cost_name		= :cost_name,
 			cost_nr			= :cost_nr,
-			project_id		= :cost_project_id,
+			project_id		= :project_id,
 
 			customer_id		= :customer_id,
 			provider_id		= :provider_id,
