@@ -533,6 +533,38 @@ foreach csv_line_fields $values_list_of_lists {
 	continue	    
     }
 
+
+    # -------------------------------------------------------
+    # Associate financial document with projects
+    #
+    if {"" ne $project_id} {
+	set rel_exists_p [db_string rel_exists_p "
+                select  count(*)
+                from    acs_rels r,
+                        im_projects p,
+                        im_projects sub_p
+                where   p.project_id = :project_id and
+                        sub_p.tree_sortkey between p.tree_sortkey and tree_right(p.tree_sortkey) and
+                        r.object_id_one = sub_p.project_id and
+                        r.object_id_two = :invoice_id
+        "]
+
+	if {!$v_rel_exists_p} {
+	    set rel_id [db_exec_plsql create_rel "
+		select acs_rel__new (
+			null,             -- rel_id
+             		'relationship',   -- rel_type
+             		:project_id,      -- object_id_one
+             		:cost_id,      -- object_id_two
+             		null,             -- context_id
+             		null,             -- creation_user
+             		null             -- creation_ip
+      		)
+	    "]
+	}
+    }
+
+
     # -------------------------------------------------------
     # Import DynFields    
     set cost_dynfield_updates {}
