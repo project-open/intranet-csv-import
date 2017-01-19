@@ -549,7 +549,7 @@ foreach csv_line_fields $values_list_of_lists {
                         r.object_id_two = :cost_id
         "]
 
-	if {!$v_rel_exists_p} {
+	if {!$rel_exists_p} {
 	    set rel_id [db_exec_plsql create_rel "
 		select acs_rel__new (
 			null,             -- rel_id
