@@ -612,6 +612,13 @@ foreach csv_line_fields $values_list_of_lists {
     if {$ns_write_p} { ns_write "<li>Going to write audit log.\n" }
     im_audit -object_id $cost_id
 
+
+
+    # ---------------------------------------------------------------
+    # Update the invoice value
+    im_invoice_update_rounded_amount -invoice_id $cost_id -discount_perc 0 -surcharge_perc 0
+
+
 }
 
 
