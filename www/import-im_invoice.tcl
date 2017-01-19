@@ -530,6 +530,7 @@ foreach csv_line_fields $values_list_of_lists {
 			cost_center_id		= :cost_center_id,
 			cause_object_id		= :cause_object_id,
 			vat_type_id		= :vat_type_id,
+			template_id		= :template_id,
 
 			note			= :note,
 			description		= :description
