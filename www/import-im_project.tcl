@@ -153,11 +153,8 @@ foreach csv_line_fields $values_list_of_lists {
     set customer_contact_id	""
     set customer_project_nr	""
     set confirm_date		""
-    set expected_quality_id	""
     set milestone_p		""
     set sort_order		""
-    set source_language_id	""
-    set subject_area_id		""
     set template_p		""
 
     set cost_center		""
