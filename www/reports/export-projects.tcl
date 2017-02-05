@@ -170,7 +170,7 @@ set dynfield_sql "
 		and aa.attribute_name not like 'default%'
 		and aa.attribute_name not in (
 			'project_nr', 'project_path', 'parent_id', 'project_name', 'company_id', 'project_status_id', 'project_type_id',
-			'percent_completed', 'project_budget', 'project_budget_hours', 'project_budget_currency'
+			'percent_completed', 'project_budget', 'project_budget_hours'
 		)
 	order by
 		aa.object_type,

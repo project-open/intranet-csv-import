@@ -143,7 +143,6 @@ foreach csv_line_fields $values_list_of_lists {
     set on_track_status 	""
 
     set project_budget		""
-    set project_budget_currency	""
     set project_budget_hours	""
 
     set description		""
@@ -431,7 +430,6 @@ foreach csv_line_fields $values_list_of_lists {
 			sort_order		= :sort_order,
 			on_track_status_id	= :on_track_status_id,
 			project_budget		= :project_budget,
-			project_budget_currency	= :project_budget_currency,
 			project_budget_hours	= :project_budget_hours,
 			company_contact_id	= :customer_contact_id,
 			company_project_nr	= :customer_project_nr,
