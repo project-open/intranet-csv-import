@@ -21,7 +21,8 @@
 	      im_risk "Risk" \
 	      im_hour "Timesheet Hour" \
 	      im_ticket "Ticket" \
-	] $object_type] %>
+	      rels "Relationships (e.g. Projects/Tasks<->Members" \
+	    ] $object_type] %>
 	</td>
      </tr>
      <tr> 

@@ -7,6 +7,7 @@
 
 ad_library {
     @author frank.bergmann@project-open.com
+    @autor  klaus.hofeditz@project-open.com
 }
 
 # ---------------------------------------------------------------------
@@ -18,6 +19,19 @@ ad_library {
 # - Parser
 # - Parser arguments (important for im_category type)
 # ---------------------------------------------------------------------
+
+ad_proc -public im_csv_import_guess_rels { } {} {
+    set mapping {
+	{object_type_1                    "Object Type 1"             no_change                "" 			  }
+	{object_name_1                    "Object Name 1"             user_name                "" 			  }
+	{object_type_2                    "Object Type 2"             no_change                "" 			  }
+	{object_name_2                    "Object Name 2"             project_parent_nrs       ""			  }
+	{role_id                    	  "Role"             	      category                 "Intranet Biz Object Role" }
+	{percentage                    	  "Percentage"                number	               "" 			  }
+    }
+    return $mapping
+}
+
 
 ad_proc -public im_csv_import_guess_person { } {} {
     set mapping {
@@ -198,7 +212,7 @@ ad_proc -public im_csv_import_guess_im_timesheet_task { } {} {
 	{note "Note" no_change ""}
 	{description "Description" no_change ""}
 	{material_id "Material" material ""}
-	{uom_id "" category "Intranet UoM"}	
+	{uom_id "Unit of measure" category "Intranet UoM"}	
         {planned_units "Planned Units" number ""}
 	{billable_units "Billable Units" number ""}
 	{cost_center_id "Cost Center" cost_center ""}
@@ -298,7 +312,7 @@ ad_proc -public im_csv_import_parsers {
     Returns the list of available parsers
 } {
     switch $object_type {
-	im_project - im_company - im_conf_item - im_cost - im_invoice - im_risk - im_timesheet_task - im_ticket - im_hour - person {
+	im_project - im_company - im_conf_item - im_cost - im_invoice - im_risk - im_timesheet_task - im_ticket - im_hour - person - rels {
 	    set parsers {
 		boolean		        "Boolean"
 		category		"Category ID from Category Name"

@@ -245,6 +245,7 @@ foreach csv_line_fields $values_list_of_lists {
     # -------------------------------------------------------
     # Specific field transformations
 
+
     # project_name needs to be there
     if {"" == $project_name} {
 	if {$ns_write_p} {
@@ -276,7 +277,7 @@ foreach csv_line_fields $values_list_of_lists {
 	if {$ns_write_p} { ns_write "<li><font color=red>Error: <pre>$err</pre></font>\n" }
 	continue
     }
-
+    
     # Status is a required field
     set project_status_id [im_id_from_category $project_status "Intranet Project Status"]
     if {"" == $project_status_id} {
@@ -291,16 +292,17 @@ foreach csv_line_fields $values_list_of_lists {
 	set project_type_id [im_project_type_other]
     }
 
-    # start_date and end_date are required fields
-    if {"" == $start_date} {
-	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project start_date, using today.</font>\n" }
-	set start_date [db_string today "select now()::date from dual"]
+    # start_date and end_date are required fields for projects, not tasks
+    if { $project_type_id != 100 } {
+	if {"" == $start_date} {
+	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project start_date, using today.</font>\n" }
+	    set start_date [db_string today "select now()::date from dual"]
+	}
+	if {"" == $end_date} {
+	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project end_date, using today.</font>\n" }
+	    set end_date [db_string today "select now()::date from dual"]
+	}
     }
-    if {"" == $end_date} {
-	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project end_date, using today.</font>\n" }
-	set end_date [db_string today "select now()::date from dual"]
-    }
-
 
     # On track status can be NULL without problems
     set on_track_status_id [im_id_from_category [list $on_track_status] "Intranet Project On Track Status"]
@@ -317,11 +319,25 @@ foreach csv_line_fields $values_list_of_lists {
     set company_id $company_id
 
     if {"" == $company_id } { 
-	set company_id [im_company_internal]
-	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find customer_name='$customer_name', using 'internal' customer</font>\n" }
+	if { 100 == $project_type_id } {
+	    # Get company_id from top_project 
+	    set sql "
+	    select company_id from im_projects where project_id in (
+		select  parent.project_id
+		from    im_projects parent,
+		im_projects child
+	    	where   child.project_id = :parent_id and
+	                parent.tree_sortkey = tree_root_key(child.tree_sortkey)
+		)
+	    "
+	    set company_id [db_string get_company_id $sql -default 0]
+	} else {
+	    set company_id [im_company_internal]
+	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find customer_name='$customer_name', using 'internal' customer</font>\n" }
+	}
     }
 
-    if { "" eq $project_lead_id } {
+    if { "" eq $project_lead_id && 100 != $project_type_id } {
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: No project manager found. Will try to create project w/o PM. </font>\n" }
     }
 
@@ -526,9 +542,7 @@ foreach csv_line_fields $values_list_of_lists {
 		where
 			task_id = :project_id
 	"
-
     }
-
 
     # -------------------------------------------------------
     # Import DynFields    
