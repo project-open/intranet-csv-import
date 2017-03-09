@@ -14,6 +14,7 @@ ad_page_contract {
     { import_filename "" }
     { mapping_name "" }
     { ns_write_p 1 }
+    { overwrite_existing_company_attributes_p 0 }
     column:array
     map:array
     parser:array
@@ -317,6 +318,11 @@ foreach csv_line_fields $values_list_of_lists {
     } else {
 	if {$ns_write_p} { ns_write "<li>Company already exists: name='$company_name', id='$company_id'\n" }
 
+	if { !$overwrite_existing_company_attributes_p } {
+	    if {$ns_write_p} { ns_write "<li>Skipping update - no attributes will be updated or added \n" }
+	    continue
+	}
+	
 	db_1row company_info "
                 select main_office_id
                 from im_companies

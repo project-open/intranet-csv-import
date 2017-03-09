@@ -23,6 +23,61 @@
     </tr>
     </table>
 </if> 
+<if @object_type@ eq person>
+
+    <%
+    foreach profile_tuple [im_profile::profile_options_all] {
+            set profile_name [lindex $profile_tuple 0]
+	    regsub -all {\[} $profile_name {} profile_name
+	    regsub -all {\]} $profile_name {} profile_name
+	    set profile_arr($profile_name) [lindex $profile_tuple 1]
+    }
+
+    %>
+    <table cellpadding="5" cellspacing="5" border="0">
+	<tr>	   
+    		<td>	   
+		<h2>Settings:</h2>
+		<table cellpadding="0" cellspacing="0" border="0">
+		    <tr>
+		        <td valign="top"><input type="checkbox" name="overwrite_existing_user_attributes_p" value="1">&nbsp;</td>
+		        <td valign="top"><strong>Should already existing user attributes be overwritten?</strong><br/>Check to overwrite.</td>
+		    </tr>
+		    </table>
+		</td>
+		<td>
+		<h2>Please note:</h2>
+			<ul><li>Accepted ]po[ Profiles: <%=[array names profile_arr]%></li></ul>		
+		</td>
+    	</tr>
+    </table>
+
+</if>
+
+<if @object_type@ eq im_company>
+    <table cellpadding="5" cellspacing="5" border="0">
+	<tr>	   
+    		<td>	   
+		<h2>Settings:</h2>
+		<table cellpadding="0" cellspacing="0" border="0">
+		    <tr>
+		        <td valign="top"><input type="checkbox" name="overwrite_existing_company_attributes_p" value="1">&nbsp;</td>
+		        <td valign="top"><strong>Should already existing company attributes be overwritten?</strong><br/>Check to overwrite.</td>
+		    </tr>
+		    </table>
+		</td>
+		<!-- 
+		<td>
+		<h2>Please note:</h2>
+			<ul><li></li></ul>		
+		</td>
+		-->
+    	</tr>
+    </table>
+
+</if>
+
+
 <br/>
 <h2>Mapping</h2>
      <table>

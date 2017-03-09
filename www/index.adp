@@ -11,6 +11,7 @@
 	<td>#intranet-csv-import.Object_Type#</td>
 	<td> 
 	<%= [im_select object_type [list \
+	      person "Person" \
 	      im_company "Company" \
 	      im_conf_item "Configuration Item" \
 	      im_invoice "Financial Document" \
@@ -43,13 +44,22 @@
        Column names are case insensitive and spaces may be replaced by "_" (underscore characters).</p>
   </td>
 </tr>
-
 <tr>
   <th colspan=2><nobr>Object Type</nobr></th>
   <th><nobr>Example CSV</nobr></th>
   <th>Available Column Headers</th>
 </tr>
-
+<tr>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'person'"]] %></td>
+  <td>Person</td>
+  <td align=center>
+    <a href="examples/person.csv"><%= [im_gif csv-doc] %></a>
+  </td>
+  <td>
+    Person import has BETA status. Please <a href="http://www.project-open.com/en/contact">contact us</a> for updates.<br/>
+    Alternatively you can use the old facilities for <a href="<%= [export_vars -base "/intranet/users/upload-contacts" {return_url}] %>">importing users from MS-Outlook exports</a>.
+  </td>
+</tr>
 <tr>
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_user_absence'"]] %></td>
   <td>Absence</td>
@@ -119,19 +129,6 @@
     VAT, TAX, Description, Note, VAT Type, Cause Object, Customer Contact, Payment Method, Invoice Office<br>
     Cost Item <a href="/intranet-dynfield/object-type?object_type=im_invoice">DynFields</a> 
     are also recognized by their "pretty name" or "column name".</p>
-  </td>
-</tr>
-
-<tr>
-  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'person'"]] %></td>
-  <td>Person</td>
-  <td align=center>
-  </td>
-  <td>
-    Person import is under active development at the moment.<br>
-    Please <a href="http://www.project-open.com/en/contact">contact us</a> for the current status or updates.
-    Meanwhile, please use the old facilities for 
-    <a href="<%= [export_vars -base "/intranet/users/upload-contacts" {return_url}] %>">importing users from MS-Outlook exports</a>.
   </td>
 </tr>
 

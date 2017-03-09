@@ -113,8 +113,6 @@ set object_type_pairs [list "" ""]
 foreach field $object_fields { lappend object_type_pairs [string tolower $field] [string tolower $field] }
 lappend object_type_pairs "hard_coded" "Hard Coded Functionality"
 
-
-
 # --------------------------------------------------
 # Main Loop
 # Try to guess the mapping and the parser for each field
@@ -136,12 +134,13 @@ foreach header_name $headers {
     }
 
     # Guess the object's field to which to map.
-    set object_field_best_guess [im_csv_import_guess_map -object_type $object_type -field_name $header_name -sample_values $parser_sample_values]
+    set object_field_best_guess [im_csv_import_guess_map -object_type $object_type -field_name $header_name -sample_values $parser_sample_values ]
     ns_log Notice "import-2: im_csv_import_guess_map -object_type $object_type -field_name $header_name -sample_values {$parser_sample_values}"
     ns_log Notice "import-2: => $object_field_best_guess"
     set guess_parser_field_name $header_name
-    if {"" != $object_field_best_guess} { set guess_parser_field_name $object_field_best_guess }
-
+    if {"" != $object_field_best_guess} { 
+	set guess_parser_field_name $object_field_best_guess 
+    } 
 
     # Guess the parser how to convert the field values
     set defs [im_csv_import_guess_parser -object_type $object_type -field_name $guess_parser_field_name -sample_values $parser_sample_values]
@@ -150,6 +149,7 @@ foreach header_name $headers {
     set default_parser [lindex $defs 0]
     set default_parser_args [lindex $defs 1]
     set override_map [lindex $defs 2]
+
     set parser [im_select parser.$cnt $parser_pairs $default_parser]
     set args "<input type=text name=parser_args.$cnt value=\"$default_parser_args\" size=\"40\">\n"
 
@@ -157,6 +157,7 @@ foreach header_name $headers {
     set default_map $object_field_best_guess
     if {"" != $override_map} { set default_map $override_map }
     set map [im_select map.$cnt $object_type_pairs $default_map]
+
 
     ns_log Notice "import-2: header_name=$header_name, default_map=$default_map, override_map=$override_map, map=$map"
 
