@@ -78,6 +78,30 @@
 </if>
 
 
+<if @object_type@ eq im_invoice>
+    <table cellpadding="5" cellspacing="5" border="0">
+	<tr>	   
+    		<td>	   
+		<h2>Settings:</h2>
+		<table cellpadding="0" cellspacing="0" border="0">
+		    <tr>
+		        <td valign="top"><input type="checkbox" name="overwrite_existing_invoice_attributes_p" value="1">&nbsp;</td>
+		        <td valign="top"><strong>Should already existing invoice attributes be overwritten?</strong><br/>Check to overwrite.</td>
+		    </tr>
+		    </table>
+		</td>
+		<!-- 
+		<td>
+		<h2>Please note:</h2>
+			<ul><li></li></ul>		
+		</td>
+		-->
+    	</tr>
+    </table>
+
+</if>
+
+
 <br/>
 <h2>Mapping</h2>
      <table>

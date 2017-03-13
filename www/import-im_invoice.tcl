@@ -15,6 +15,7 @@ ad_page_contract {
     { import_filename "" }
     { mapping_name "" }
     { ns_write_p 1 }
+    { overwrite_existing_invoice_attributes_p 0 }
     column:array
     map:array
     parser:array
@@ -173,7 +174,10 @@ foreach csv_line_fields $values_list_of_lists {
     set item_uom_id             ""
     set price_per_unit          ""
     set item_material_id        ""
-
+    set item_type_id            ""
+    set item_status_id          ""        
+    set task_id			""
+    
     foreach attribute_name $attribute_names {
 	set $attribute_name	""
     }
@@ -243,11 +247,9 @@ foreach csv_line_fields $values_list_of_lists {
 
     if {$ns_write_p} { ns_write "<li>Before cost_nr: name=$cost_name, nr=$cost_nr</font>\n" }
 
-
     # Use the current cost_name in the next line.
     # That's useful for invoice_items right after the respective Financial Document
     if {"" ne $cost_name} { set old_cost_name $cost_name }
-
 
     # -------------------------------------------------------
     # Check if the cost already exists
@@ -258,7 +260,6 @@ foreach csv_line_fields $values_list_of_lists {
 	set cost_id [db_string cost_id "select cost_id from im_costs where lower(trim(cost_name)) = lower(trim(:cost_name))" -default ""]
     }
     if {$ns_write_p} { ns_write "<li>id=$cost_id, name='$cost_name', nr='$cost_nr'\n" }
-
 
 
     # -------------------------------------------------------
@@ -310,10 +311,10 @@ foreach csv_line_fields $values_list_of_lists {
 	    db_dml insert_item "
 		insert into im_invoice_items (
 			item_id,
-			invoice_id, sort_order, item_name, item_units, item_uom_id, price_per_unit, item_material_id, currency
+			invoice_id, sort_order, item_name, item_units, item_uom_id, price_per_unit, item_material_id, item_type_id, item_status_id, currency
 		) values (
 			nextval('im_invoice_items_seq'),
-			:cost_id, :sort_order, :item_name, :item_units, :item_uom_id, :price_per_unit, :item_material_id, :currency
+			:cost_id, :sort_order, :item_name, :item_units, :item_uom_id, :price_per_unit, :item_material_id, :item_type_id, :item_status_id, :currency
 		)
 	    "
 	} else {
@@ -328,6 +329,8 @@ foreach csv_line_fields $values_list_of_lists {
 			item_uom_id = :item_uom_id, 
 			price_per_unit = :price_per_unit, 
 			item_material_id = :item_material_id, 
+			item_type_id = :item_type_id,
+			item_status_id = :item_status_id,
 			currency = :currency
 		where
 			item_id = :item_id;
@@ -338,11 +341,9 @@ foreach csv_line_fields $values_list_of_lists {
 	continue
     }
 
-
     # ------------------------------------------------------------------------
     # We have found a line with a normal invoice (quote, invoice, purchase order, ...)
     #
-
 
     # -------------------------------------------------------
     # Specific field transformations
@@ -351,7 +352,7 @@ foreach csv_line_fields $values_list_of_lists {
     if {"" == $cost_name} {
 	if {$ns_write_p} {
 	    ns_write "<li><font color=red>Error: We have found an empty 'Cost Name' in line $cnt.<br>
-	        Please correct the CSV file. Every costs needs to have a unique Cost Name.</font>\n"
+	        Skipped record. Please correct the CSV file. Every costs needs to have a unique Cost Name.</font>\n"
 	}
 	continue
     }
@@ -364,7 +365,7 @@ foreach csv_line_fields $values_list_of_lists {
     if {"" == $cost_type_id} {
 	if {$ns_write_p} { 
 	    ns_write "<li><font color=red>Error: We have found an empty 'Cost Type' in line $cnt.<br>
-	        Please correct the CSV file.</font>\n"
+	        Skipped record. Please correct the CSV file.</font>\n"
 	}
 	continue
     }
@@ -385,14 +386,14 @@ foreach csv_line_fields $values_list_of_lists {
     if {"" == $provider_id} {
 	if {$ns_write_p} { 
 	    ns_write "<li><font color=red>Error: We have found an empty 'Provider' in line $cnt.<br>
-	        Please correct the CSV file.</font>\n"
+	        Skipped record. Please correct the CSV file.</font>\n"
 	}
 	continue
     }
     if {"" == $customer_id} {
 	if {$ns_write_p} { 
 	    ns_write "<li><font color=red>Error: We have found an empty 'Customer' in line $cnt.<br>
-	        Please correct the CSV file.</font>\n"
+	        Skipped record. Please correct the CSV file.</font>\n"
 	}
 	continue
     }
@@ -481,9 +482,12 @@ foreach csv_line_fields $values_list_of_lists {
 	im_audit -object_id $cost_id -action after_create
 
     } else {
-	if {$ns_write_p} { ns_write "<li>Cost already exists: name='$cost_name', nr='$cost_nr', id='$cost_id'\n" }
+	if {$ns_write_p} { ns_write "<li>Cost already exists: name='$cost_name', nr='$cost_nr', id='$cost_id'</li>\n" }
+	if { !$overwrite_existing_invoice_attributes_p } {
+	    if {$ns_write_p} { ns_write "<li>You have choosen not to overwrite/update already existing objects. Skipping record.</li>\n" }	    
+	    continue
+	}
     }
-
 
     if {$ns_write_p} { ns_write "<li>Going to update the cost.\n" }
     if {[catch {

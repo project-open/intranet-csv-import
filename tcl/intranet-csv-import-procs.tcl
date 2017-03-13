@@ -22,12 +22,12 @@ ad_library {
 
 ad_proc -public im_csv_import_guess_rels { } {} {
     set mapping {
-	{object_type_1                    "Object Type 1"             no_change                "" 			  }
-	{object_name_1                    "Object Name 1"             user_name                "" 			  }
-	{object_type_2                    "Object Type 2"             no_change                "" 			  }
-	{object_name_2                    "Object Name 2"             project_parent_nrs       ""			  }
-	{role_id                    	  "Role"             	      category                 "Intranet Biz Object Role" }
-	{percentage                    	  "Percentage"                number	               "" 			  }
+	{object_type_one                  "Object Type One"             no_change                "" 			  }
+	{object_id_one                    "Object Id One"               user_name                "" 			  }
+	{object_type_two                  "Object Type Two"             no_change                "" 			  }
+	{object_id_two                    "Object Id Two"               project_parent_nrs       ""			  }
+	{role_id                    	  "Role"             	        category                 "Intranet Biz Object Role" }
+	{percentage                    	  "Percentage"                  number	                 "" 			  }
     }
     return $mapping
 }
@@ -133,39 +133,53 @@ ad_proc -public im_csv_import_guess_im_invoice { } {} {
 	{project_id "Project Nr" project_parent_nrs ""}
 	{project_id "Project Nrs" project_parent_nrs ""}
 	{project_id "Cost Project Nrs" project_parent_nrs ""}
+	{project "Cost Project Nrs" project_parent_nrs ""}
+	{invoice_nr "Invoice Nr." no_change ""}	
 	{cost_name "Name" no_change ""}
 	{cost_name "Cost Name" no_change ""}
 	{cost_nr "Nr" no_change ""}
 	{cost_nr "Cost Nr" no_change ""}
 	{cost_center_id "Cost Center" cost_center ""}
+	{cost_center "Cost Center" cost_center ""}	
 	{cost_status_id "Status" category "Intranet Cost Status"}
 	{cost_status_id "Cost Status" category "Intranet Cost Status"}
 	{cost_type_id "Type" category "Intranet Cost Type"}
 	{cost_type_id "Cost Type" category "Intranet Cost Type"}
 	{customer_id "Customer" company_name ""}
 	{provider_id "Provider" company_name ""}
+	{customer "Customer" company_name ""}
+	{provider "Provider" company_name ""}	
 	{effective_date "Effective Date" date ""}
 	{amount "Amount" number ""}
 	{currency "Currency" no_change ""}
 	{payment_days "Payment Days" number ""}
 	{paid_amount "Paid Amount" number ""}
+	{parent_nrs "" number ""}
 	{vat "VAT" number ""}
 	{tax "TAX" number ""}
 	{description "Description" no_change ""}
 	{note "Note" no_change ""}
 	{vat_type_id "VAT Type" category "Intranet VAT Type"}
 	{company_contact_id "Customer Contact" user_name ""}
+	{company_contact "Customer Contact" user_name ""}	
 	{cause_object_id "Cause Object" user_name ""}
 	{payment_method_id "Payment Method" category "Intranet Invoice Payment Method"}
 	{template_id "Template" category "Intranet Cost Template"}
 	{invoice_office_id "Invoice Office" office_name ""}
+	{office "Invoice Office" office_name ""}	
 	{item_name "Item Name" no_change ""}
 	{sort_order "Item Sort Order" number ""}
 	{item_units "Item Units" number ""}
 	{price_per_unit "Item Price" number ""}
 	{price_per_unit "Price Per Unit" number ""}
 	{item_uom_id "Item UoM" category "Intranet UoM"}
+	{item_uom "Item UoM" category "Intranet UoM"}	
 	{item_material_id "Item Material" material ""}
+	{item_material "Item Material" material ""}	
+	{item_type_id "Item Type Id" no_change ""}
+	{item_status_id "Item Status Id" no_change ""}
+        {task "Task Id" project_parent_nrs ""}
+        {task_id "Task Id" project_parent_nrs ""}
     }
     return $mapping
 }
