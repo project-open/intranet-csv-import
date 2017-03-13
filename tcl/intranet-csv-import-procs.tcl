@@ -20,6 +20,28 @@ ad_library {
 # - Parser arguments (important for im_category type)
 # ---------------------------------------------------------------------
 
+
+ad_proc -public im_csv_import_guess_im_expense_bundle { } {} {
+    set mapping {
+        {expense_name "Cost Name" no_change ""}
+        {expense_date "Expense Date" date ""}
+        {effective_date "Effective Date" date ""}
+        {expence_currency "Expense Currency" no_change ""}
+	{parent_nrs "Parent Nrs." project_parent_nrs "" }
+        {cost_type_id "Cost Type" category "Intranet Cost Type"}
+        {cost_type "Cost Type" category "Intranet Cost Type"}
+        {cost_status "Cost Status" category "Intranet Cost Status"}
+        {cost_status_id "Cost Status" category "Intranet Cost Status"}
+        {amount "Amount" number ""}
+        {vat "VAT" number ""}
+        {note "Note" no_change ""}
+        {customer_id "Customer" company_name ""}
+        {provider_id "Provider" user_name ""}
+	{bundle_id_old "Bundle Id Old" no_change ""}  
+    }
+    return $mapping
+}
+
 ad_proc -public im_csv_import_guess_rels { } {} {
     set mapping {
 	{object_type_one                  "Object Type One"             no_change                "" 			  }
@@ -326,7 +348,7 @@ ad_proc -public im_csv_import_parsers {
     Returns the list of available parsers
 } {
     switch $object_type {
-	im_project - im_company - im_conf_item - im_cost - im_invoice - im_risk - im_timesheet_task - im_ticket - im_hour - person - rels {
+	im_project - im_company - im_conf_item - im_cost - im_invoice - im_risk - im_timesheet_task - im_ticket - im_hour - person - im_expense_bundle - im_expense - rels {
 	    set parsers {
 		boolean		        "Boolean"
 		category		"Category ID from Category Name"
