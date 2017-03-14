@@ -15,7 +15,7 @@ ad_page_contract {
     { import_filename "" }
     { mapping_name "" }
     { ns_write_p 1 }
-    { overwrite_existing_invoice_attributes_p 0 }
+    { overwrite_existing_expense_item_attributes_p 0 }
     column:array
     map:array
     parser:array
@@ -134,6 +134,24 @@ foreach csv_line_fields $values_list_of_lists {
     set reimbursable                ""
     set expense_payment_type_id     ""
 
+    # im_costs values
+    set cost_name               ""
+    set cost_nr                 ""
+    set effective_date          ""
+    set expense_currency        ""
+    set cost_type_id            ""
+    set cost_type               ""
+    set cost_status_id          ""
+    set cost_status             ""
+    set amount                  ""
+    set vat                     ""
+    set customer_name           ""
+    set customer_id             ""
+    set provider_name           ""
+    set provider_id             ""
+    set project_id              ""
+    set bundle_id_old           ""   
+   
     foreach attribute_name $attribute_names {
 	set $attribute_name	""
     }
@@ -201,28 +219,32 @@ foreach csv_line_fields $values_list_of_lists {
 	incr i
     }
 
-    if {$ns_write_p} { ns_write "<li>Before cost_nr: name=$cost_name, nr=$cost_nr</font>\n" }
-
-    # Use the current cost_name in the next line.
-    # That's useful for invoice_items right after the respective Financial Document
-    if {"" ne $cost_name} { set old_cost_name $cost_name }
+    # if {$ns_write_p} { ns_write "<li>Before cost_nr: name=$cost_name, nr=$cost_nr</font>\n" }
 
     # -------------------------------------------------------
+    # Validation 
+
     # Check if the cost already exists
+    set sql "
+	select 	cost_id 
+	from 	im_costs c, im_expenses e
+	where 	c.amount = :amount 
+		and e.external_company_name = :external_company_name 
+		and e.expense_type_id = :expense_type_id
+		and c.effective_date = :expense_date
+		and c.cost_id = e.expense_id
+    "
+    set cost_id [db_string cost_id $sql -default ""]
 
-    # Check if we find the same cost by name with it's project.
-    set cost_id [db_string cost_id "select cost_id from im_costs where lower(trim(cost_nr)) = lower(trim(:cost_nr))" -default ""]
-    if {"" eq $cost_id} {
-	set cost_id [db_string cost_id "select cost_id from im_costs where lower(trim(cost_name)) = lower(trim(:cost_name))" -default ""]
-    }
-    if {$ns_write_p} { ns_write "<li>id=$cost_id, name='$cost_name', nr='$cost_nr'\n" }
+    if { "" ne $cost_id && !$overwrite_existing_expense_item_attributes_p } {
+	if {$ns_write_p} {
+	    ns_write "<li><font color=red>Error: We have found an existing Expense:<br/><br/> id:$cost_id<br/>Amount:'$amount'<br/>Note:$note<br/>External Company Name: $external_company_name<br/>expense_type_id: $expense_type_id, expense_date: $expense_date <br/> ...and will not overwrite any of attributes.<br>Skipped record</font>\n"
+	}
+	continue
+    } 
 
-
-    # -------------------------------------------------------
-    # Specific field transformations
-
-    # cost_name needs to be there
-    if {"" == $cost_name} {
+    # cost_name is mandatory
+    if {"" == $expense_name} {
 	if {$ns_write_p} {
 	    ns_write "<li><font color=red>Error: We have found an empty 'Cost Name' in line $cnt.<br>
 	        Skipped record. Please correct the CSV file. Every costs needs to have a unique Cost Name.</font>\n"
@@ -230,48 +252,75 @@ foreach csv_line_fields $values_list_of_lists {
 	continue
     }
 
-    # cost_nr needs to be there
-    if {"" eq $cost_nr} {
-	set cost_nr [regsub {[^a-z0-9_]} [string trim [string tolower $cost_name]] "_"]
-    }
-
-    if {"" == $cost_type_id} {
-	if {$ns_write_p} { 
-	    ns_write "<li><font color=red>Error: We have found an empty 'Cost Type' in line $cnt.<br>
-	        Skipped record. Please correct the CSV file.</font>\n"
+    # Expense Items only!
+    if { [im_cost_type_expense_item] != $cost_type_id || "" eq $cost_type_id } {
+	if {$ns_write_p} {
+	    ns_write "<li><font color=red>Error: We have found an empty cost type or a cost type id that is different from: [im_cost_type_expense_item] (Expense)<br>
+                Skipped record - please correct the CSV file.</font>\n"
 	}
 	continue
     }
-
+       
     # Status is optional
     if {"" == $cost_status_id} {
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find cost status '$cost_status', using default status 'Created'</font>\n" }
 	set cost_status_id [im_cost_status_created]
     }
 
-    if {"" eq $currency} { 
-	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find currency, using default currency='$default_currency'</font>\n" }
-	set currency $default_currency
+    # VAT is optional
+    if { "" eq $vat } { 
+	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find a value for VAT, setting VAT to '0'</font>\n" }
+	set vat 0
     }
+    
+    # Currency is optional
+    if { "" eq $expense_currency } { 
+	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find currency, using default currency='$default_currency'</font>\n" }
+	set expense_currency $default_currency
+    }
+
+    # Amount is mandatory
+    if {"" == $amount} {
+	if {$ns_write_p} { ns_write "<li><font color=red>Error: Didn't find a value for expense amount. Skipping record.</font>\n" }
+	continue
+    }
+
+    # Provider is mandatory
+    if {"" == $provider_id} {
+	if {$ns_write_p} {
+	    ns_write "<li><font color=red>Error: We have found an empty 'Provider' in line $cnt.<br>Skipped record. Please correct the CSV file.</font>\n"
+	}
+	continue
+    }
+
+    # expense_type_id is mandatory
+    if {"" == $expense_type_id} {
+	if {$ns_write_p} {
+	    ns_write "<li><font color=red>Error: We have found an empty 'Expense Type ID' in line $cnt.<br>
+	        Skipped record. Please correct the CSV file.</font>\n"
+	}
+	continue
+    }    
 
     # -------------------------------------------------------
     # Create a new expense item
-    if {  } {
+    if { "" == $cost_id } {
+	if {$ns_write_p} { ns_write "<li><font color=green>No existing expense found, creating new one</font></li>" }
 	if {[catch {
 	    set cost_id [db_string new_cost "
                 select im_expense__new (
-                        :expense_id,                    -- expense_id
+                        null,		                -- expense_id
                         'im_expense',                   -- object_type
                         now(),                          -- creation_date
-                        :user_id_from_search,           -- creation_user
+                        :current_user_id,  	        -- creation_user
                         '[ad_conn peeraddr]',           -- creation_ip
                         null,                           -- context_id
                         :expense_name,                  -- expense_name
                         :project_id,                    -- project_id
                         :expense_date,                  -- expense_date now()
-                        :currency,                      -- expense_currency default ''EUR''
+                        :expense_currency,              -- expense_currency default ''EUR''
                         null,                           -- expense_template_id default null
-                        :cost_status,                   -- expense_status_id default 3802
+                        :cost_status_id,                -- expense_status_id default 3802
                         :cost_type_id,                  -- expense_type_id default 3720
                         30,                             -- payment_days default 30
                         :amount,                        -- amount
@@ -295,22 +344,33 @@ foreach csv_line_fields $values_list_of_lists {
 	    continue
 	}
 
+	# Update bundle_id if expense has been part of a bundle
+	if { "" != $bundle_id_old } {
+	    if {[catch {
+		# Note: We have used im_costs::investment_id to store the cost_id of the expense bundle. To make sure investment_id hasn't been used otherwise, we also check the cost_type 
+		set bundle_id_new [db_string get_bundle_id "select cost_id from im_costs where investment_id = :bundle_id_old and cost_type_id = [im_cost_type_expense_bundle]" -default 0]
+		if { 0 != $bundle_id_new } {
+		    if {$ns_write_p} { ns_write "<li>Setting expense bundle (id: $bundle_id_new) for expense (id: $cost_id)\n</li>\n" }
+		    db_dml set_bundle_id "update im_expenses set bundle_id = :bundle_id_new where expense_id = :cost_id"
+		} else {
+		    if {$ns_write_p} { ns_write "<li><font color=red>Error: Can't find Expense Bundle for bundle_id: $bundle_id_old - Expense will not be assigned to bundle</font>\n" }
+		}
+	    } err_msg]} {
+		if {$ns_write_p} { ns_write "<li><font color=red>Error: Updating expense bundle:<br><pre>$err_msg</pre></font>\n" }
+	    }
+	}
+
 	# Write Audit Trail
 	im_audit -object_id $cost_id -action after_create
 
     } else {
-	if {$ns_write_p} { ns_write "<li>Cost already exists: name='$cost_name', nr='$cost_nr', id='$cost_id'</li>\n" }
-	if { !$overwrite_existing_invoice_attributes_p } {
-	    if {$ns_write_p} { ns_write "<li>You have choosen not to overwrite/update already existing objects. Skipping record.</li>\n" }	    
-	    continue
-	}
-    }
 
-    if {$ns_write_p} { ns_write "<li>Going to update the cost.\n" }
-    if {[catch {
-	db_dml update_cost "
+	if {$ns_write_p} { ns_write "<li>Cost already exists: name='$cost_name', nr='$cost_nr', id='$cost_id', going to update the cost.\n</li>\n" }
+
+	if {[catch {
+	    db_dml update_cost "
 		update im_costs set
-			cost_name		= :cost_name,
+			cost_name		= :expense_name,
 			cost_nr			= :cost_nr,
 			project_id		= :project_id,
 
@@ -322,7 +382,7 @@ foreach csv_line_fields $values_list_of_lists {
 
 			effective_date		= :effective_date,
 			amount			= :amount,
-			currency		= :currency,
+			currency		= :expense_currency,
 			vat			= :vat,
 			tax			= :tax,
 
@@ -338,26 +398,29 @@ foreach csv_line_fields $values_list_of_lists {
 			description		= :description
 		where
 			cost_id = :cost_id
-	"
+		"
 
-	db_dml update_invoice "
-		update im_invoices set
-			invoice_nr		= :cost_name,
-			company_contact_id	= :customer_contact_id,
-			payment_method_id	= :payment_method_id,
-			invoice_office_id	= :invoice_office_id
-		where
-			invoice_id = :cost_id
-	"
-    } err_msg]} {
-	if {$ns_write_p} { ns_write "<li><font color=red>Error: Error updating cost:<br><pre>$err_msg</pre></font>" }
-	continue	    
+	    # Update expense item 
+            db_dml update_expenses "
+	    	update im_expenses
+	    	set
+	    		external_company_name           = :external_company_name,
+	    		external_company_vat_number     = :external_company_vat_number,
+	    		receipt_reference               = :receipt_reference,
+	    		billable_p                      = :billable_p,
+	    		reimbursable                    = :reimbursable,
+	    		expense_payment_type_id         = :expense_payment_type_id,
+	        where
+	    		expense_id = :cost_id
+	    "
+	} err_msg]} {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Error: Error updating cost:<br><pre>$err_msg</pre></font>" }
+	    continue	    
+	}
     }
-
-
     # -------------------------------------------------------
     # Associate financial document with projects
-    #
+
     if {"" ne $project_id} {
 	set rel_exists_p [db_string rel_exists_p "
                 select  count(*)
@@ -384,7 +447,6 @@ foreach csv_line_fields $values_list_of_lists {
 	    "]
 	}
     }
-
 
     # -------------------------------------------------------
     # Import DynFields    
@@ -431,14 +493,14 @@ foreach csv_line_fields $values_list_of_lists {
     }
 
     if {$ns_write_p} { ns_write "<li>Going to write audit log.\n" }
-    im_audit -object_id $expense_id
+    im_audit -object_id $cost_id
 
 }
 
 if {$ns_write_p} {
     ns_write "</ul>\n"
     ns_write "<p>\n"
-    ns_write "<A HREF=$return_url>Return to Cost Page</A>\n"
+    ns_write "<a href='$return_url'>Return to main CVS import page</a>\n"
 }
 
 # ------------------------------------------------------------

@@ -407,7 +407,7 @@ foreach csv_line_fields $values_list_of_lists {
     # Create a new project if necessary
     if {"" == $project_id} {
 
-	if {$ns_write_p} { ns_write "<li>Going to create project: name='$project_name', nr='$project_nr'\n" }
+	if {$ns_write_p} { ns_write "<li><font color='green'>Going to create project: name='$project_name', nr='$project_nr'</font></li>" }
 	if {[catch {
 		set project_id [im_project::new \
 			    -project_name	$project_name \

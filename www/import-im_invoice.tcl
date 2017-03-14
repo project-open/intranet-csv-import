@@ -1,6 +1,10 @@
 # /packages/intranet-csv-import/www/import-im_invoice.tcl
 #
 
+# To-Do: 
+#	Add support for: 
+#		- template_id
+
 ad_page_contract {
     Starts the analysis process for the file imported
     @author frank.bergmann@project-open.com
@@ -253,14 +257,8 @@ foreach csv_line_fields $values_list_of_lists {
 
     # -------------------------------------------------------
     # Check if the cost already exists
-
-    # Check if we find the same cost by name with it's project.
-    set cost_id [db_string cost_id "select cost_id from im_costs where lower(trim(cost_nr)) = lower(trim(:cost_nr))" -default ""]
-    if {"" eq $cost_id} {
-	set cost_id [db_string cost_id "select cost_id from im_costs where lower(trim(cost_name)) = lower(trim(:cost_name))" -default ""]
-    }
+    set cost_id [db_string cost_id "select cost_id from im_costs where lower(trim(cost_name)) = lower(trim(:cost_name))" -default ""]
     if {$ns_write_p} { ns_write "<li>id=$cost_id, name='$cost_name', nr='$cost_nr'\n" }
-
 
     # -------------------------------------------------------
     # Check if we've got an invoice item
@@ -307,7 +305,7 @@ foreach csv_line_fields $values_list_of_lists {
 	}
 	if {"" eq $item_id} {
 	    # Item doesn't exist yet - insert
-	    if {$ns_write_p} { ns_write "<li>Going to create line: cost_name='$cost_name', item_name='$item_name'\n" }
+	    if {$ns_write_p} { ns_write "<li><font color=green>Going to create line: cost_name='$cost_name', item_name='$item_name'</font></li>" }
 	    db_dml insert_item "
 		insert into im_invoice_items (
 			item_id,
@@ -406,7 +404,7 @@ foreach csv_line_fields $values_list_of_lists {
     # -------------------------------------------------------
     # Create a new cost if necessary
     if {"" == $cost_id} {
-	if {$ns_write_p} { ns_write "<li>Going to create cost: name='$cost_name', nr='$cost_nr'\n" }
+	if {$ns_write_p} { ns_write "<li><font=green>Going to create financial document: name='$cost_name', nr='$cost_nr'</font></li>" }
 
 	switch $cost_type_id {
 	    3700 { set object_type "im_invoice" }
@@ -484,7 +482,7 @@ foreach csv_line_fields $values_list_of_lists {
     } else {
 	if {$ns_write_p} { ns_write "<li>Cost already exists: name='$cost_name', nr='$cost_nr', id='$cost_id'</li>\n" }
 	if { !$overwrite_existing_invoice_attributes_p } {
-	    if {$ns_write_p} { ns_write "<li>You have choosen not to overwrite/update already existing objects. Skipping record.</li>\n" }	    
+	    if {$ns_write_p} { ns_write "<li>You have choosen not to overwrite/update already existing objects. <b>Skipping record</b>.</li>\n" }	    
 	    continue
 	}
     }

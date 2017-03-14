@@ -1,5 +1,7 @@
 # /packages/intranet-csv-import/www/import-im_expense_bundle.tcl
 #
+# ToDo:
+# 	- provider_name not shown in expense_bundle 
 
 ad_page_contract {
     Starts the analysis process for the file imported
@@ -197,17 +199,16 @@ foreach csv_line_fields $values_list_of_lists {
 		ns_log Notice "import-im_invoice: Parser: '$p -args $p_args $val' -> $target_varname=$res, err=$err"
 		if {"" != $err} {
 		    if {$ns_write_p} { 
-			ns_write "<li><font color=brown>Warning: Error parsing field='$target_varname' using parser '$p':<pre>$err</pre></font>\n" 
+			ns_write "<li><font color=brown>Warning: Error parsing field='$target_varname' using parser '$p':<pre>$err</pre></font>\n</li>" 
 		    }
 		}
 		set $target_varname $res
 	    }
 	} err_msg]} {
 	    if {$ns_write_p} { 
-		ns_write "<li><font color=brown>Warning: Error parsing field='$target_varname' using parser '$p':<pre>$err_msg</pre></font>" 
+		ns_write "<li><font color=brown>Warning: Error parsing field='$target_varname' using parser '$p':<pre>$err_msg</pre></font></li>" 
 	    }
 	}
-	
 	incr i
     }
 
@@ -221,7 +222,7 @@ foreach csv_line_fields $values_list_of_lists {
     set cost_id [db_string cost_id "select cost_id from im_costs where lower(trim(cost_name)) = lower(trim(:expense_name))" -default ""]
     if { "" ne $cost_id && !$overwrite_existing_expense_bundles_p } {
         if {$ns_write_p} {
-            ns_write "<li><font color=red>Error: We have found an Expense Bundle named '$cost_name' and will not overwrite any of attributes.<br>Skipped record</font>\n"
+            ns_write "<li><font color=red>Error: We have found an Expense Bundle named '$expense_name' and will not overwrite any of attributes.<br>Skipped record</font>\n</li>"
         }
         continue
     }
@@ -230,16 +231,16 @@ foreach csv_line_fields $values_list_of_lists {
     if {"" == $expense_name} {
 	if {$ns_write_p} {
 	    ns_write "<li><font color=red>Error: We have found an empty 'Cost Name' in line $cnt.<br>
-	        Skipped record. Please correct the CSV file. Every costs needs to have a unique Cost Name.</font>\n"
+	        Skipped record. Please correct the CSV file. Every costs needs to have a unique Cost Name.</font>\n</li>"
 	}
 	continue
     }
 
-    # We expect Excpense Bundles only! 
-    if { 3722 != $cost_type_id } {
+    # We expect Expense Bundles only! 
+    if { [im_cost_type_expense_bundle] != $cost_type_id } {
 	if {$ns_write_p} {
 	    ns_write "<li><font color=red>Error: We have found a cost type that is different from 3722 (Expense Bundles)<br>
-	        Skipped record - please correct the CSV file.</font>\n"
+	        Skipped record - please correct the CSV file.</font>\n</li>"
 	}
 	continue
     }
@@ -260,10 +261,22 @@ foreach csv_line_fields $values_list_of_lists {
 
     # Status is optional
     if {"" == $cost_status_id} {
-	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find cost status '$cost_status', using default status 'Created'</font>\n" }
+	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find cost status '$cost_status', using default status 'Created'</font>\n</li>" }
 	set cost_status_id [im_cost_status_created]
     }
 
+    # Amount 
+    if {"" == $amount} {
+	if {$ns_write_p} { ns_write "<li><font color=red>Error: Didn't find a value for expense amount. Skipping record.</font>\n</li>" }
+	continue
+    }    
+
+    # VAT
+    if { "" eq $vat } {
+	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find a value for VAT, setting VAT to '0'</font>\n</li>" }
+	set vat 0
+    }
+    
     # Customer and provider are required
     if {"" == $provider_id} {
 	if {[im_category_is_a $cost_type_id [im_cost_type_customer_doc]]} { set provider_id [im_company_internal] }
@@ -279,6 +292,7 @@ foreach csv_line_fields $values_list_of_lists {
 	continue
     }
 
+    # Customer ID 
     if {"" == $customer_id} {
 	if {$ns_write_p} { 
 	    ns_write "<li><font color=red>Error: We have found an empty 'Customer' in line $cnt.<br>
@@ -288,15 +302,15 @@ foreach csv_line_fields $values_list_of_lists {
     }
 
     # Currency 
-    if {"" eq $currency} { 
+    if {"" eq $expense_currency} { 
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find currency, using default currency='$default_currency'</font>\n" }
-	set currency $default_currency
+	set expense_currency $default_currency
     }
 
     # -------------------------------------------------------
     # Create a new cost if necessary
     if {"" == $cost_id} {
-	if {$ns_write_p} { ns_write "<li>Going to create cost: name='$expense_name''\n" }
+	if {$ns_write_p} { ns_write "<li><font color=green>Going to create cost: name='$expense_name'</font></li>" }
 
 	if {[catch {
 	    set cost_id [db_string new_cost "
@@ -335,19 +349,7 @@ foreach csv_line_fields $values_list_of_lists {
 			''				-- description
 		)
 	    "]
-	    db_dml insert_invoices "
-		insert into im_invoices (
-			invoice_id, invoice_nr,
-			company_contact_id,
-			payment_method_id,
-			invoice_office_id
-		) values (
-			:cost_id, :cost_name,
-			:customer_contact_id,
-			:payment_method_id,
-			:invoice_office_id
-		)
-	    "
+
 	} err_msg]} {
 	    if {$ns_write_p} { ns_write "<li><font color=red>Error: Creating new financial document:<br><pre>$err_msg</pre></font>\n" }
 	    continue
@@ -357,52 +359,30 @@ foreach csv_line_fields $values_list_of_lists {
 	im_audit -object_id $cost_id -action after_create
 
     } else {
-	if {$ns_write_p} { ns_write "<li>Cost already exists: name='$cost_name', nr='$cost_nr', id='$cost_id'</li>\n" }
-	if { !$overwrite_existing_invoice_attributes_p } {
-	    if {$ns_write_p} { ns_write "<li>You have choosen not to overwrite/update already existing objects. Skipping record.</li>\n" }	    
-	    continue
-	}
-    }
-
-    if {$ns_write_p} { ns_write "<li>Going to update the cost.\n" }
-    if {[catch {
-	db_dml update_cost "
+	if {$ns_write_p} { ns_write "<li>Cost already exists: name='$cost_name', nr='$cost_nr', id='$cost_id', overwriting with new attributes.</li>\n" }
+	if {[catch {
+	    db_dml update_cost "
 		update im_costs set
-			cost_name		= :cost_name,
+			cost_name		= :expense_name,
 			cost_nr			= :cost_nr,
 			project_id		= :project_id,
-
 			customer_id		= :customer_id,
 			provider_id		= :provider_id,
-
 			cost_status_id		= :cost_status_id,
 			cost_type_id		= :cost_type_id,
-
 			effective_date		= :effective_date,
 			amount			= :amount,
-			currency		= :currency,
+			currency		= :expense_currency,
 			vat			= :vat,
-			tax			= :tax,
-
-			payment_days		= :payment_days,
-			paid_amount		= :paid_amount,
-
-			cost_center_id		= :cost_center_id,
-			cause_object_id		= :cause_object_id,
-			vat_type_id		= :vat_type_id,
-			template_id		= :template_id,
-
 			note			= :note
 		where
 			cost_id = :cost_id
-	"
-
-
-    } err_msg]} {
-	if {$ns_write_p} { ns_write "<li><font color=red>Error: Error updating cost:<br><pre>$err_msg</pre></font>" }
-	continue	    
+		"
+	} err_msg]} {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Error: Error updating cost:<br><pre>$err_msg</pre></font>" }
+	    continue	    
+	}
     }
-
 
     # -------------------------------------------------------
     # Import DynFields    
@@ -457,7 +437,7 @@ foreach csv_line_fields $values_list_of_lists {
 if {$ns_write_p} {
     ns_write "</ul>\n"
     ns_write "<p>\n"
-    ns_write "<A HREF=$return_url>Return to Cost Page</A>\n"
+    ns_write "<A HREF=$return_url>Return to CSV Import page</A>\n"
 }
 
 # ------------------------------------------------------------

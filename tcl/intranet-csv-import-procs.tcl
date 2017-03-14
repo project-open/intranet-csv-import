@@ -20,6 +20,32 @@ ad_library {
 # - Parser arguments (important for im_category type)
 # ---------------------------------------------------------------------
 
+ad_proc -public im_csv_import_guess_im_expense { } {} {
+    set mapping {
+        {expense_name "Cost Name" no_change ""}
+        {expense_date "Expense Date" date ""}
+        {effective_date "Effective Date" date ""}
+        {expence_currency "Expense Currency" no_change ""}
+        {cost_type_id "Cost Type" category "Intranet Cost Type"}
+        {cost_type "Cost Type" category "Intranet Cost Type"}
+        {cost_status_id "Cost Status" category "Intranet Cost Status"}
+        {amount "Amount" number ""}
+        {vat "VAT" number ""}
+        {note "Note" no_change ""}
+	{external_company_name "External Company Name" no_change "" }
+	{external_company_vat_number "External Vat Nr." no_change "" }
+	{receipt_reference  "Receipt Reference" no_change "" }	
+        {expense_type_id "Expense Type" category "Intranet Expense Type" }	
+        {billable_p "Billable?" boolean ""}
+	{reimbursable "Reimbursable" number ""}
+        {expense_payment_type_id "Expense Payment Type" category "Intranet Expense Payment Type" }	
+        {customer_id "Customer" company_name ""}	
+        {provider_id "Provider" user_name ""}	
+        {bundle_id_old "Bundle Id Old" no_change ""}
+    }
+    return $mapping
+}
+
 
 ad_proc -public im_csv_import_guess_im_expense_bundle { } {} {
     set mapping {
@@ -27,7 +53,7 @@ ad_proc -public im_csv_import_guess_im_expense_bundle { } {} {
         {expense_date "Expense Date" date ""}
         {effective_date "Effective Date" date ""}
         {expence_currency "Expense Currency" no_change ""}
-	{parent_nrs "Parent Nrs." project_parent_nrs "" }
+	{project_nr "Project Nr" project_parent_nrs "" }
         {cost_type_id "Cost Type" category "Intranet Cost Type"}
         {cost_type "Cost Type" category "Intranet Cost Type"}
         {cost_status "Cost Status" category "Intranet Cost Status"}
@@ -41,6 +67,7 @@ ad_proc -public im_csv_import_guess_im_expense_bundle { } {} {
     }
     return $mapping
 }
+
 
 ad_proc -public im_csv_import_guess_rels { } {} {
     set mapping {
