@@ -332,6 +332,7 @@ ad_proc -public im_csv_import_guess_im_conf_item { } {} {
 
 ad_proc -public im_csv_import_guess_im_hour { } {} {
     set mapping {
+	{project_id "Project Nr Path " project_parent_nrs ""}	
 	{project_id "Parent Nrs" project_parent_nrs ""}
 	{project_id "Project Parent Nrs" project_parent_nrs ""}
 	{user_id "User Email" user_name ""}
@@ -340,6 +341,11 @@ ad_proc -public im_csv_import_guess_im_hour { } {} {
 	{day "Day" date ""}
 	{hours "Hours" number ""}
 	{note "Note" no_change ""}
+	{billing_rate "Billing Rate" number ""}
+	{invoice_id "Invoice Id" no_change ""}
+	{invoice_nr "Invoice Nr" hard_coded ""}	
+	{days "Days" number ""}	
+	{manually_updated_p "Manually Updated" boolean ""}	
     }
     return $mapping
 }
@@ -428,7 +434,7 @@ ad_proc -public im_csv_import_object_fields {
 } {
     # Special case: im_hour is not an object
     if { "im_hour" == $object_type } {
-	return "project_id project_nr project_nr_path user_id day hours note"
+	return "project_id project_nr project_nr_path user_id day hours note billing_rate invoice_id days manually_updated_p invoice_nr"
     }
 
     # Special case: membership is not an object

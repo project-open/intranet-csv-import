@@ -158,12 +158,13 @@ foreach csv_line_fields $values_list_of_lists {
     set note			""
     set cost_id			""
     set invoice_id		""
+    set invoice_nr		""
     set internal_note		""
     set material_id		""
     set days			""
     set hour_id			""
     set conf_object_id   	""
-
+    set manually_updated_p	""
 
     foreach j [array names column] {
 
@@ -305,17 +306,34 @@ foreach csv_line_fields $values_list_of_lists {
 	continue
     }
 
+    # Find invoice_id
+    if { "" != $invoice_nr } {
+	set invoice_id [db_string sql "select cost_id from im_costs where cost_name =:invoice_nr" -default ""] 
+	if { "" eq $invoice_id } {
+	    im_write_log $output_device_log $write_log_p  "<li><font color=brown>Warning: Error parsing field='invoice_nr'. Did not find invoice for invoive_nr: $invoice_nr. Will  </font></li>\n"
+	} else {
+	    im_write_log $output_device_log $write_log_p  "<li><span style='color:green'>Found matching invoice for invoive_nr($invoice_nr): $invoice_id </span></li>\n"
+	}
+    } else {
+	im_write_log $output_device_log $write_log_p  "<li>No invoice_nr found</li>\n"
+    }
+
     # -------------------------------------------------------
     # Check if there is a conf object 
     #
-    set conf_object_id_exist_p [db_string get_conf_object_id "
-	select  count(conf_object_id)
-	from	im_hours h
-	where	h.day = :day and
-		h.user_id = :user_id and
-		h.project_id = :target_project_id
+    if {[catch {
+	set conf_object_id_exist_p [db_string get_conf_object_id "
+		select  count(conf_object_id)
+		from	im_hours h
+		where	h.day = :day and
+			h.user_id = :user_id and
+			h.project_id = :target_project_id
 	" -default 0]
-
+    } err_msg]} {
+	# Quite likely no column im_hours::conf_object_id 
+	set conf_object_id_exist_p 0
+    }
+    
     if {$conf_object_id_exist_p} {
 	im_write_log $output_device_log $write_log_p  "<li>Merging hours: <font color=red>Timesheet hours already approved, skipping project_id: $target_project_id, user_id: $user_id, day: $day</font></li>\n"
 	continue
@@ -334,17 +352,19 @@ foreach csv_line_fields $values_list_of_lists {
 
     if { $hours_before > 0 && [info exists merge_p] } {
 	# Update 
-	im_write_log $output_device_log $write_log_p  "<li>Merging hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
 	if { !$test_run_p } { 
-	    im_write_log $output_device_log $write_log_p  "<li>No test run - Merging ...</li>\n"
+	    im_write_log $output_device_log $write_log_p  "<li>No test run - Merging hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
 	    db_dml sql "update im_hours h set (hours, note) = (to_number('$hours','999999.99') + :hours_before, h.note || ', ' || :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" 
+	} else {
+	    im_write_log $output_device_log $write_log_p "<li>Test run: Did not MERGE: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
 	}
     } elseif { $hours_before > 0 && ![info exists merge_p] } {
 	# Overwrite 
-	im_write_log $output_device_log $write_log_p  "<li>Overwrite hours: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
 	if { !$test_run_p } { 
-	    im_write_log $output_device_log $write_log_p  "<li>No test run: Overwriting ...</li>\n"
+	    im_write_log $output_device_log $write_log_p  "<li>No test run - Overwrite hours and note, keep other attributes.<br/>project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
 	    db_dml sql "update im_hours h set (hours, note) = (:hours, :note) where h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day" 
+	} else {
+	    im_write_log $output_device_log $write_log_p "<li>Test run: Did not OVERWRITE: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
 	}
     } elseif { $hours_before == 0 } {
 	# create im_hours record 
@@ -352,16 +372,32 @@ foreach csv_line_fields $values_list_of_lists {
 	    if {[catch {
 		im_write_log $output_device_log $write_log_p "<li>No test run: Create new hour record: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"	
 		db_dml insert_hour "insert into im_hours (user_id,project_id,day,hours,note) values (:user_id,:target_project_id,:day,:hours,:note)"
+
+		# Add additional attributes 
+		set invoice_line "";
+		if { "" != $invoice_id } { set invoice_line "invoice_id = :invoice_id," }
+		set sql "
+			update 	im_hours h 
+			set 
+				$invoice_line 
+				billing_rate 		= :billing_rate,
+				days			= :days
+			where 
+				h.project_id = :target_project_id and h.user_id = :user_id and h.day = :day
+		"
+		 db_dml update_hour_attributes $sql
 	    } err_msg]} {
 		global errorInfo
 		ns_log Error $errorInfo
 		im_write_log $output_device_log $write_log_p  "<li>Create hour record: <font color=red>Error: insert failed for $target_project_id, user_id: $user_id, day: $day - $errorInfo</font></li>\n"
 	    }
+	} else {
+	    im_write_log $output_device_log $write_log_p "<li>Test run: Did not CREATE new hour record: project_id: $target_project_id, user_id: $user_id, day: $day</li>\n"
 	}
     } else {
 	im_write_log $output_device_log $write_log_p  "<li><font color=red>Error: not writing anything for: $target_project_id, user_id: $user_id, day: $day, hours_before: '$hours_before'</font></li>\n"
+	continue
     } 
-
 
     if {$sync_cost_item_immediately_p} {
 	# Update the affected project's cost_hours_cache and cost_days_cache fields,
@@ -380,7 +416,7 @@ foreach csv_line_fields $values_list_of_lists {
 
 im_write_log $output_device_log $write_log_p "</ul>\n"
 im_write_log $output_device_log $write_log_p "<p>\n"
-im_write_log $output_device_log $write_log_p "<p>List of missing projects:<br/>$missing_project_list</p>"
+im_write_log $output_device_log $write_log_p "<p>List of projects not found:<br/>$missing_project_list</p>"
 im_write_log $output_device_log $write_log_p "<br/>"
 im_write_log $output_device_log $write_log_p "<A HREF=$return_url>Return</A>\n"
 
