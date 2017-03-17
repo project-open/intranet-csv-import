@@ -110,10 +110,10 @@ if {$ns_write_p} {
 	[im_header]
 	[im_navbar]
     "
+    ns_write "<h1>Importing PERSONS</h1>\n"
 }
 
 # ------------------------------------------------------------
-
 
 set cnt 1
 foreach csv_line_fields $values_list_of_lists {
@@ -221,7 +221,7 @@ foreach csv_line_fields $values_list_of_lists {
     db_foreach r $sql {
 	set department_arr($cost_center_name) $cost_center_id
     }
-    
+
     # -------------------------------------------------------
     # Extract variables from the CSV file and write them to local variables
     #

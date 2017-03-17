@@ -110,26 +110,27 @@ ad_proc -public im_csv_import_guess_person { } {} {
 	{wa_country_code                 "Work Address Country Code"   no_change                "" }
 	{wa_country                      "Work Address Country"        no_change                "" }
 	{note                            "Note"                        no_change                "" }
-	{supervisor	                 "Supervisor"                  user_name                "" }
-	{supervisor_id                   "Supervisor"                  no_change                "" }
+	{supervisor_id                   "Supervisor"                  user_name                "" }	
+	{supervisor_id                   "Supervisor Email"            user_name                "" }	
+	{supervisor_id                   "Supervisor ID"               no_change                "" }
 	{department_id                   "Department"                  no_change                "" }
-	{availability                    "Availability"                no_change                "" }
+	{availability                    "Availability"                number	                "" }
 	{personnel_number                "Personnel Number"            no_change                "" }
 	{ss_number                       "Social Security Number"      no_change                "" }
-	{hourly_cost                     "Hourly Cost"                 no_change                "" }
+	{hourly_cost                     "Hourly Cost"                 number                	"" }
 	{salary                          "Salary"                      no_change                "" }
 	{social_security                 "Social Security"             no_change                "" }
 	{insurance                       "Insurance"                   no_change                "" }
 	{other_costs                     "Other Costs"                 no_change                "" }
 	{salary_payments_per_year        "Salary Payments per Year"    no_change        	"" }
-	{birthdate                       "Birthdate"                   no_change                "" }
+	{birthdate                       "Birthdate"                   date	                "" }
 	{job_title                       "Job Title"                   no_change                "" }
 	{job_description                 "Job Description"             no_change                "" }
-	{voluntary_termination_p         "Voluntary Termination"       no_change         	"" }
+	{voluntary_termination_p         "Voluntary Termination"       boolean	         	"" }
 	{termination_reason              "Termination Reason"          no_change              	"" }
-	{signed_nda_p                    "Signed NDA"                  no_change                "" }
-	{vacation_days_per_year          "Vacation Days per Year"      no_change        	"" }
-	{vacation_balance                "Vacation Balance"            no_change	        "" }
+	{signed_nda_p                    "Signed NDA"                  boolean	                "" }
+	{vacation_days_per_year          "Vacation Days per Year"      number	        	"" }
+	{vacation_balance                "Vacation Balance"            number		        "" }
 	{profiles			 "Profiles"		       no_change	        "" }
  
    }

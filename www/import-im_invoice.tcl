@@ -116,6 +116,7 @@ if {$ns_write_p} {
 	[im_header]
 	[im_navbar]
     "
+    ns_write "<h1>Importing Finance Documents</h1>"
 }
 
 # ------------------------------------------------------------
@@ -404,7 +405,7 @@ foreach csv_line_fields $values_list_of_lists {
     # -------------------------------------------------------
     # Create a new cost if necessary
     if {"" == $cost_id} {
-	if {$ns_write_p} { ns_write "<li><font=green>Going to create financial document: name='$cost_name', nr='$cost_nr'</font></li>" }
+	if {$ns_write_p} { ns_write "<li><font color=green>Going to create financial document: name='$cost_name', nr='$cost_nr'</font></li>" }
 
 	switch $cost_type_id {
 	    3700 { set object_type "im_invoice" }

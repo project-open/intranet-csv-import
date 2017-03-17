@@ -110,6 +110,7 @@ if {$ns_write_p} {
 	[im_header]
 	[im_navbar]
     "
+     ns_write "<h1>Importing Projects/Tasks</h1>"
 }
 
 # ------------------------------------------------------------

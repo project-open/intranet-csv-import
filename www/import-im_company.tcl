@@ -113,6 +113,7 @@ if {$ns_write_p} {
 
 # ------------------------------------------------------------
 
+ns_write "<h1>Import Companies</h1>"
 
 set cnt 1
 foreach csv_line_fields $values_list_of_lists {
@@ -272,7 +273,7 @@ foreach csv_line_fields $values_list_of_lists {
 
     # Create a new company if necessary
     if {"" == $company_id} {
-	if {$ns_write_p} { ns_write "<li><font color=green>Going to create company: name='$company_name'</li>" }
+	if {$ns_write_p} { ns_write "<li><font color=green>Going to create company: name='$company_name'</font></li>" }
 
 	if {[catch {
 
