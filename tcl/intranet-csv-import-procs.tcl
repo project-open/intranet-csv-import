@@ -29,6 +29,7 @@ ad_proc -public im_csv_import_guess_im_expense { } {} {
         {cost_type_id "Cost Type" category "Intranet Cost Type"}
         {cost_type "Cost Type" category "Intranet Cost Type"}
         {cost_status_id "Cost Status" category "Intranet Cost Status"}
+	{project_nr "Project Nr" project_parent_nrs "" }
         {amount "Amount" number ""}
         {vat "VAT" number ""}
         {note "Note" no_change ""}
