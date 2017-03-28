@@ -34,6 +34,10 @@ if {!$admin_p} {
     ad_script_abort
 }
 
+# By default, how many hours do an employee work per day?
+set hours_per_day [parameter::get_from_package_key -package_key "intranet-timesheet2" -parameter "TimesheetHoursPerDay" -default 8]
+
+
 # ---------------------------------------------------------------------
 # Check and open the file
 # ---------------------------------------------------------------------
@@ -130,6 +134,12 @@ foreach csv_line_fields $values_list_of_lists {
     set company_id		""
     set parent_nrs		""
     set parent_id		""
+
+    set parent0 		""
+    set parent1 		""
+    set parent2 		""
+    set parent3 		""
+
     set project_status		""
     set project_status_id	""
     set project_type		""
@@ -265,18 +275,103 @@ foreach csv_line_fields $values_list_of_lists {
 	continue
     }
 
-    # parent_nrs contains a space separated list
-    if {[catch {
-	set result [im_csv_import_parser_project_parent_nrs $parent_nrs]
-    } err_msg]} {
-	if {$ns_write_p} { ns_write "<li><font color=red>Error: We have found an error parsing Parent NRs '$parent_nrs'.<pre>\n$err_msg</pre>" }
-	continue
+    # Parent0 - Parent1 - Parent2 - Parent3
+    if {"" ne $parent0} {
+	if {$ns_write_p} { ns_write "<li>Parent0: Looking for a main project with name=$parent0</font>\n" }
+	set result [im_csv_import_parser_project_name -parent_id "" $parent0]
+	set parent0_id [lindex $result 0]
+	set err [lindex $result 1]
+	if {"" ne $err} {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Error in parent0: <pre>$err</pre></font>\n" }
+	    continue
+	} else {
+	    set parent_id $parent0_id
+	    if {$ns_write_p} { ns_write "<li>Parent0: found: #$parent_id\n" }
+	}
     }
-    set parent_id [lindex $result 0]
-    set err [lindex $result 1]
-    if {"" != $err} {
-	if {$ns_write_p} { ns_write "<li><font color=red>Error: <pre>$err</pre></font>\n" }
-	continue
+    if {"" ne $parent1} { 
+	if {"" eq $parent_id} {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Error in parent1: Did not find parent_id, which is required for parent1</font>\n" }
+	    continue
+	} else {
+	    if {$ns_write_p} { ns_write "<li>Parent1: Looking for a project with parent_id=$parent_id and name=$parent1</font>\n" }
+	}
+	set result [im_csv_import_parser_project_name -parent_id $parent_id $parent1]
+	set parent1_id [lindex $result 0]
+	set err [lindex $result 1]
+	if {"" ne $err} {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Error in parent1: <pre>$err</pre></font>\n" }
+	    continue
+	}
+	if {"" ne $parent1_id} {
+	    set parent_id $parent1_id
+	    if {$ns_write_p} { ns_write "<li>Parent1: Found project_id=$parent_id\n" }
+	} else {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Parent1: Didn't find project with name=$parent1</font>\n" }
+	    continue
+	}
+    }
+    if {"" ne $parent2} { 
+	if {"" eq $parent_id} {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Error in parent2: Did not find parent_id, which is required for parent2</font>\n" }
+	    continue
+	} else {
+	    if {$ns_write_p} { ns_write "<li>Parent2: Looking for a project with parent_id=$parent_id and name=$parent2</font>\n" }
+	}
+	set result [im_csv_import_parser_project_name -parent_id $parent_id $parent2]
+	set parent2_id [lindex $result 0]
+	set err [lindex $result 2]
+	if {"" ne $err} {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Error in parent2: <pre>$err</pre></font>\n" }
+	    continue
+	}
+	if {"" ne $parent2_id} {
+	    set parent_id $parent2_id
+	    if {$ns_write_p} { ns_write "<li>Parent2: Found project_id=$parent_id\n" }
+	} else {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Parent2: Didn't find project with name=$parent2</font>\n" }
+	    continue
+	}
+    }
+    if {"" ne $parent3} { 
+	if {"" eq $parent_id} {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Error in parent3: Did not find parent_id, which is required for parent3</font>\n" }
+	    continue
+	} else {
+	    if {$ns_write_p} { ns_write "<li>Parent3: Looking for a project with parent_id=$parent_id and name=$parent3</font>\n" }
+	}
+	set result [im_csv_import_parser_project_name -parent_id $parent_id $parent3]
+	set parent3_id [lindex $result 0]
+	set err [lindex $result 3]
+	if {"" ne $err} {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Error in parent3: <pre>$err</pre></font>\n" }
+	    continue
+	}
+	if {"" ne $parent3_id} {
+	    set parent_id $parent3_id
+	    if {$ns_write_p} { ns_write "<li>Parent3: Found project_id=$parent_id\n" }
+	} else {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Parent3: Didn't find project with name=$parent2</font>\n" }
+	    continue
+	}
+    }
+
+
+
+    # parent_nrs contains a space separated list
+    if {"" ne $parent_nrs} {
+	if {[catch {
+	    set result [im_csv_import_parser_project_parent_nrs $parent_nrs]
+	} err_msg]} {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Error: We have found an error parsing Parent NRs '$parent_nrs'.<pre>\n$err_msg</pre>" }
+	    continue
+	}
+	set parent_id [lindex $result 0]
+	set err [lindex $result 1]
+	if {"" != $err} {
+	    if {$ns_write_p} { ns_write "<li><font color=red>Error: <pre>$err</pre></font>\n" }
+	    continue
+	}
     }
     
     # Status is a required field
@@ -290,7 +385,7 @@ foreach csv_line_fields $values_list_of_lists {
     set project_type_id [im_id_from_category [list $project_type] "Intranet Project Type"]
     if {"" == $project_type_id} {
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project type '$project_type', using default type 'Other'</font>\n" }
-	set project_type_id [im_project_type_other]
+	set project_type_id [im_project_type_gantt]
     }
 
     # start_date and end_date are required fields for projects, not tasks
@@ -318,7 +413,6 @@ foreach csv_line_fields $values_list_of_lists {
 
     # For compatibility
     set company_id $company_id
-
     if {"" == $company_id } { 
 	if { 100 == $project_type_id } {
 	    # Get company_id from top_project 
@@ -338,6 +432,7 @@ foreach csv_line_fields $values_list_of_lists {
 	}
     }
 
+    # Project Lead / Project Manager
     if { "" eq $project_lead_id && 100 != $project_type_id } {
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: No project manager found. Will try to create project w/o PM. </font>\n" }
     }
@@ -459,12 +554,6 @@ foreach csv_line_fields $values_list_of_lists {
 	continue	    
     }
 
-    # Add the project lead to the list of project members
-    if {"" != $project_lead_id} {
-	set role_id [im_biz_object_role_project_manager]
-	im_biz_object_add_role $project_lead_id $project_id $role_id
-    }
-    
     # -------------------------------------------------------
     # Make sure there is an entry in im_timesheet_tasks if the project is of type task
     if {$project_type_id == [im_project_type_task]} {
@@ -502,11 +591,28 @@ foreach csv_line_fields $values_list_of_lists {
 	}
 
 	# Task UoM
-	if {"" == $uom} { set uom "Hour" }
+	if {"" eq $uom} { set uom "Hour" }
 	set uom_id [im_id_from_category [list $uom] "Intranet UoM"]
-	if {"" == $uom_id} {
+	if {"" eq $uom_id} {
 	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find UoM '$uom', using default 'Hour'</font>\n" }
 	    set uom_id [im_uom_hour]
+	}
+	switch $uom_id {
+	    320 {
+		# Hour - nothing to do
+	    }
+	    321 {
+		# Day - multiply by 8
+		if {"" ne $planned_units} { set planned_units [expr $planned_units * $hours_per_day] }
+	    }
+	    328 {
+		# Week - multiply by 40
+		if {"" ne $planned_units} { set planned_units [expr $planned_units * $hours_per_day * 5.0] }
+	    }
+	    default {
+		if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Found invalid UoM=[im_category_from_id $uom_id], using 'Hour' as a default</font>\n" }
+		set uom_id [im_uom_hour]
+	    }
 	}
 
 	set task_exists_p [db_string task_exists_p "
@@ -516,6 +622,7 @@ foreach csv_line_fields $values_list_of_lists {
 	"]
 
 	if {!$task_exists_p} {
+	    if {$ns_write_p} { ns_write "<li>Going to create new im_timesheet_task entry with task_id=$project_id.\n" }
 	    db_dml task_insert "
 		insert into im_timesheet_tasks (
 			task_id,
@@ -533,6 +640,8 @@ foreach csv_line_fields $values_list_of_lists {
 		where object_id = :project_id
 	    "
 	}
+
+	if {$ns_write_p} { ns_write "<li>Going to update im_timesheet_task with task_id=$project_id.\n" }
 	db_dml update_task "
 		update im_timesheet_tasks set
 			material_id	= :material_id,
@@ -543,6 +652,18 @@ foreach csv_line_fields $values_list_of_lists {
 		where
 			task_id = :project_id
 	"
+
+	# Add the project lead as a 100% resource to the task
+	if {"" != $project_lead_id} {
+	    set role_id [im_biz_object_role_full_member]
+	    im_biz_object_add_role -percentage 100.0 $project_lead_id $project_id $role_id
+	}
+    } else {
+	# Add the project lead as a PM to the list of project members
+	if {"" != $project_lead_id} {
+	    set role_id [im_biz_object_role_project_manager]
+	    im_biz_object_add_role $project_lead_id $project_id $role_id
+	}
     }
 
     # -------------------------------------------------------
