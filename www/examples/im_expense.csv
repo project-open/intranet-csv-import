@@ -1,0 +1,2 @@
+"expense_name";"expense_date";"expense_currency";"cost_status";"cost_type";"amount";"vat";"project_nr";"note";"external_company_name";"external_company_vat_number";"receipt_reference";"expense_type";"billable_p";"reimbursable";"expense_payment_type";"customer";"provider";"bundle_id_old";
+"91239";"2015-07-09 00:00:00+02";"EUR";"Created";"Expense Item";"240.50";"0.00";"2017_0004s";"Trip Munich-Rome";"tresfonds";"";"";"Own Car";"t";"100.00";"Cash";"internal";"ben.bigboss@tigerpond.com";"91259";

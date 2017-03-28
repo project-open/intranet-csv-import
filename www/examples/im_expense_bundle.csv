@@ -1,0 +1,2 @@
+"expense_name";"expense_date";"expense_currency";"project_nr";"cost_status";"cost_type";"amount";"vat";"note";"customer";"provider";"bundle_id_old";
+"Expense Bundle XYZ";"2015-09-22 10:16:20.595019+02";"EUR";"2017_0004";"Created";"Expense Bundle";"1163.73";"0.00";"Trip: Munich-Rome";"internal";"ben.bigboss@tigerpond.com";"91259";

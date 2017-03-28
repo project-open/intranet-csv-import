@@ -323,9 +323,13 @@ ad_proc -public im_csv_import_parser_number_american {
     {-parser_args "" }
     arg 
 } {
-    Parses a European number format like '20.000,00' as twenty thousand 
+    Validates a US number format
 } {
-    set result [string map -nocase {"," ""} $result]
+    if {[catch {
+	set result [lc_parse_number $arg "en_US"]
+    } err_msg]} {
+	return [list "" "Error parsing American number format: '$arg'"]
+    }
     return [list $result ""]
 }
 
