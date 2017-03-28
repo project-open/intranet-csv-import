@@ -145,25 +145,29 @@ ad_proc -public im_csv_import_parser_project_nr {
 
 ad_proc -public im_csv_import_parser_project_name { 
     {-parser_args "" }
+    {-parent_id ""}
     arg 
 } {
     Returns a project_id from project_name
 } {
     if {[regexp {'} $arg match]} { 
-       set err "Found a Project Nr with single quote"
+       set err "Found a Project Name with single quote"
        im_security_alert -location "im_csv_import_parser_project_name" -message $err -value $arg 
        return [list $arg $err]
     }
 
+    set parent_sql "p.parent_id is null"
+    if {"" ne $parent_id} { set parent_sql "p.parent_id = :parent_id" }
+
     set sql "
 	select	min(p.project_id)
 	from	im_projects p
-	where	p.parent_id is null and
-		p.project_name = '$arg'
+	where	$parent_sql and
+		lower(trim(p.project_name)) = lower(trim('$arg'))
     "
     set project_id [db_string project_id_from_name $sql -default ""]
     set err ""
-    if {"" == $project_id} { set err "Didn't find project with project_name='$arg'" }
+    if {"" == $project_id} { set err "Didn't find project with project_name='$arg' and parent_id=#$parent_id" }
     return [list $project_id $err]
 }
 
@@ -264,6 +268,20 @@ ad_proc -public im_csv_import_parser_date_american {
     return [list "" "Error parsing American date format '$arg': expected 'dd.mm.yyyy'"]
 }
 
+
+ad_proc -public im_csv_import_parser_percentage {
+    {-parser_args "" }
+    arg 
+} {
+    Parses a percentage number.
+    Basically just ignores a trailing % char after a number.
+} {
+    if {[regexp {^(.+)%$} $arg match number]} {
+	set arg $number
+    }
+
+    return [im_csv_import_parser_number -parser_args $parser_args $arg]
+}
 
 ad_proc -public im_csv_import_parser_number {
     {-parser_args "" }

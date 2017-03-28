@@ -22,27 +22,27 @@ ad_library {
 
 ad_proc -public im_csv_import_guess_im_expense { } {} {
     set mapping {
-        {expense_name "Cost Name" no_change ""}
-        {expense_date "Expense Date" date ""}
-        {effective_date "Effective Date" date ""}
-        {expence_currency "Expense Currency" no_change ""}
-        {cost_type_id "Cost Type" category "Intranet Cost Type"}
-        {cost_type "Cost Type" category "Intranet Cost Type"}
-        {cost_status_id "Cost Status" category "Intranet Cost Status"}
+	{expense_name "Cost Name" no_change ""}
+	{expense_date "Expense Date" date ""}
+	{effective_date "Effective Date" date ""}
+	{expence_currency "Expense Currency" no_change ""}
+	{cost_type_id "Cost Type" category "Intranet Cost Type"}
+	{cost_type "Cost Type" category "Intranet Cost Type"}
+	{cost_status_id "Cost Status" category "Intranet Cost Status"}
 	{project_nr "Project Nr" project_parent_nrs "" }
-        {amount "Amount" number ""}
-        {vat "VAT" number ""}
-        {note "Note" no_change ""}
+	{amount "Amount" number ""}
+	{vat "VAT" percentage ""}
+	{note "Note" no_change ""}
 	{external_company_name "External Company Name" no_change "" }
 	{external_company_vat_number "External Vat Nr." no_change "" }
 	{receipt_reference  "Receipt Reference" no_change "" }	
-        {expense_type_id "Expense Type" category "Intranet Expense Type" }	
-        {billable_p "Billable?" boolean ""}
+	{expense_type_id "Expense Type" category "Intranet Expense Type" }	
+	{billable_p "Billable?" boolean ""}
 	{reimbursable "Reimbursable" number ""}
-        {expense_payment_type_id "Expense Payment Type" category "Intranet Expense Payment Type" }	
-        {customer_id "Customer" company_name ""}	
-        {provider_id "Provider" user_name ""}	
-        {bundle_id_old "Bundle Id Old" no_change ""}
+	{expense_payment_type_id "Expense Payment Type" category "Intranet Expense Payment Type" }	
+	{customer_id "Customer" company_name ""}	
+	{provider_id "Provider" user_name ""}	
+	{bundle_id_old "Bundle Id Old" no_change ""}
     }
     return $mapping
 }
@@ -50,20 +50,20 @@ ad_proc -public im_csv_import_guess_im_expense { } {} {
 
 ad_proc -public im_csv_import_guess_im_expense_bundle { } {} {
     set mapping {
-        {expense_name "Cost Name" no_change ""}
-        {expense_date "Expense Date" date ""}
-        {effective_date "Effective Date" date ""}
-        {expence_currency "Expense Currency" no_change ""}
+	{expense_name "Cost Name" no_change ""}
+	{expense_date "Expense Date" date ""}
+	{effective_date "Effective Date" date ""}
+	{expence_currency "Expense Currency" no_change ""}
 	{project_nr "Project Nr" project_parent_nrs "" }
-        {cost_type_id "Cost Type" category "Intranet Cost Type"}
-        {cost_type "Cost Type" category "Intranet Cost Type"}
-        {cost_status "Cost Status" category "Intranet Cost Status"}
-        {cost_status_id "Cost Status" category "Intranet Cost Status"}
-        {amount "Amount" number ""}
-        {vat "VAT" number ""}
-        {note "Note" no_change ""}
-        {customer_id "Customer" company_name ""}
-        {provider_id "Provider" user_name ""}
+	{cost_type_id "Cost Type" category "Intranet Cost Type"}
+	{cost_type "Cost Type" category "Intranet Cost Type"}
+	{cost_status "Cost Status" category "Intranet Cost Status"}
+	{cost_status_id "Cost Status" category "Intranet Cost Status"}
+	{amount "Amount" number ""}
+	{vat "VAT" percentage ""}
+	{note "Note" no_change ""}
+	{customer_id "Customer" company_name ""}
+	{provider_id "Provider" user_name ""}
 	{bundle_id_old "Bundle Id Old" no_change ""}  
     }
     return $mapping
@@ -72,12 +72,12 @@ ad_proc -public im_csv_import_guess_im_expense_bundle { } {} {
 
 ad_proc -public im_csv_import_guess_rels { } {} {
     set mapping {
-	{object_type_one                  "Object Type One"             no_change                "" 			  }
-	{object_id_one                    "Object Id One"               user_name                "" 			  }
-	{object_type_two                  "Object Type Two"             no_change                "" 			  }
-	{object_id_two                    "Object Id Two"               project_parent_nrs       ""			  }
-	{role_id                    	  "Role"             	        category                 "Intranet Biz Object Role" }
-	{percentage                    	  "Percentage"                  number	                 "" 			  }
+	{object_type_one		  "Object Type One"	     no_change		"" 			  }
+	{object_id_one		    "Object Id One"	       user_name		"" 			  }
+	{object_type_two		  "Object Type Two"	     no_change		"" 			  }
+	{object_id_two		    "Object Id Two"	       project_parent_nrs       ""			  }
+	{role_id		    	  "Role"	     		category		 "Intranet Biz Object Role" }
+	{percentage		    	  "Percentage"		  percentage	       "" 			  }
     }
     return $mapping
 }
@@ -85,54 +85,54 @@ ad_proc -public im_csv_import_guess_rels { } {} {
 
 ad_proc -public im_csv_import_guess_person { } {} {
     set mapping {
-        {email  			 "Email"		       no_change		"" }
-        {first_names  			 "First Names"		       no_change		"" }
-        {last_name 			 "Last Name" 		       no_change		"" }
-        {username 			 "username" 		       no_change		"" }
-        {home_phone 			 "Home Phone" 		       no_change  		"" }
-	{work_phone                      "Work Phone"                  no_change                "" }
-	{cell_phone                      "Cell Phone"                  no_change                "" }
-	{pager                           "Pager"                       no_change                "" }
-	{fax                             "Fax"                         no_change                "" }
-	{aim_screen_name                 "AIM Screen Name"             no_change                "" }
-	{icq_number                      "ICQ Number"                  no_change                "" }
-	{ha_line1                        "Home Address Line1"          no_change                "" }
-	{ha_line2                        "Home Address Line2"          no_change                "" }
-	{ha_city                         "Home Address City"           no_change                "" }
-	{ha_state                        "Home Address State"          no_change                "" }
-	{ha_postal_code                  "Home Address Postal Code"    no_change                "" }
-	{ha_country_code                 "Home Address Country Code"   no_change                "" }
-	{ha_country                      "Home Address Country"        no_change                "" }
-	{wa_line1                        "Work Address Line1"          no_change                "" }
-	{wa_line2                        "Work Address Line2"          no_change                "" }
-	{wa_city                         "Work Address City"           no_change                "" }
-	{wa_state                        "Work Address State"          no_change                "" }
-	{wa_postal_code                  "Work Addresspostal Code"     no_change                "" }
-	{wa_country_code                 "Work Address Country Code"   no_change                "" }
-	{wa_country                      "Work Address Country"        no_change                "" }
-	{note                            "Note"                        no_change                "" }
-	{supervisor_id                   "Supervisor"                  user_name                "" }	
-	{supervisor_id                   "Supervisor Email"            user_name                "" }	
-	{supervisor_id                   "Supervisor ID"               no_change                "" }
-	{department_id                   "Department"                  no_change                "" }
-	{availability                    "Availability"                number	                "" }
-	{personnel_number                "Personnel Number"            no_change                "" }
-	{ss_number                       "Social Security Number"      no_change                "" }
-	{hourly_cost                     "Hourly Cost"                 number                	"" }
-	{salary                          "Salary"                      no_change                "" }
-	{social_security                 "Social Security"             no_change                "" }
-	{insurance                       "Insurance"                   no_change                "" }
-	{other_costs                     "Other Costs"                 no_change                "" }
-	{salary_payments_per_year        "Salary Payments per Year"    no_change        	"" }
-	{birthdate                       "Birthdate"                   date	                "" }
-	{job_title                       "Job Title"                   no_change                "" }
-	{job_description                 "Job Description"             no_change                "" }
-	{voluntary_termination_p         "Voluntary Termination"       boolean	         	"" }
-	{termination_reason              "Termination Reason"          no_change              	"" }
-	{signed_nda_p                    "Signed NDA"                  boolean	                "" }
-	{vacation_days_per_year          "Vacation Days per Year"      number	        	"" }
-	{vacation_balance                "Vacation Balance"            number		        "" }
-	{profiles			 "Profiles"		       no_change	        "" }
+	{email  			 "Email"		       no_change		"" }
+	{first_names  			 "First Names"		       no_change		"" }
+	{last_name 			 "Last Name" 		       no_change		"" }
+	{username 			 "username" 		       no_change		"" }
+	{home_phone 			 "Home Phone" 		       no_change  		"" }
+	{work_phone		      "Work Phone"		  no_change		"" }
+	{cell_phone		      "Cell Phone"		  no_change		"" }
+	{pager			   "Pager"		       no_change		"" }
+	{fax			     "Fax"			 no_change		"" }
+	{aim_screen_name		 "AIM Screen Name"	     no_change		"" }
+	{icq_number		      "ICQ Number"		  no_change		"" }
+	{ha_line1			"Home Address Line1"	  no_change		"" }
+	{ha_line2			"Home Address Line2"	  no_change		"" }
+	{ha_city			 "Home Address City"	   no_change		"" }
+	{ha_state			"Home Address State"	  no_change		"" }
+	{ha_postal_code		  "Home Address Postal Code"    no_change		"" }
+	{ha_country_code		 "Home Address Country Code"   no_change		"" }
+	{ha_country		      "Home Address Country"	no_change		"" }
+	{wa_line1			"Work Address Line1"	  no_change		"" }
+	{wa_line2			"Work Address Line2"	  no_change		"" }
+	{wa_city			 "Work Address City"	   no_change		"" }
+	{wa_state			"Work Address State"	  no_change		"" }
+	{wa_postal_code		  "Work Addresspostal Code"     no_change		"" }
+	{wa_country_code		 "Work Address Country Code"   no_change		"" }
+	{wa_country		      "Work Address Country"	no_change		"" }
+	{note			    "Note"			no_change		"" }
+	{supervisor_id		   "Supervisor"		  user_name		"" }	
+	{supervisor_id		   "Supervisor Email"	    user_name		"" }	
+	{supervisor_id		   "Supervisor ID"	       no_change		"" }
+	{department_id		   "Department"		  no_change		"" }
+	{availability		    "Availability"		percentage	       "" }
+	{personnel_number		"Personnel Number"	    no_change		"" }
+	{ss_number		       "Social Security Number"      no_change		"" }
+	{hourly_cost		     "Hourly Cost"		 number			"" }
+	{salary			  "Salary"		      no_change		"" }
+	{social_security		 "Social Security"	     no_change		"" }
+	{insurance		       "Insurance"		   no_change		"" }
+	{other_costs		     "Other Costs"		 no_change		"" }
+	{salary_payments_per_year	"Salary Payments per Year"    no_change		"" }
+	{birthdate		       "Birthdate"		   date			"" }
+	{job_title		       "Job Title"		   no_change		"" }
+	{job_description		 "Job Description"	     no_change		"" }
+	{voluntary_termination_p	 "Voluntary Termination"       boolean		 	"" }
+	{termination_reason	      "Termination Reason"	  no_change	      	"" }
+	{signed_nda_p		    "Signed NDA"		  boolean			"" }
+	{vacation_days_per_year	  "Vacation Days per Year"      number			"" }
+	{vacation_balance		"Vacation Balance"	    number			"" }
+	{profiles			 "Profiles"		       no_change		"" }
  
    }
     return $mapping
@@ -144,37 +144,37 @@ ad_proc -public im_csv_import_guess_im_company { } {} {
 	{company_path 				"Company Path" 		no_change ""}
 	{company_status_id 			"Company Status" 	category "Intranet Company Status"}
 	{company_type_id 			"Company Type" 		category "Intranet Company Type"}
-        {company_name                           "Name"          	no_change ""}
-	{company_path                           "Path"          	no_change ""}
-	{company_status_id                      "Status"        	category "Intranet Company Status"}
-	{company_type_id                        "Type"          	category "Intranet Company Type"}
+	{company_name			   "Name"	  	no_change ""}
+	{company_path			   "Path"	  	no_change ""}
+	{company_status_id		      "Status"		category "Intranet Company Status"}
+	{company_type_id			"Type"	  	category "Intranet Company Type"}
 	{primary_contact_id 			"Primary Contact" 	user_name ""}
 	{accounting_contact_id 			"Accounting Contact" 	user_name ""}
 	{accounting_contact_id 			"Accounting" 		user_name ""}	
-	{billable_p             		"Billable"          	no_change ""}
-	{vat_number             		"VAT"               	no_change ""}
-	{phone                  		"Phone"             	no_change ""}
-	{fax                    		"Fax"               	no_change ""}
-	{address_line1          		"Addr1"             	no_change ""}
-	{address_line2          		"Addr2"             	no_change ""}
-	{address_city           		"City"              	no_change ""}
-	{address_postal_code    		"ZIP"               	no_change ""}
-	{address_country_code   		"Country"           	no_change ""}
-	{company_contact_id     		"Contact"           	no_change ""}
-	{referral_source        		"Referral"          	no_change ""}
-	{annual_revenue_id      		"AnRev"             	category "Intranet Annual Revenue"}
-	{note                   		"Note"              	no_change ""}
-	{default_vat            		"Default VAT"       		    no_change ""}
-	{default_po_template_id 	    	"Default PO Template"               category "Intranet Cost Template"}
-	{default_payment_method_id          	"Default Payment Method"            category "Intranet Invoice Payment Method"}
-	{default_payment_days               	"Default Payment Days"              no_change ""}
-	{default_invoice_template_id        	"Default Invoice Template"          category "Intranet Cost Template"}
-	{default_delnote_template_id        	"Default Delivery Note Template"    category "Intranet Cost Template"}
-	{default_bill_template_id           	"Default Provider Bill Template"    category "Intranet Cost Template"}
-	{default_pm_fee_perc                	"Default PM Fee Percentage"         no_change ""}
+	{billable_p	     		"Billable"	  	no_change ""}
+	{vat_number	     		"VAT"	       	no_change ""}
+	{phone		  		"Phone"	     	no_change ""}
+	{fax		    		"Fax"	       	no_change ""}
+	{address_line1	  		"Addr1"	     	no_change ""}
+	{address_line2	  		"Addr2"	     	no_change ""}
+	{address_city	   		"City"	      	no_change ""}
+	{address_postal_code    		"ZIP"	       	no_change ""}
+	{address_country_code   		"Country"	   	no_change ""}
+	{company_contact_id     		"Contact"	   	no_change ""}
+	{referral_source			"Referral"	  	no_change ""}
+	{annual_revenue_id      		"AnRev"	     	category "Intranet Annual Revenue"}
+	{note		   		"Note"	      	no_change ""}
+	{default_vat	    		"Default VAT"       		    percentage ""}
+	{default_po_template_id 	    	"Default PO Template"	       category "Intranet Cost Template"}
+	{default_payment_method_id	  	"Default Payment Method"	    category "Intranet Invoice Payment Method"}
+	{default_payment_days	       	"Default Payment Days"	      no_change ""}
+	{default_invoice_template_id		"Default Invoice Template"	  category "Intranet Cost Template"}
+	{default_delnote_template_id		"Default Delivery Note Template"    category "Intranet Cost Template"}
+	{default_bill_template_id	   	"Default Provider Bill Template"    category "Intranet Cost Template"}
+	{default_pm_fee_perc			"Default PM Fee Percentage"	 no_change ""}
 	{default_surcharge_perc_deref       	"Default Surcharge Percentage"      no_change ""}
-	{default_discount_perc_deref        	"Default Discount Percentage"       no_change ""}
-	{default_tax_deref                  	"Default TAX"                       no_change ""}
+	{default_discount_perc_deref		"Default Discount Percentage"       no_change ""}
+	{default_tax		     	"Default TAX"		       percentage ""}
     }
     return $mapping
 }
@@ -206,8 +206,8 @@ ad_proc -public im_csv_import_guess_im_invoice { } {} {
 	{payment_days "Payment Days" number ""}
 	{paid_amount "Paid Amount" number ""}
 	{parent_nrs "" number ""}
-	{vat "VAT" number ""}
-	{tax "TAX" number ""}
+	{vat "VAT" percentage ""}
+	{tax "TAX" percentage ""}
 	{description "Description" no_change ""}
 	{note "Note" no_change ""}
 	{vat_type_id "VAT Type" category "Intranet VAT Type"}
@@ -229,8 +229,8 @@ ad_proc -public im_csv_import_guess_im_invoice { } {} {
 	{item_material "Item Material" material ""}	
 	{item_type_id "Item Type Id" no_change ""}
 	{item_status_id "Item Status Id" no_change ""}
-        {task "Task Id" project_parent_nrs ""}
-        {task_id "Task Id" project_parent_nrs ""}
+	{task "Task Id" project_parent_nrs ""}
+	{task_id "Task Id" project_parent_nrs ""}
     }
     return $mapping
 }
@@ -247,7 +247,7 @@ ad_proc -public im_csv_import_guess_im_project { } {} {
 	{company_id "Customer Name" company_name ""}
 	{start_date "Start Date" date ""}
 	{end_date "End Date" date ""}
-	{percent_completed "Percent Completed" number ""}
+	{percent_completed "Percent Completed" percentage ""}
 	{project_lead_id "Project Manager" user_name ""}
 	{project_budget "Budget" number ""}
 	{project_budget_hours "Budget Hours" number ""}
@@ -261,35 +261,35 @@ ad_proc -public im_csv_import_guess_im_project { } {} {
 
 ad_proc -public im_csv_import_guess_im_timesheet_task { } {} {
     set mapping {
+	{billable_units "Billable Units" number ""}
+	{company_id "Customer Name" company_name ""}
+	{cost_center_id "Cost Center" cost_center ""}
+	{deadline_date "Deadline Date" date ""}	
+	{description "Description" no_change ""}
+	{effort_driven_p "Effort driven" no_change ""}
+	{effort_driven_type_id "Scheduling Constraint Id" number ""}
+	{end_date "End Date" date ""}
+	{gantt_project_id "Gantt Project Id" number ""}
+	{invoice_id "Invoice Id" number ""}
+	{material_id "Material" material ""}
+	{note "Note" no_change ""}
 	{parent_id "Parent Nrs" project_parent_nrs ""}
 	{parent_nrs "Parent Nrs" project_parent_nrs ""}
-	{project_nr "Project Nr." no_change ""}
-	{project_name "Project Name" no_change ""}
-	{project_type_id "Project Type" category "Intranet Project Type"}
-	{company_id "Customer Name" company_name ""}
-	{start_date "Start Date" date ""}
-	{end_date "End Date" date ""}
-	{percent_completed "Percent Completed" number ""}
-	{project_lead_id "Project Manager" user_name ""}
+	{percent_completed "Percent Completed" percentage ""}
+	{planned_units "Planned Units" number ""}
+	{priority "Priority" number ""}
 	{project_budget "Budget" number ""}
 	{project_budget_hours "Budget Hours" number ""}
-	{sort_order "Sort Order" number ""}
-	{note "Note" no_change ""}
-	{description "Description" no_change ""}
-	{material_id "Material" material ""}
-	{uom_id "Unit of measure" category "Intranet UoM"}	
-        {planned_units "Planned Units" number ""}
-	{billable_units "Billable Units" number ""}
-	{cost_center_id "Cost Center" cost_center ""}
-	{invoice_id "Invoice Id" number ""}
-	{priority "Priority" number ""}
-	{sort_order "Sort Order" number ""}
-	{gantt_project_id "Gantt Project Id" number ""}
-	{scheduling_constraint_id "Scheduling Constraint Id" category "Intranet Gantt Task Scheduling Type"}
+	{project_lead_id "Project Manager" user_name ""}
+	{project_name "Project Name" no_change ""}
+	{project_nr "Project Nr." no_change ""}
+	{project_status_id "Project Status" category "Intranet Project Status"}
+	{project_type_id "Project Type" category "Intranet Project Type"}
 	{scheduling_constraint_date "Scheduling Constraint Date" date ""}
-	{effort_driven_type_id "Scheduling Constraint Id" number ""}
-	{deadline_date "Deadline Date" date ""}	
-        {effort_driven_p "Effort driven" no_change ""}
+	{scheduling_constraint_id "Scheduling Constraint Id" category "Intranet Gantt Task Scheduling Type"}
+	{sort_order "Sort Order" number ""}
+	{start_date "Start Date" date ""}
+	{uom_id "Unit of measure" category "Intranet UoM"}	
     }
     return $mapping
 }
@@ -364,8 +364,8 @@ ad_proc -public im_csv_import_guess_im_risk { } {} {
 	{risk_description "Description" no_change ""}
 	{risk_description "Risk Description" no_change ""}
 	{risk_impact "Impact" number ""}
-	{risk_probability_percent "Probability" number ""}
-	{risk_probability_percent "Risk Probability" number ""}
+	{risk_probability_percent "Probability" percentage ""}
+	{risk_probability_percent "Risk Probability" percentage ""}
     }
     return $mapping
 }
@@ -385,22 +385,23 @@ ad_proc -public im_csv_import_parsers {
     switch $object_type {
 	im_project - im_company - im_conf_item - im_cost - im_invoice - im_risk - im_timesheet_task - im_ticket - im_hour - person - im_expense_bundle - im_expense - rels {
 	    set parsers {
-		boolean		        "Boolean"
+		no_change		"No Change"
+		boolean			"Boolean"
 		category		"Category ID from Category Name"
 		company_name    	"Company ID from Company Name"
 		conf_item_parent_nrs    "Conf Item Parent Nrs"
 		cost_center		"Cost Center"
-		date		        "Date (generic)"
+		date			"Date (generic)"
 		date_american		"Date US (MM/DD/YYYY)"
 		date_european		"Date European (DD.MM.YYYY)"
 		date_european_dashes	"Date ISO (YYYY-MM-DD)"
 		hard_coded		"Hard Coded Functionality"
-		no_change		"No Change"
-		material	        "Material"
-		number		        "Number (generic)"
+		material		"Material"
+		number			"Number (generic)"
 		number_american		"Number US (20,000.00)"
 		number_european		"Number European (20.000,00)"
-		office_name    	        "Office ID from Office Name"
+		percentage		"Percentage (generic)"
+		office_name    		"Office ID from Office Name"
 		project_name		"Project from Project Name"
 		project_nr		"Project from Project Nr"
 		project_parent_nrs      "Project from Parent Nrs"
@@ -783,11 +784,11 @@ ad_proc -public im_csv_import_label_from_object_type {
     Returns the main navbar lable for the object_type
 } {
     switch $object_type {
-        im_company { return "companies" }
-        im_project { return "projects" }
-        im_ticket { return "helpdesk" }
-        person { return "users" }
-        default { return "" }
+	im_company { return "companies" }
+	im_project { return "projects" }
+	im_ticket { return "helpdesk" }
+	person { return "users" }
+	default { return "" }
     }
 }
 
