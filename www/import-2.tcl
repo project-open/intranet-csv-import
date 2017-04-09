@@ -51,7 +51,7 @@ if {![file readable $tmp_filename]} {
 set import_filename "${tmp_filename}_copy"
 
 catch {
-    exec cp $tmp_filename $import_filename
+    file copy -force -- $tmp_filename $import_filename
 }
 
 # ---------------------------------------------------------------------
