@@ -247,12 +247,14 @@ ad_proc -public im_csv_import_guess_im_project { } {} {
 	{company_id "Customer Name" company_name ""}
 	{start_date "Start Date" date ""}
 	{end_date "End Date" date ""}
+	{project_name "Name" no_change ""}
 	{percent_completed "Percent Completed" percentage ""}
 	{project_lead_id "Project Manager" user_name ""}
 	{project_budget "Budget" number ""}
 	{project_budget_hours "Budget Hours" number ""}
 	{sort_order "Sort Order" number ""}
 	{note "Note" no_change ""}
+	{note "Notes" no_change ""}
 	{description "Description" no_change ""}
     }
     return $mapping
@@ -272,15 +274,21 @@ ad_proc -public im_csv_import_guess_im_timesheet_task { } {} {
 	{gantt_project_id "Gantt Project Id" number ""}
 	{invoice_id "Invoice Id" number ""}
 	{material_id "Material" material ""}
+	{project_name "Name" no_change ""}
 	{note "Note" no_change ""}
+	{note "Notes" no_change ""}
 	{parent_id "Parent Nrs" project_parent_nrs ""}
 	{parent_nrs "Parent Nrs" project_parent_nrs ""}
 	{percent_completed "Percent Completed" percentage ""}
+	{percent_completed "% Completed" percentage ""}
+	{percent_completed "% Complete" percentage ""}
 	{planned_units "Planned Units" number ""}
+	{planned_units "Work" number ""}
 	{priority "Priority" number ""}
 	{project_budget "Budget" number ""}
 	{project_budget_hours "Budget Hours" number ""}
 	{project_lead_id "Project Manager" user_name ""}
+	{project_lead_id "Assignee" user_name ""}
 	{project_name "Project Name" no_change ""}
 	{project_nr "Project Nr." no_change ""}
 	{project_status_id "Project Status" category "Intranet Project Status"}
@@ -559,6 +567,7 @@ ad_proc -public im_csv_import_guess_map {
 	set pretty_name [lindex $tuple 1]
 	set parser [lindex $tuple 2]
 	set parser_args [lindex $tuple 3]
+
 	if {$field_name_lower eq [csv_norm $pretty_name]} {
 	    ns_log Notice "im_csv_import_guess_map: found statically encoded match with field_name=$field_name"
 	    return $attribute_name
@@ -594,12 +603,14 @@ ad_proc -public im_csv_import_guess_map {
     }
 
     # Check for a pretty_name of a DynField
-    set dynfield_pretty_names [util_memoize [list db_list otype_dynfields "select pretty_name from ($dynfield_sql) t"]]
-    ns_log Notice "im_csv_import_guess_map: pretty_names=$dynfield_pretty_names"
-    foreach field $dynfield_pretty_names {
-	if {$field_name_lower eq [csv_norm $field]} {
-	    ns_log Notice "im_csv_import_guess_map: found pretty_name match with field_name=$field_name"
-	    return $field_name_lower
+    set dynfield_pretty_name_tuples [util_memoize [list db_list_of_lists otype_dynfields "select attribute_name, pretty_name from ($dynfield_sql) t"]]
+    ns_log Notice "im_csv_import_guess_map: pretty_names=$dynfield_pretty_name_tuples"
+    foreach field_tuple $dynfield_pretty_name_tuples {
+	set attribute_name [lindex $field_tuple 0]
+	set pretty_name [lindex $field_tuple 1]
+	if {$field_name_lower eq [csv_norm $pretty_name]} {
+	    ns_log Notice "im_csv_import_guess_map: found pretty_name match with field_name=$pretty_name -> $attribute_name"
+	    return $attribute_name
 	}
     }
 
