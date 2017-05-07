@@ -328,11 +328,14 @@ ad_proc -public im_csv_import_guess_im_conf_item { } {} {
 	{conf_item_nr "Conf Item Nr" no_change ""}
 	{conf_item_code "Conf Item Code" no_change ""}
 	{conf_item_parent_id "Parent Conf Item Nr" conf_item_parent_nrs ""}
+	{conf_item_parent_id "Conf Item Parent Nrs" conf_item_parent_nrs ""}
 	{conf_item_cost_center_id "Conf Item Cost Center Code" cost_center ""}
 	{conf_item_status_id "Conf Item Status" category "Intranet Conf Item Status"}
 	{conf_item_type_id "Conf Item Type" category "Intranet Conf Item Type"}
 	{conf_item_owner_id "Conf Item Owner" user_name ""}
 	{conf_item_owner_id "Conf Item Owner Email" user_name ""}
+	{conf_item_project_id "Project" project_parent_nrs ""}
+	{conf_item_project_id "Conf Item Project Parent Nrs" project_parent_nrs ""}
 	{conf_item_version "Conf Item Version" no_change ""}
 	{description "Description" no_change ""}
 	{note "Note" no_change ""}

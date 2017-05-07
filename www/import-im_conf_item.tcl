@@ -137,6 +137,7 @@ foreach csv_line_fields $values_list_of_lists {
     set conf_item_cost_center_code	""
     set conf_item_cost_center_id	""
     set conf_item_version	""
+    set conf_item_project_id    ""
 
     set description		""
     set note			""
@@ -368,6 +369,12 @@ foreach csv_line_fields $values_list_of_lists {
     if {"" != $conf_item_owner_id} {
 	set role_id [im_biz_object_role_full_member]
 	im_biz_object_add_role $conf_item_owner_id $conf_item_id $role_id
+    }
+
+
+    if {"" != $conf_item_project_id} {
+	if {$ns_write_p} { ns_write "<li>Adding to project #$conf_item_project_id.\n" }
+	im_conf_item_new_project_rel -project_id $conf_item_project_id -conf_item_id $conf_item_id
     }
     
 

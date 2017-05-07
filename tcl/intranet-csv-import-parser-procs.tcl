@@ -445,9 +445,18 @@ ad_proc -public im_csv_import_parser_project_parent_nrs {
     set arg [string tolower [string trim $arg]]
     set parent_id ""
 
+    # Shortcut: Accept the name of a project if it's found
+    set project_ids [db_list project_ids "select project_id from im_projects where lower(project_name) = :arg"]
+    if {"" ne $project_ids} {
+	if {1 eq [llength $project_ids]} {
+	    return [list [lindex $project_ids 0] ""]
+	} else {
+	    return [list "" "Found multiple projects with name '$arg': Please use a space separated list of project_nrs."]
+	}
+    }
+
     # Loop through the list of parent_nrs
     foreach parent_nr $arg {
-
 	set parent_sql "parent_id = $parent_id"
 	if {"" eq $parent_id} { set parent_sql "parent_id is null" }
 	set project_id [db_string pid "select project_id from im_projects where $parent_sql and lower(project_nr) = :parent_nr" -default ""]
@@ -469,9 +478,18 @@ ad_proc -public im_csv_import_parser_conf_item_parent_nrs {
     set arg [string tolower [string trim $arg]]
     set parent_id ""
 
+    # Shortcut: Accept the name of a conf_item if it's found
+    set conf_item_ids [db_list conf_item_ids "select conf_item_id from im_conf_items where lower(conf_item_name) = :arg"]
+    if {"" ne $conf_item_ids} {
+	if {1 eq [llength $conf_item_ids]} {
+	    return [list [lindex $conf_item_ids 0] ""]
+	} else {
+	    return [list "" "Found multiple conf_items with name '$arg': Please use a space separated list of conf_item_nrs."]
+	}
+    }
+
     # Loop through the list of parent_nrs
     foreach parent_nr $arg {
-
 	set parent_sql "conf_item_parent_id = $parent_id"
 	if {"" eq $parent_id} { set parent_sql "conf_item_parent_id is null" }
 	set project_id [db_string pid "select conf_item_id from im_conf_items where $parent_sql and lower(conf_item_nr) = :parent_nr" -default ""]
