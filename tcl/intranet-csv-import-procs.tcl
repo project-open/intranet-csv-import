@@ -273,6 +273,8 @@ ad_proc -public im_csv_import_guess_im_timesheet_task { } {} {
 	{end_date "End Date" date ""}
 	{gantt_project_id "Gantt Project Id" number ""}
 	{invoice_id "Invoice Id" number ""}
+	{infrax_creation_date "Creation Date" date_european ""}
+	{infrax_done_date "Done Date" date_european ""}
 	{material_id "Material" material ""}
 	{project_name "Name" no_change ""}
 	{note "Note" no_change ""}
@@ -403,8 +405,8 @@ ad_proc -public im_csv_import_parsers {
 		conf_item_parent_nrs    "Conf Item Parent Nrs"
 		cost_center		"Cost Center"
 		date			"Date (generic)"
-		date_american		"Date US (MM/DD/YYYY)"
 		date_european		"Date European (DD.MM.YYYY)"
+		date_american		"Date US (MM/DD/YYYY)"
 		date_european_dashes	"Date ISO (YYYY-MM-DD)"
 		hard_coded		"Hard Coded Functionality"
 		material		"Material"
@@ -607,12 +609,12 @@ ad_proc -public im_csv_import_guess_map {
 
     # Check for a pretty_name of a DynField
     set dynfield_pretty_name_tuples [util_memoize [list db_list_of_lists otype_dynfields "select attribute_name, pretty_name from ($dynfield_sql) t"]]
-    ns_log Notice "im_csv_import_guess_map: pretty_names=$dynfield_pretty_name_tuples"
-    foreach field_tuple $dynfield_pretty_name_tuples {
-	set attribute_name [lindex $field_tuple 0]
-	set pretty_name [lindex $field_tuple 1]
+    ns_log Notice "im_csv_import_guess_map: pretty_name_tuples=$dynfield_pretty_name_tuples"
+    foreach tuple $dynfield_pretty_name_tuples {
+	set attribute_name [lindex $tuple 0]
+	set pretty_name [lindex $tuple 1]
 	if {$field_name_lower eq [csv_norm $pretty_name]} {
-	    ns_log Notice "im_csv_import_guess_map: found pretty_name match with field_name=$pretty_name -> $attribute_name"
+	    ns_log Notice "im_csv_import_guess_map: found pretty_name match with field_name=$field_name"
 	    return $attribute_name
 	}
     }
