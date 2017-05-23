@@ -221,6 +221,11 @@ ad_proc -public im_csv_import_parser_date_european {
 	if {1 == [string length $month]} { set dom "0$month" }
 	return [list "$year-$month-$dom" ""] 
     }
+    if {[regexp {^(.+)\/(.+)\/(....)$} $arg match dom month year]} { 
+	if {1 == [string length $dom]} { set dom "0$dom" }
+	if {1 == [string length $month]} { set dom "0$month" }
+	return [list "$year-$month-$dom" ""] 
+    }
     return [list "" "Error parsing European date format '$arg': expected 'dd.mm.yyyy'. If the error remains, try to import ANSI dates (2015-01-01) and set parser to 'No change'"]
 }
 
