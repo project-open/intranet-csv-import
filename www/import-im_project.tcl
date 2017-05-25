@@ -70,15 +70,37 @@ set header_len [llength $header_fields]
 set values_list_of_lists [im_csv_get_values $lines_content $separator]
 
 
-# ------------------------------------------------------------
-# Get DynFields
+# ---------------------------------------------------------------------
+# Determine header_var_name
+# ---------------------------------------------------------------------
 
-# Determine the list of actually available fields.
+
 set mapped_vars [list "''"]
-foreach k [array names map] {
-    lappend mapped_vars "'$map($k)'"
-}
+set debug_rows "<tr><td colspan=2>header_len</td><td colspan=5>$header_len</td></tr>"
+foreach i [array names column] {
+    set header [string trim $column($i)]
+    if {$header ne $column($i)} { set column($i) $header }
+    set m $map($i)
+    set p $parser($i)
+    set args $parser_args($i)
 
+    # Calculate var name from header 
+    set var [string tolower $header]
+    set var [im_mangle_unicode_accents $var]
+    set var [string map -nocase {" " "_" "\"" "" "'" "" "/" "_" "-" "_" "\[" "(" "\{" "(" "\}" ")" "\]" ")"} $var]
+    set header_var($i) $var
+
+    # Determine the list of actually available fields for SQL statement
+    lappend mapped_vars "'$map($i)'"
+
+    append debug_rows "<tr><td>$i</td><td>$header</td><td>$var</td><td>$m</td><td>$p</td><td>$args</td><td></td></tr>\n"
+}
+set debug "<table border=1>$debug_rows</table>"
+
+
+# ---------------------------------------------------------------------
+# Get DynFields
+# ---------------------------------------------------------------------
 
 set dynfield_sql "
 	select distinct
@@ -126,7 +148,7 @@ foreach csv_line_fields $values_list_of_lists {
     if {$ns_write_p} { ns_write "</ul><hr><ul>\n" }
     if {$ns_write_p} { ns_write "<li>Starting to parse line $cnt\n" }
 
-    # Preset values, defined by CSV sheet:
+    # Reset values used in the rest of the loop
     set project_name		""
     set project_nr		""
     set project_path		""
@@ -173,104 +195,67 @@ foreach csv_line_fields $values_list_of_lists {
     set billable_units		""
     set priority		""
 
-    foreach attribute_name $attribute_names {
-	set $attribute_name ""
-    }
+    # Reset DynFields
+    foreach attribute_name $attribute_names { set $attribute_name "" }
 
     # -------------------------------------------------------
-    # Extract variables from the CSV file
-    #
-    set var_name_list [list]
-    for {set j 0} {$j < $header_len} {incr j} {
-
-	set var_name [string trim [lindex $header_fields $j]]
-	if {"" == $var_name} {
-	    # No variable name - probably an empty column
-	    continue
-	}
-
-	set var_name [string tolower $var_name]
-	set var_name [string map -nocase {" " "_" "\"" "" "'" "" "/" "_" "-" "_" "\[" "(" "\{" "(" "\}" ")" "\]" ")"} $var_name]
-	lappend var_name_list $var_name
-	ns_log notice "upload-companies-2: varname([lindex $header_fields $j]) = $var_name"
-
+    # Set default values without parser from header names
+    foreach j [array names parser] {
+	set v $header_var($j)
+	if {"" eq $v} { continue }
 	set var_value [string trim [lindex $csv_line_fields $j]]
 	set var_value [string map -nocase {"\"" "'" "\[" "(" "\{" "(" "\}" ")" "\]" ")" "\$" "" "\\" ""} $var_value]
 	if {"NULL" eq $var_value} { set var_value ""}
-
-	# replace unicode characters by non-accented characters
-	# Watch out! Does not work with Latin-1 characters
-	set var_name [im_mangle_unicode_accents $var_name]
-
-	set cmd "set $var_name \"$var_value\""
+	set cmd "set $v \"$var_value\""
 	ns_log Notice "upload-companies-2: cmd=$cmd"
 	set result [eval $cmd]
     }
 
     # -------------------------------------------------------
     # Transform the variables
-    set i 0
-
-    foreach varname $var_name_list {
+    foreach i [array names parser] {
+	set varname $header_var($i)
 	set p $parser($i)
 	set p_args $parser_args($i)
 	set target_varname $map($i)
-	ns_log Notice "import-im_project: Parser: $varname -> $target_varname"
-	ns_log Notice "import-im_project: Parser: p_args: $p_args"
-	ns_log Notice "import-im_project: Parser: target_varname: $target_varname"
+	ns_log Notice "import-im_project: i=$i: var=$varname -> target=$target_varname using parser=$p ($p_args)"
 
-	switch $p {
-	    no_change { 
-		set $target_varname [set $varname]
-		ns_log Notice "import-im_project: Parser: no change: varname: $varname, val: [set $varname]"
-	    }
-	    default {
-		set proc_name "im_csv_import_parser_$p"
-		if {[catch {
-		    set val [set $varname]
-		    ns_log Notice "import-im_project: Parser: val: $val"
-		    if {"" != $val} {
-			    set result [$proc_name -parser_args $p_args $val]
-			    set res [lindex $result 0]
-			    set err [lindex $result 1]
-			    ns_log Notice "import-im_project: Parser: '$p -args $p_args $val' -> $target_varname=$res, err=$err"
-			    if {"" != $err} {
-				if {$ns_write_p} { 
-				    ns_write "<li><font color=brown>Warning: Error parsing field='$target_varname' using parser '$p':<pre>$err</pre></font>\n" 
-				}
-			    }
-			    set $target_varname $res
-		    }
-		} err_msg]} {
+	set proc_name "im_csv_import_parser_$p"
+	if {[catch {
+	    set val [set $varname]
+	    set $target_varname ""
+	    if {"" != $val} {
+		set result [$proc_name -parser_args $p_args $val]		
+		set res [lindex $result 0]
+		set err [lindex $result 1]
+		ns_log Notice "import-im_project: var=$varname -> target=$target_varname using parser=$p ($p_args): '$val' -> '$res', err=$err"
+		if {"" ne $err} {
 		    if {$ns_write_p} { 
-			ns_write "<li><font color=brown>Warning: Error parsing field='$target_varname' using parser '$p':<pre>$err_msg</pre></font>" 
+			ns_write "<li><font color=brown>Warning: Error parsing field='$target_varname' using parser '$p':<pre>$err</pre></font>\n" 
 		    }
 		}
+		set $target_varname $res
+	    }
+	} err_msg]} {
+	    if {$ns_write_p} { 
+		ns_write "<li><font color=brown>Warning: Error parsing field='$target_varname' using parser '$p':<pre>$err_msg</pre></font>" 
 	    }
 	}
 
-	incr i
+	ns_log Notice "import-im_project: "
 	ns_log Notice "import-im_project: -------------------------------------------"
+	ns_log Notice "import-im_project: "
     }
     
     # -------------------------------------------------------
     # Specific field transformations
-
+    # -------------------------------------------------------
 
     # project_name needs to be there
     if {"" == $project_name} {
 	if {$ns_write_p} {
 	    ns_write "<li><font color=red>Error: We have found an empty 'Project Name' in line $cnt.<br>
 	        Please correct the CSV file. Every projects needs to have a unique Project Name.</font>\n"
-	}
-	continue
-    }
-
-    # project_nr needs to be there
-    if {"" == $project_nr} {
-	if {$ns_write_p} {
-	    ns_write "<li><font color=red>Error: We have found an empty 'Project Nr' in line $cnt.<br>
-	    Please correct the CSV file. Every project needs to have a unique Project Nr.</font>\n"
 	}
 	continue
     }
@@ -373,7 +358,7 @@ foreach csv_line_fields $values_list_of_lists {
 	    continue
 	}
     }
-    
+  
     # Status is a required field
     set project_status_id [im_id_from_category $project_status "Intranet Project Status"]
     if {"" == $project_status_id} {
@@ -381,11 +366,12 @@ foreach csv_line_fields $values_list_of_lists {
 	set project_status_id [im_project_status_open]
     }
 
-    # Type is a required field
+    # Project type is optional: Main projects are assumed to be "Gantt Projects", while sub-project are assumed to be "Task"
     set project_type_id [im_id_from_category [list $project_type] "Intranet Project Type"]
     if {"" == $project_type_id} {
-	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project type '$project_type', using default type 'Other'</font>\n" }
 	set project_type_id [im_project_type_gantt]
+	if {"" ne $parent_id} { set project_type_id [im_project_type_task] }
+	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project type '$project_type', using default type '[im_category_from_id $project_type_id]'</font>\n" }
     }
 
     # start_date and end_date are required fields for projects, not tasks
@@ -431,6 +417,18 @@ foreach csv_line_fields $values_list_of_lists {
 	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find customer_name='$customer_name', using 'internal' customer</font>\n" }
 	}
     }
+
+    # project_nr is based on the parent
+    if {"" == $project_nr} {
+	set project_nr [im_next_project_nr -customer_id $company_id -parent_id $parent_id]
+
+	#if {$ns_write_p} {
+	#    ns_write "<li><font color=red>Error: We have found an empty 'Project Nr' in line $cnt.<br>
+	#    Please correct the CSV file. Every project needs to have a unique Project Nr.</font>\n"
+	#}
+	#continue
+    }
+
 
     # Project Lead / Project Manager
     if { "" eq $project_lead_id && 100 != $project_type_id } {
@@ -591,7 +589,7 @@ foreach csv_line_fields $values_list_of_lists {
 	}
 
 	# Task UoM
-	if {"" eq $uom} { set uom "Hour" }
+	if {"" eq $uom} { set uom "Day" }
 	set uom_id [im_id_from_category [list $uom] "Intranet UoM"]
 	if {"" eq $uom_id} {
 	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find UoM '$uom', using default 'Hour'</font>\n" }

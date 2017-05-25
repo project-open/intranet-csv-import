@@ -102,7 +102,7 @@ ad_proc -public im_csv_import_parser_office_name {
     Returns a office_id from im_companies
 } {
     if {[regexp {'} $arg match]} { 
-       set err "Found a office name ($arg) with single quote, consider removing single quotes from companies"
+       set err "Found a office name ($arg) with single quote, please consider removing single quotes from companies"
        im_security_alert -location "im_csv_import_parser_office_name" -message $err -value $arg 
        return [list $arg $err]
     }
@@ -125,7 +125,7 @@ ad_proc -public im_csv_import_parser_project_nr {
     Returns a project_id from project_nr
 } {
     if {[regexp {'} $arg match]} { 
-       set err "Found a Project Nr with single quote"
+       set err "Found a Project Nr ($arg) with single quote"
        im_security_alert -location "im_csv_import_parser_project_nr" -message $err -value $arg 
        return [list $arg $err]
     }
@@ -151,7 +151,7 @@ ad_proc -public im_csv_import_parser_project_name {
     Returns a project_id from project_name
 } {
     if {[regexp {'} $arg match]} { 
-       set err "Found a Project Name with single quote"
+       set err "Found a Project Name ($arg) with single quote"
        im_security_alert -location "im_csv_import_parser_project_name" -message $err -value $arg 
        return [list $arg $err]
     }
@@ -206,7 +206,7 @@ ad_proc -public im_csv_import_parser_boolean {
 	"t" - "1" { return [list "t" ""] }
 	"f" - "0" { return [list "f" ""] }
     }
-    return [list "" "Could not determine boolean value of arg='$arg'"]
+    return [list "" "Could not determine boolean value of '$arg'"]
 }
 
 
@@ -241,7 +241,7 @@ ad_proc -public im_csv_import_parser_date_european_slashes {
 	if {1 == [string length $month]} { set dom "0$month" }
 	return [list "$year-$month-$dom" ""] 
     }
-    return [list "" "Error parsing European date format '$arg': expected 'dd/mm/yyyy'"]
+    return [list "" "Error parsing European date '$arg': expected 'dd/mm/yyyy'"]
 }
 
 ad_proc -public im_csv_import_parser_date_iso { 
@@ -255,7 +255,7 @@ ad_proc -public im_csv_import_parser_date_iso {
 	if {1 == [string length $month]} { set dom "0$month" }
 	return [list "$year-$month-$dom" ""] 
     }
-    return [list "" "Error parsing ISO '$arg': expected 'yyyy-mm-dd'"]
+    return [list "" "Error parsing ISO date '$arg': expected 'yyyy-mm-dd'"]
 }
 
 
@@ -281,9 +281,8 @@ ad_proc -public im_csv_import_parser_percentage {
     Parses a percentage number.
     Basically just ignores a trailing % char after a number.
 } {
-    if {[regexp {^(.+)%$} $arg match number]} {
-	set arg $number
-    }
+    # Fraber 170520: number parser already deals with percentages...
+    # if {[regexp {^(.+)%$} $arg match number]} { set arg $number }
 
     return [im_csv_import_parser_number -parser_args $parser_args $arg]
 }
@@ -327,7 +326,7 @@ ad_proc -public im_csv_import_parser_number {
 	return [list [expr "$main.$fraction" / $divisor] ""]
     }
 
-    return [list 0 "Could not decide if this is a European or a US number - please use a specific parser"]
+    return [list 0 "Could not decide if '$arg' is a European or a US number - please use a specific parser"]
 }
 
 ad_proc -public im_csv_import_parser_number_european {
@@ -370,7 +369,7 @@ ad_proc -public im_csv_import_parser_category {
     set result [im_id_from_category $arg $parser_args]
 
     if {"" == $result} {
-	return [list "" "Category parser: We did not find a value='$arg' in category type '$parser_args'."]
+	return [list "" "Category parser: We did not find a category '$arg' in category type '$parser_args'."]
     } else {
 	return [list $result ""]
     }
@@ -396,7 +395,7 @@ ad_proc -public im_csv_import_parser_cost_center {
     "]
     set result [lindex $ccids 0]
     if {"" == $result} {
-	return [list "" "Cost Center parser: We did not find any cost center with label, code or name matching the value='$arg'."]
+	return [list "" "Cost Center parser: We did not find any cost center with label, code or name matching '$arg'."]
     } else {
 	return [list $result ""]
     }
@@ -423,7 +422,7 @@ ad_proc -public im_csv_import_parser_material {
     "]
     set result [lindex $ccids 0]
     if {"" == $result} {
-	return [list "" "Material parser: We did not find any material nr or name matching the value='$arg'."]
+	return [list "" "Material parser: We did not find any material nr or name matching '$arg'."]
     } else {
 	return [list $result ""]
     }
