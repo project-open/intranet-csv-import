@@ -400,7 +400,7 @@ ad_proc -public im_csv_import_parsers {
                 no_change                       "No Change"
                 boolean                         "Boolean"
                 category                        "Category ID from Category Name"
-                company_name                    "Company ID from Company Name"
+                company_name                    "Company ID from Company Name or Company Path"
                 conf_item_parent_nrs            "Conf Item Parent Nrs"
                 cost_center                     "Cost Center"
                 date                            "Date (generic)"
@@ -414,9 +414,9 @@ ad_proc -public im_csv_import_parsers {
                 number_european                 "Number European (20.000,00)"
                 percentage                      "Percentage (generic)"
                 office_name                     "Office ID from Office Name"
-                project_name                    "Project from Project Name"
-                project_nr                      "Project from Project Nr"
-                project_parent_nrs              "Project from Parent Nrs"
+                project_name                    "Project ID from Project Name"
+                project_nr                      "Project ID from Project Nr"
+                project_parent_nrs              "Project ID from Parent Nrs"
                 user_name                       "User ID from email, username or full name"
             }
         }
