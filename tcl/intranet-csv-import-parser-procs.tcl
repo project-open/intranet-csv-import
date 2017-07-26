@@ -483,7 +483,7 @@ ad_proc -public im_csv_import_parser_conf_item_parent_nrs {
     set parent_id ""
 
     # Shortcut: Accept the name of a conf_item if it's found
-    set conf_item_ids [db_list conf_item_ids "select conf_item_id from im_conf_items where lower(conf_item_name) = :arg"]
+    set conf_item_ids [db_list conf_item_ids "select conf_item_id from im_conf_items where lower(conf_item_nr) = :arg"]
     if {"" ne $conf_item_ids} {
 	if {1 eq [llength $conf_item_ids]} {
 	    return [list [lindex $conf_item_ids 0] ""]
@@ -492,6 +492,17 @@ ad_proc -public im_csv_import_parser_conf_item_parent_nrs {
 	}
     }
 
+    if {"" eq $conf_item_ids} {
+	set conf_item_ids [db_list conf_item_ids "select conf_item_id from im_conf_items where lower(conf_item_name) = :arg"]
+	if {"" ne $conf_item_ids} {
+	    if {1 eq [llength $conf_item_ids]} {
+		return [list [lindex $conf_item_ids 0] ""]
+	    } else {
+		return [list "" "Found multiple conf_items with name '$arg': Please use a space separated list of conf_item_nrs."]
+	    }
+	}
+    }
+    
     # Loop through the list of parent_nrs
     foreach parent_nr $arg {
 	set parent_sql "conf_item_parent_id = $parent_id"
