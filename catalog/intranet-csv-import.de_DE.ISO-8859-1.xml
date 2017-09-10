@@ -5,10 +5,10 @@
   <msg key="Export_Expense_Bundles">Export Ausgabenpakete</msg>
   <msg key="Export_Expense_Items">Export Ausgaben</msg>
   <msg key="Export_Finance_Documents">Export Finanzdokumente</msg>
-  <msg key="Export_Hours">Export Zeiterfassung Stunden</msg>
+  <msg key="Export_Hours">Export Zeiterfassung (Stunden)</msg>
   <msg key="Export_Invoice_Items">Export Zeilen von Finanzdokumenten</msg>
   <msg key="Export_Persons">Export Personen</msg>
-  <msg key="Export_Project_Task_Relationships">Export Projekt-Aufgaben Beziehungen</msg>
+  <msg key="Export_Project_Task_Relationships">Export Projekt-Aufgaben-Beziehungen</msg>
   <msg key="Export_Projects">Export Projekte</msg>
   <msg key="Export_Tasks">Export Aufgaben</msg>
   <msg key="Filename">Dateiname</msg>
