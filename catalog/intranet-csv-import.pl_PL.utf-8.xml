@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<message_catalog package_key="intranet-csv-import" locale="pl_PL" charset="utf-8">
+
+  <msg key="Export_Companies">Eksportuj firmy</msg>
+  <msg key="Export_Expense_Bundles">Eksportuj pakiety wydatków</msg>
+  <msg key="Export_Expense_Items">Eksportuj wydatki</msg>
+  <msg key="Export_Finance_Documents">Eksportuj dokumenty finansowe</msg>
+  <msg key="Export_Hours">Eksportuj godziny</msg>
+  <msg key="Export_Invoice_Items">Eksportuj pozycje faktur</msg>
+  <msg key="Export_Persons">Eksport osób</msg>
+  <msg key="Export_Project_Task_Relationships">Eksportuj zależności projekt - task</msg>
+  <msg key="Export_Projects">Eksportuj projekty</msg>
+  <msg key="Export_Tasks">Eksportuj taski</msg>
+  <msg key="Filename">Nazwa pliku</msg>
+  <msg key="Object_Type">Typ obiektu</msg>
+  <msg key="Upload_file">Prześlij plik</msg>
+</message_catalog>
