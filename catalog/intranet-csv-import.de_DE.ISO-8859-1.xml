@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <message_catalog package_key="intranet-csv-import" locale="de_DE" charset="ISO-8859-1">
 
-  <msg key="Export_Companies">Export Firmen</msg>
-  <msg key="Export_Expense_Bundles">Export Ausgabenpakete</msg>
-  <msg key="Export_Expense_Items">Export Ausgaben</msg>
-  <msg key="Export_Finance_Documents">Export Finanzdokumente</msg>
-  <msg key="Export_Hours">Export Zeiterfassung (Stunden)</msg>
-  <msg key="Export_Invoice_Items">Export Zeilen von Finanzdokumenten</msg>
-  <msg key="Export_Persons">Export Personen</msg>
+  <msg key="Export_Companies">Firmen nach CSV exportieren</msg>
+  <msg key="Export_Expense_Bundles">Ausgabenpakete nach CSV exportieren</msg>
+  <msg key="Export_Expense_Items">Ausgabenelemente nach CSV exportieren</msg>
+  <msg key="Export_Finance_Documents">Finanzdokumente nach CSV exportieren</msg>
+  <msg key="Export_Hours">Zeiterfassung-Stunden nach CSV exportieren</msg>
+  <msg key="Export_Invoice_Items">Zeilen von Finanzdokumenten nach CSV exportieren</msg>
+  <msg key="Export_Persons">Personen nach CSV exportieren</msg>
   <msg key="Export_Project_Task_Relationships">Export Projekt-Aufgaben-Beziehungen</msg>
   <msg key="Export_Projects">Export Projekte</msg>
   <msg key="Export_Tasks">Export Aufgaben</msg>
