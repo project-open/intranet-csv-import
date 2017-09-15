@@ -5,12 +5,12 @@
   <msg key="Export_Expense_Bundles">Ausgabenpakete nach CSV exportieren</msg>
   <msg key="Export_Expense_Items">Ausgabenelemente nach CSV exportieren</msg>
   <msg key="Export_Finance_Documents">Finanzdokumente nach CSV exportieren</msg>
-  <msg key="Export_Hours">Zeiterfassung-Stunden nach CSV exportieren</msg>
+  <msg key="Export_Hours">Erfasste Zeiten nach CSV exportieren</msg>
   <msg key="Export_Invoice_Items">Zeilen von Finanzdokumenten nach CSV exportieren</msg>
-  <msg key="Export_Persons">Personen nach CSV exportieren</msg>
-  <msg key="Export_Project_Task_Relationships">Export Projekt-Aufgaben-Beziehungen</msg>
-  <msg key="Export_Projects">Export Projekte</msg>
-  <msg key="Export_Tasks">Export Aufgaben</msg>
+  <msg key="Export_Persons">Benutzer exportieren</msg>
+  <msg key="Export_Project_Task_Relationships">Projekt-Aufgaben Beziehungen exportieren</msg>
+  <msg key="Export_Projects">Projekte exportieren</msg>
+  <msg key="Export_Tasks">Gantt-Aufgaben exportieren</msg>
   <msg key="Filename">Dateiname</msg>
   <msg key="Object_Type">Objekttyp</msg>
   <msg key="Upload_file">Datei hochladen</msg>
