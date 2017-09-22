@@ -361,17 +361,19 @@ foreach csv_line_fields $values_list_of_lists {
   
     # Status is a required field
     set project_status_id [im_id_from_category $project_status "Intranet Project Status"]
-    if {"" == $project_status_id} {
+    if {"" eq $project_status_id} {
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project status '$project_status', using default status 'Open'</font>\n" }
 	set project_status_id [im_project_status_open]
     }
 
     # Project type is optional: Main projects are assumed to be "Gantt Projects", while sub-project are assumed to be "Task"
-    set project_type_id [im_id_from_category [list $project_type] "Intranet Project Type"]
-    if {"" == $project_type_id} {
-	set project_type_id [im_project_type_gantt]
-	if {"" ne $parent_id} { set project_type_id [im_project_type_task] }
-	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project type '$project_type', using default type '[im_category_from_id $project_type_id]'</font>\n" }
+    if {"" eq $project_type_id} {
+	set project_type_id [im_id_from_category [list $project_type] "Intranet Project Type"]
+	if {"" == $project_type_id} {
+	    set project_type_id [im_project_type_gantt]
+	    if {"" ne $parent_id} { set project_type_id [im_project_type_task] }
+	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project type '$project_type', using default type '[im_category_from_id $project_type_id]'</font>\n" }
+	}
     }
 
     # start_date and end_date are required fields for projects, not tasks
