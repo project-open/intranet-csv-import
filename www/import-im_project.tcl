@@ -360,10 +360,12 @@ foreach csv_line_fields $values_list_of_lists {
     }
   
     # Status is a required field
-    set project_status_id [im_id_from_category $project_status "Intranet Project Status"]
     if {"" eq $project_status_id} {
-	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project status '$project_status', using default status 'Open'</font>\n" }
-	set project_status_id [im_project_status_open]
+	set project_status_id [im_id_from_category $project_status "Intranet Project Status"]
+	if {"" eq $project_status_id} {
+	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project status '$project_status', using default status 'Open'</font>\n" }
+	    set project_status_id [im_project_status_open]
+	}
     }
 
     # Project type is optional: Main projects are assumed to be "Gantt Projects", while sub-project are assumed to be "Task"
