@@ -56,7 +56,7 @@
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'person'"]] %></td>
   <td>Person</td>
   <td align=center><a href="examples/person.csv"><%= [im_gif csv-doc] %></a></td>
-  <td align=center><a href="/intranet-reporting/new?report_id=<%=$report_id_export_persons%>"><%= [im_gif database_table] %></a></td>
+  <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_persons%>"><%= [im_gif database_table] %></a></td>
   <td><!--Alternatively you can use the old facilities for <a href="<%= [export_vars -base "/intranet/users/upload-contacts" {return_url}] %>">importing users from MS-Outlook exports</a>.--></td>
 </tr>
 
@@ -64,7 +64,7 @@
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_company'"]] %></td>
   <td>Company</td>
   <td align=center><a href="examples/im_company.csv"><%= [im_gif csv-doc] %></a></td>
-  <td align=center><a href="/intranet-reporting/new?report_id=<%=$report_id_export_companies%>"><%= [im_gif database_table] %></a></td>
+  <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_companies%>"><%= [im_gif database_table] %></a></td>
   <td>Company <a href="/intranet-dynfield/object-type?object_type=im_company">DynFields</a> are also recognized by their "pretty name" or "column name".</p>
   </td>
 </tr>
@@ -73,7 +73,7 @@
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_invoice'"]] %></td>
   <td>Financial Documents (Invoices, Purchase Orders, etc.)</td>
   <td align=center><a href="examples/im_invoice.csv"><%= [im_gif csv-doc] %></a></td>
-  <td align=center><a href="/intranet-reporting/new?report_id=<%=$report_id_export_companies%>"><%= [im_gif database_table] %></a></td>
+  <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_companies%>"><%= [im_gif database_table] %></a></td>
   <td>
     <a href="http://www.project-open.com/en/object-type-im-invoice" target="_blank">Financial Documents</a> are
     <a href="http://www.project-open.com/en/object-type-im-cost" target="_blank">cost items</a> with a header and
@@ -86,7 +86,7 @@
   <td><%= [im_gif page_white_star] %></td>
   <td>Financial Document Item</td>
   <td align=center><a href="examples/im_invoice_item.csv"><%= [im_gif csv-doc] %></a></td>
-  <td align=center><a href="/intranet-reporting/new?report_id=<%=$report_id_export_invoice_items%>"><%= [im_gif database_table] %></a></td>
+  <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_invoice_items%>"><%= [im_gif database_table] %></a></td>
   <td>Allows to import "Items" seperately from headers.</td>
 </tr>
 
@@ -94,7 +94,7 @@
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_project'"]] %></td>
   <td>Project</td>
   <td align=center><a href="examples/im_project.csv"><%= [im_gif csv-doc] %></a></td>
-  <td align=center><a href="/intranet-reporting/new?report_id=<%=$report_id_export_projects%>"><%= [im_gif database_table] %></a></td>
+  <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_projects%>"><%= [im_gif database_table] %></a></td>
   <td>
     Project <a href="/intranet-dynfield/object-type?object_type=im_project">DynFields</a> are also recognized by their "pretty name" or "column name".</p>
   </td>
@@ -104,7 +104,7 @@
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_gantt_task'" -default ""]] %></td>
   <td>Gantt Task</td>
   <td align=center><a href="examples/im_project.csv"><%= [im_gif csv-doc] %></a></td>
-  <td align=center><a href="/intranet-reporting/new?report_id=<%=$report_id_export_tasks%>"><%= [im_gif database_table] %></a></td>
+  <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_tasks%>"><%= [im_gif database_table] %></a></td>
   <td>Allows to import Timesheet Tasks separately from projects/sub-projects.</td>
 </tr>
 
@@ -112,7 +112,7 @@
   <td><%= [im_gif hourglass] %></td>
   <td>Timesheet Hour</td>
   <td align=center><a href="examples/im_hour.csv"><%= [im_gif csv-doc] %></a></td>
-  <td align=center><a href="/intranet-reporting/new?report_id=<%=$report_id_export_hours%>"><%= [im_gif database_table] %></a></td>
+  <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_hours%>"><%= [im_gif database_table] %></a></td>
   <td>DynFields for hours are not supported.</td>
 </tr>
 
@@ -120,7 +120,7 @@
   <td><%= [im_gif money] %></td>
   <td>Expense Items</td>
   <td align=center><a href="examples/im_expense.csv"><%= [im_gif csv-doc] %></a></td>
-  <td align=center><a href="/intranet-reporting/new?report_id=<%=$report_id_export_expense_items%>"><%= [im_gif database_table] %></a></td>
+  <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_expense_items%>"><%= [im_gif database_table] %></a></td>
   <td>
     Expense <a href="/intranet-dynfield/object-type?object_type=im_expense">DynFields</a> are also recognized by their "pretty name" or "column name".
   </td>
@@ -130,7 +130,7 @@
   <td><%= [im_gif box] %></td>
   <td>Expense Bundles</td>
   <td align=center><a href="examples/im_expense_bundle.csv"><%= [im_gif csv-doc] %></a></td>
-  <td align=center><a href="/intranet-reporting/new?report_id=<%=$report_id_export_expense_bundles%>"><%= [im_gif database_table] %></a></td>
+  <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_expense_bundles%>"><%= [im_gif database_table] %></a></td>
   <td></td>
 </tr>
 
@@ -157,7 +157,7 @@
   <td><%=[im_gif brick_link]%></td>
   <td>Relationships</td>
   <td align=center><a href="examples/im_relation.csv"><%= [im_gif csv-doc] %></a></td>
-  <td align=center><a href="/intranet-reporting/new?report_id=<%=$report_id_export_project_task_relationships%>"><%= [im_gif database_table] %></a></td>
+  <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_project_task_relationships%>"><%= [im_gif database_table] %></a></td>
   <td>Import relationships between projects/tasks and persons.</td>
 </tr>
 
@@ -174,13 +174,12 @@
 <tr>
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_ticket'"]] %></td>
   <td>Tickets</td>
-  <td align=center></td>
-  <td align=center></td>
+  <td align=center><a href="examples/im_ticket.csv"><%= [im_gif csv-doc] %></a></td>
+  <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_tickets%>"><%= [im_gif database_table] %></a></td>
   <td>
-    Tickets import is under active development at the moment.<br>Please <a href="http://www.project-open.com/en/contact">contact us</a> for the current status or updates.
+    Ticket <a href="/intranet-dynfield/object-type?object_type=im_ticket">DynFields</a> are also recognized by their "pretty name" or "column name".</p>
   </td>
 </tr>
-
 
 <!--
 <tr>
