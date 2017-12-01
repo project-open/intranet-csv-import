@@ -84,10 +84,12 @@ ad_proc -public im_csv_import_parser_company_name {
        return [list $arg $err]
     }
 
+    set arg [string tolower [string trim $arg]]
+
     set sql "
 	select	min(c.company_id)
 	from	im_companies c
-	where	(c.company_name = '$arg' OR c.company_path = '$arg')
+	where	(lower(trim(c.company_name)) = :arg OR lower(trim(c.company_path)) = :arg)
     "
     set company_id [db_string company_id_from_name $sql -default ""]
     set err ""
