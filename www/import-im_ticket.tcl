@@ -132,6 +132,7 @@ foreach csv_line_fields $values_list_of_lists {
     set ticket_status_id	""
     set ticket_type		""
     set ticket_type_id	 	""
+    set ticket_assignee_id	""
     set ticket_queue		""
     set ticket_queue_id	 	""
     set ticket_customer_contact_id ""
