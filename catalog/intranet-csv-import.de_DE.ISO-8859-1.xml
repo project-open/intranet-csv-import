@@ -11,6 +11,7 @@
   <msg key="Export_Project_Task_Relationships">Projekt-Aufgaben Beziehungen exportieren</msg>
   <msg key="Export_Projects">Projekte exportieren</msg>
   <msg key="Export_Tasks">Gantt-Aufgaben exportieren</msg>
+  <msg key="Export_Tickets">Export Tickets as CSV</msg>
   <msg key="Filename">Dateiname</msg>
   <msg key="Object_Type">Objekttyp</msg>
   <msg key="Upload_file">Datei hochladen</msg>
