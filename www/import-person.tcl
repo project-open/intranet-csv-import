@@ -209,7 +209,7 @@ foreach csv_line_fields $values_list_of_lists {
     }
   
     # Get all profiles in the system and store them in an array  
-    foreach profile_tuple [im_profile::profile_options_all] {
+    foreach profile_tuple [im_profile::profile_options_all -translate_p 0] {
 	set profile_name [lindex $profile_tuple 0]
 	regsub -all {\[} $profile_name {} profile_name
 	regsub -all {\]} $profile_name {} profile_name
@@ -389,7 +389,7 @@ foreach csv_line_fields $values_list_of_lists {
 	    continue	   
 	}
 
-	if {$ns_write_p} { ns_write "<li>import-person: Createe user: <a href=\"/intranet/users/view?user_id=$user_id\">$first_names $last_name ($email)</a></li></li>\n" }	
+	if {$ns_write_p} { ns_write "<li>import-person: Create user: <a href=\"/intranet/users/view?user_id=$user_id\">$first_names $last_name ($email)</a></li></li>\n" }	
 	
 	# Write Audit Trail
 	im_audit -object_id $user_id -action after_create
@@ -436,6 +436,7 @@ foreach csv_line_fields $values_list_of_lists {
 	    # Assign users to profiles
 	    #
 	    if {$ns_write_p} { ns_write "<li>Trying to match profiles found ([split $profiles ","]) to one or more of the following profiles: [array names profile_arr]</li>"}
+
 	    foreach profile [split $profiles ","] {
 		# remove brackets 
 		regsub -all {\[} $profile {} profile
