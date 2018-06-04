@@ -78,10 +78,12 @@
     <a href="http://www.project-open.com/en/object-type-im-invoice" target="_blank">Financial Documents</a> are
     <a href="http://www.project-open.com/en/object-type-im-cost" target="_blank">cost items</a> with a header and
     one more more lines. Financial documents include invoices, quotes, purchase orders and others.<br>
+    Financial document lines can be imported together with the headers (please see the example document).<br>
     Cost Item <a href="/intranet-dynfield/object-type?object_type=im_invoice">DynFields</a> are also recognized by their "pretty name" or "column name".</p>
   </td>
 </tr>
 
+<!--
 <tr>
   <td><%= [im_gif page_white_star] %></td>
   <td>Financial Document Item</td>
@@ -89,6 +91,7 @@
   <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_invoice_items%>"><%= [im_gif database_table] %></a></td>
   <td>Allows to import "Items" seperately from headers.</td>
 </tr>
+-->
 
 <tr>
   <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_project'"]] %></td>

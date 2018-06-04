@@ -179,8 +179,9 @@ foreach csv_line_fields $values_list_of_lists {
     set item_uom_id             ""
     set price_per_unit          ""
     set item_material_id        ""
-    set item_type_id            ""
-    set item_status_id          ""        
+
+    set item_type_id            [im_invoice_item_type_default]
+    set item_status_id          [im_invoice_item_status_active]
     set task_id			""
     
     foreach attribute_name $attribute_names {
@@ -297,6 +298,9 @@ foreach csv_line_fields $values_list_of_lists {
 	    }
 	    continue
 	}
+	# Use the project_id of the cost item also for the invoice items
+	if {"" eq $project_id} { set project_id [db_string pid "select project_id from im_costs where cost_id = :cost_id" -default ""] }
+
 
 	set item_id [db_string item_id "select min(item_id) from im_invoice_items where invoice_id = :cost_id and item_name = :item_name" -default ""]
 	if {"" eq $currency} { set currency [db_string cur "select currency from im_costs where cost_id = :cost_id" -default $default_currency] }
@@ -304,22 +308,20 @@ foreach csv_line_fields $values_list_of_lists {
 	    # Create a new sort order based on the existing number of invoice_items
 	    set sort_order [db_string sort_order "select 1+count(*) from im_invoice_items where invoice_id = :cost_id"]
 	}
+	# Item doesn't exist yet - insert
 	if {"" eq $item_id} {
-	    # Item doesn't exist yet - insert
 	    if {$ns_write_p} { ns_write "<li><font color=green>Going to create line: cost_name='$cost_name', item_name='$item_name'</font></li>" }
-	    db_dml insert_item "
-		insert into im_invoice_items (
-			item_id,
-			invoice_id, sort_order, item_name, item_units, item_uom_id, price_per_unit, item_material_id, item_type_id, item_status_id, currency
-		) values (
-			nextval('im_invoice_items_seq'),
-			:cost_id, :sort_order, :item_name, :item_units, :item_uom_id, :price_per_unit, :item_material_id, :item_type_id, :item_status_id, :currency
-		)
-	    "
-	} else {
-	    # Item already exists - update
-	    if {$ns_write_p} { ns_write "<li>Going to update line: cost_name='$cost_name', item_name='$item_name'\n" }
-	    db_dml update_item "
+	    set item_id [db_string new_invoice_item "select im_invoice_item__new (
+			null, 'im_invoice_item', now(), :current_user_id, '[ad_conn peeraddr]', null,
+			:item_name, :cost_id, :sort_order,
+			:item_units, :item_uom_id, :price_per_unit, :currency,
+			:item_type_id, :item_status_id
+	    )"]
+	}
+
+	# Update - weather it's new or not...
+	if {$ns_write_p} { ns_write "<li>Going to update line: cost_name='$cost_name', item_name='$item_name'\n" }
+	db_dml update_item "
 		update im_invoice_items set
 			invoice_id = :cost_id, 
 			sort_order = :sort_order, 
@@ -330,11 +332,11 @@ foreach csv_line_fields $values_list_of_lists {
 			item_material_id = :item_material_id, 
 			item_type_id = :item_type_id,
 			item_status_id = :item_status_id,
+			project_id = :project_id,
 			currency = :currency
 		where
 			item_id = :item_id;
-	    "
-	}
+	"
 
 	# Skip the rest of the code dealing with im_invoices
 	continue
