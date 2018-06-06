@@ -15,11 +15,10 @@
         <summary>Import objects from CSV files</summary>
         <release-date>2016-11-15</release-date>
         <vendor url="http://www.project-open.com/">]project-open[</vendor>
+	<license>]project-open[ Free License (FL)</license>
         <description format="text/plain">Allows to map CSV column names to ]po[ fields and imports various type of objects</description>
         <maturity>0</maturity>
-
         <provides url="intranet-csv-import" version="0.1d"/>
-
         <callbacks>
         </callbacks>
         <parameters>
