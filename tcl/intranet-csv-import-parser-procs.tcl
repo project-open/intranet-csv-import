@@ -479,7 +479,7 @@ ad_proc -public im_csv_import_parser_conf_item_parent_nrs {
     {-parser_args "" }
     arg 
 } {
-    Returns a project_id from a list of project_nr's
+    Returns a conf_item_id from a list of conf_item Nrs.
 } {
     set arg [string tolower [string trim $arg]]
     set parent_id ""
@@ -517,3 +517,48 @@ ad_proc -public im_csv_import_parser_conf_item_parent_nrs {
     }
     return [list $parent_id ""]
 }
+
+
+ad_proc -public im_csv_import_parser_budget_item_parent_nrs { 
+    {-parser_args "" }
+    arg 
+} {
+    Returns a budget_item_id from a list of parent budget item numbers
+} {
+    set arg [string tolower [string trim $arg]]
+    set parent_id ""
+
+    # Shortcut: Accept the name of a budget_item if it's found
+    set budget_item_ids [db_list budget_item_ids "select budget_item_id from im_budget_items where lower(budget_item_nr) = :arg"]
+    if {"" ne $budget_item_ids} {
+	if {1 eq [llength $budget_item_ids]} {
+	    return [list [lindex $budget_item_ids 0] ""]
+	} else {
+	    return [list "" "Found multiple budget_items with name '$arg': Please use a space separated list of budget_item_nrs."]
+	}
+    }
+
+    if {"" eq $budget_item_ids} {
+	set budget_item_ids [db_list budget_item_ids "select budget_item_id from im_budget_items where lower(budget_item_name) = :arg"]
+	if {"" ne $budget_item_ids} {
+	    if {1 eq [llength $budget_item_ids]} {
+		return [list [lindex $budget_item_ids 0] ""]
+	    } else {
+		return [list "" "Found multiple budget_items with name '$arg': Please use a space separated list of budget_item_nrs."]
+	    }
+	}
+    }
+    
+    # Loop through the list of parent_nrs
+    foreach parent_nr $arg {
+	set parent_sql "budget_item_parent_id = $parent_id"
+	if {"" eq $parent_id} { set parent_sql "budget_item_parent_id is null" }
+	set project_id [db_string pid "select budget_item_id from im_budget_items where $parent_sql and lower(budget_item_nr) = :parent_nr" -default ""]
+	if {"" eq $project_id} {
+	    return [list "" "Didn't find budget_item with budget_item_nr='$parent_nr' and parent_id='$parent_id'"]
+	}
+	set parent_id $project_id
+    }
+    return [list $parent_id ""]
+}
+

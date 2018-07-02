@@ -346,6 +346,32 @@ ad_proc -public im_csv_import_guess_im_conf_item { } {} {
     return $mapping
 }
 
+ad_proc -public im_csv_import_guess_im_budget_item { } {} {
+    set mapping {
+        {budget_item_parent_id "Parent Budget Item Nr" budget_item_parent_nrs ""}
+        {budget_item_parent_id "Budget Item Parent Nrs" budget_item_parent_nrs ""}
+        {budget_item_name "Budget Item Name" no_change ""}
+        {budget_item_nr "Budget Item Nr" no_change ""}
+        {budget_item_code "Budget Item Code" no_change ""}
+        {budget_item_object_id "Budget Item Project" project_parent_nrs ""}
+        {budget_item_object_id "Budget Item Object" project_parent_nrs ""}
+        {budget_item_status_id "Budget Item Status" category "Intranet Budget Item Status"}
+        {budget_item_type_id "Budget Item Type" category "Intranet Budget Item Type"}
+        {budget_item_owner_id "Budget Item Owner" user_name ""}
+        {budget_item_owner_id "Budget Item Owner Email" user_name ""}
+	{budget_item_max_value "Value" number ""}
+	{budget_item_max_value "Maximum Amount" number ""}
+	{budget_item_alarm_value "Alarm Value" number ""}
+	{match_cost_type_id "Cost Type" category "Intranet Cost Type"}
+	{match_expense_type_id "Expense Type" category "Intranet Expense Type"}
+	{match_task_id "Project Phase" project_parent_nrs ""}
+	{match_material_type_id "Material Type" category "Intranet Material Type"}
+        {description "Description" no_change ""}
+        {note "Note" no_change ""}
+    }
+    return $mapping
+}
+
 ad_proc -public im_csv_import_guess_im_hour { } {} {
     set mapping {
         {project_id "Project Nr Path " project_parent_nrs ""}        
@@ -395,9 +421,10 @@ ad_proc -public im_csv_import_parsers {
     Returns the list of available parsers
 } {
     switch $object_type {
-        im_project - im_company - im_conf_item - im_cost - im_invoice - im_risk - im_timesheet_task - im_ticket - im_hour - person - im_expense_bundle - im_expense - rels {
+        im_project - im_company - im_budget_item - im_conf_item - im_cost - im_invoice - im_risk - im_timesheet_task - im_ticket - im_hour - person - im_expense_bundle - im_expense - rels {
             set parsers {
                 no_change                       "No Change"
+                budget_item_parent_nrs          "Budget Item Parent Nrs"
                 boolean                         "Boolean"
                 category                        "Category ID from Category Name"
                 company_name                    "Company ID from Company Name or Company Path"

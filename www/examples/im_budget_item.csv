@@ -1,0 +1,11 @@
+Budget Item Parent Nrs;Budget Item Nr;Budget Item Name;Budget Item Project;Budget Item Owner;Budget Item Status;Budget Item Type;Maximum Amount;Description;Note
+;WBS.031/17;Extended Systems Monitoring;Car Configurator;Ben Bigboss;Approved;Default;400.000  ;Build an extended version of current system's monitoring;
+WBS.031/17;WBS.031/17.A;Provider Hardware;Car Configurator;Ben Bigboss;Approved;Default;100.000  ;;
+WBS.031/17;WBS.031/17.B;Installation Hardware;Car Configurator;Ben Bigboss;Approved;Default;20.000  ;;
+WBS.031/17;WBS.031/17.C;Software Licenses;Car Configurator;Ben Bigboss;Approved;Default;50.000  ;;
+WBS.031/17;WBS.031/17.D;Software Installation;Car Configurator;Ben Bigboss;Approved;Default;10.000  ;;
+WBS.031/17;WBS.052/17.A;Extend Fiber Network;Car Configurator;Ben Bigboss;Approved;Default;60.000  ;;Need to clarify existing network
+WBS.031/17;WBS.052/17.B;Additional Sensors;Car Configurator;Ben Bigboss;Approved;Default;30.000  ;;
+WBS.031/17;WBS.052/17.C;Database & OS Licenses;Car Configurator;Ben Bigboss;Approved;Default;15.000  ;;
+WBS.031/17;WBS.052/17.D;Integration with legacy systems;Car Configurator;Ben Bigboss;Approved;Default;80.000  ;;
+WBS.031/17;WBS.052/17.E;Optional Add-On Monitors;Car Configurator;Ben Bigboss;Requested;Default;20.000  ;Optional. Supervisory board will decide;

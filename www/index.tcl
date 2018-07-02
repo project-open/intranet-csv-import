@@ -32,6 +32,7 @@ set main_navbar_label [im_csv_import_label_from_object_type -object_type $object
 db_1row get_report_ids "
 	select 
 		(select report_id from im_reports where report_name = 'Export Absences') as report_id_export_absemces,
+		(select report_id from im_reports where report_name = 'Export Budget Items') as report_id_export_budget_items,
 		(select report_id from im_reports where report_name = 'Export Companies') as report_id_export_companies,
 		(select report_id from im_reports where report_name = 'Export Conf Items') as report_id_export_conf_items,
 		(select report_id from im_reports where report_name = 'Export Expense Bundles') as report_id_export_expense_bundles,
