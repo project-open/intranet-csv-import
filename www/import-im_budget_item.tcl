@@ -171,8 +171,16 @@ foreach csv_line_fields $values_list_of_lists {
 	set var_name [im_mangle_unicode_accents $var_name]
 
 	set cmd "set $var_name \"$var_value\""
-	ns_log Notice "import-im_budget_item: cmd=$cmd"
+	ns_log Notice "import-im_budget_item: #$j: cmd=$cmd"
 	set result [eval $cmd]
+
+	set mapped_var_name $map($j)
+	if {"" ne $mapped_var_name} {
+	    set cmd "set $mapped_var_name \"$var_value\""
+	    ns_log Notice "import-im_budget_item: #$j: cmd=$cmd"
+	    set result [eval $cmd]
+	}
+
     }
 
     # -------------------------------------------------------
@@ -244,15 +252,15 @@ foreach csv_line_fields $values_list_of_lists {
     # Status is a required field
     set budget_item_status_id [im_id_from_category $budget_item_status "Intranet Budget Item Status"]
     if {"" == $budget_item_status_id} {
-	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find budget_item status '$budget_item_status', using default status 'Open'</font>\n" }
-	set budget_item_status_id [im_budget_item_status_active]
+	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find budget_item status '$budget_item_status', using default status 'Approved'</font>\n" }
+	set budget_item_status_id [im_budget_item_status_approved]
     }
 
     # Type is a required field
     set budget_item_type_id [im_id_from_category [list $budget_item_type] "Intranet Budget Item Type"]
     if {"" == $budget_item_type_id} {
-	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find budget_item type '$budget_item_type', using default type 'Other'</font>\n" }
-	set budget_item_type_id [im_budget_item_type_software]
+	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find budget_item type '$budget_item_type', using default type 'Default'</font>\n" }
+	set budget_item_type_id [im_budget_item_type_default]
     }
 
     # -------------------------------------------------------
@@ -353,7 +361,7 @@ foreach csv_line_fields $values_list_of_lists {
     array unset attributes_hash
     array set attributes_hash {}
     db_foreach store_dynfiels $dynfield_sql {
-	ns_log Notice "import-im_budget_item: name=$attribute_name, otype=$object_type, table=$table_name"
+	ns_log Notice "import-im_budget_item: name=$attribute_name, otype=$object_type, table=$table_name, im_opt_val($attribute_name)=[im_opt_val $attribute_name]"
 
 	# Avoid storing attributes multipe times into the same table.
 	# Sub-types can have the same attribute defined as the main type, so duplicate

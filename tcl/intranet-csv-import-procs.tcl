@@ -732,42 +732,45 @@ ad_proc -public im_csv_import_guess_parser {
     # There can be 0, 1 or multiple dynfields with the field_name,
     # unfortunately.
     set dynfield_sql "
-        select        dw.widget as tcl_widget,
-                dw.parameters as tcl_widget_parameters,
-                substring(dw.parameters from 'category_type \"(.*)\"') as category_type,
-                aa.attribute_name
-        from        acs_attributes aa,
-                im_dynfield_attributes da,
-                im_dynfield_widgets dw
-        where        aa.object_type in ('[join $super_types "','"]') and
-                aa.attribute_id = da.acs_attribute_id and
-                da.widget_name = dw.widget_name and
-                (lower(aa.attribute_name) = lower(trim(:field_name)) OR
-                lower(aa.attribute_name) = lower(trim(:field_name))||'_id'
-                )
+	select  dw.widget as tcl_widget,
+		dw.parameters as tcl_widget_parameters,
+		substring(dw.parameters from 'category_type \"(.*)\"') as category_type,
+		aa.attribute_name,
+		aa.datatype
+	from    acs_attributes aa,
+		im_dynfield_attributes da,
+		im_dynfield_widgets dw
+	where	aa.object_type in ('[join $super_types "','"]') and
+		aa.attribute_id = da.acs_attribute_id and
+		da.widget_name = dw.widget_name and
+		(lower(aa.attribute_name) = lower(trim(:field_name)) OR lower(aa.attribute_name) = lower(trim(:field_name))||'_id')
     "
+
+    # ad_return_complaint 1 [im_ad_hoc_query -format html $dynfield_sql]
+
     set result [list "" "" ""]
     set ttt_widget ""
     db_foreach dynfields $dynfield_sql {
         set ttt_widget $tcl_widget
+
+	switch $datatype {
+	    "float" {
+		set result [list "number" "" $attribute_name]
+	    }
+	}
+
         switch $tcl_widget {
-            "im_category_tree" {
-                set result [list "category" $category_type $attribute_name]
-            }
-            "im_cost_center_tree" {
-                set result [list "cost_center" "" $attribute_name]
-            }
-            "checkbox" {
-                set result [list "boolean" "" $attribute_name]
-            }
-            "date" {
-                set result [list "date" "" $attribute_name]
-            }
+            "im_category_tree" {    set result [list "category" $category_type $attribute_name] }
+            "im_cost_center_tree" { set result [list "cost_center" "" $attribute_name]          }
+            "checkbox" {            set result [list "boolean" "" $attribute_name]              }
+            "date" {                set result [list "date" "" $attribute_name]                 }
             default {
                 # Default: No specific parser
                 # text, richtext, textare -> no change (ToDo: quoting?)
                 # radio, select generic_sql -> custom
-                set result [list "" "" $attribute_name]
+		if {[list "" "" ""] eq $result} {
+		    set result [list "" "" $attribute_name]
+		}
             }
         }
     }
