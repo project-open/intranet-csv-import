@@ -56,7 +56,7 @@
 
 
 <tr>
-  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_budget_item'"]] %></td>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_budget_item'" -default ""]] %></td>
   <td>Budget Item</td>
   <td align=center><a href="examples/im_budget_item.csv"><%= [im_gif csv-doc] %></a></td>
   <td align="center"></td>
@@ -68,7 +68,7 @@
 
 
 <tr>
-  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_company'"]] %></td>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_company'" -default ""]] %></td>
   <td>Company</td>
   <td align=center><a href="examples/im_company.csv"><%= [im_gif csv-doc] %></a></td>
   <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_companies%>"><%= [im_gif database_table] %></a></td>
@@ -77,7 +77,7 @@
 </tr>
 
 <tr>
-  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_conf_item'"]] %></td>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_conf_item'" -default ""]] %></td>
   <td>Conf Item</td>
   <td align=center><a href="examples/im_conf_item.csv"><%= [im_gif csv-doc] %></a></td>
   <td align="center"></td>
@@ -107,7 +107,7 @@
 
 
 <tr>
-  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_invoice'"]] %></td>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_invoice'" -default ""]] %></td>
   <td>Financial Documents (Invoices, Purchase Orders, etc.)</td>
   <td align=center><a href="examples/im_invoice.csv"><%= [im_gif csv-doc] %></a></td>
   <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_companies%>"><%= [im_gif database_table] %></a></td>
@@ -131,7 +131,7 @@
 -->
 
 <tr>
-  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_gantt_task'" -default ""]] %></td>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_gantt_task'" -default "" -default ""]] %></td>
   <td>Gantt Task</td>
   <td align=center><a href="examples/im_project.csv"><%= [im_gif csv-doc] %></a></td>
   <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_tasks%>"><%= [im_gif database_table] %></a></td>
@@ -140,7 +140,7 @@
 
 
 <tr>
-  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'person'"]] %></td>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'person'" -default ""]] %></td>
   <td>Person</td>
   <td align=center><a href="examples/person.csv"><%= [im_gif csv-doc] %></a></td>
   <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_persons%>"><%= [im_gif database_table] %></a></td>
@@ -148,7 +148,7 @@
 </tr>
 
 <tr>
-  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_project'"]] %></td>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_project'" -default ""]] %></td>
   <td>Project</td>
   <td align=center><a href="examples/im_project.csv"><%= [im_gif csv-doc] %></a></td>
   <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_projects%>"><%= [im_gif database_table] %></a></td>
@@ -167,7 +167,7 @@
 </tr>
 
 <tr>
-  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_risk'"]] %></td>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_risk'" -default ""]] %></td>
   <td>Risk</td>
   <td align=center><a href="examples/im_risk.csv"><%= [im_gif csv-doc] %></a></td>
   <td></td>  
@@ -183,7 +183,7 @@
 </tr>
 
 <tr>
-  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_ticket'"]] %></td>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_ticket'" -default ""]] %></td>
   <td>Tickets</td>
   <td align=center><a href="examples/im_ticket.csv"><%= [im_gif csv-doc] %></a></td>
   <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_tickets%>"><%= [im_gif database_table] %></a></td>
@@ -193,7 +193,7 @@
 </tr>
 
 <tr>
-  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_user_absence'"]] %></td>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_user_absence'" -default ""]] %></td>
   <td>User Absence</td>
   <td align=center></td>
   <td align=center></td>
@@ -204,7 +204,7 @@
 
 <!--
 <tr>
-  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_cost'"]] %></td>
+  <td><%= [im_gif [db_string gif "select object_type_gif from acs_object_types where object_type = 'im_cost'" -default ""]] %></td>
   <td>Cost Item</td>
   <td align=center><a href="examples/im_cost.csv"><%= [im_gif csv-doc] %></a></td>
   <td>
