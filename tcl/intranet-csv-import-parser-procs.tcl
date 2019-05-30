@@ -297,6 +297,10 @@ ad_proc -public im_csv_import_parser_number {
     There may be ambiguities between American and European number formats
     with decimal and thousands separators
 } {
+    if {![regexp {^[0-9\-\.\,]*$} $arg match]} {
+	return [list 0 [lang::message::lookup "" intranet-csv-import.Invalid_Chars "Found invalid characters"]]
+    }
+
     set divisor 1
     if {[regexp {^(.+)%$} $arg match number]} {
 	set divisor 100
