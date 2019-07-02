@@ -254,7 +254,7 @@ foreach csv_line_fields $values_list_of_lists {
     }
 
     # Type is a required field
-    set conf_item_type_id [im_id_from_category [list $conf_item_type] "Intranet Conf Item Type"]
+    set conf_item_type_id [im_id_from_category $conf_item_type "Intranet Conf Item Type"]
     if {"" == $conf_item_type_id} {
 	if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find conf_item type '$conf_item_type', using default type 'Other'</font>\n" }
 	set conf_item_type_id [im_conf_item_type_software]
