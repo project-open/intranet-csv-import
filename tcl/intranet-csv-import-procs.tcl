@@ -353,8 +353,7 @@ ad_proc -public im_csv_import_guess_im_budget_item { } {} {
         {budget_item_name "Budget Item Name" no_change ""}
         {budget_item_nr "Budget Item Nr" no_change ""}
         {budget_item_code "Budget Item Code" no_change ""}
-        {budget_item_object_id "Budget Item Project" project_parent_nrs ""}
-        {budget_item_object_id "Budget Item Object" project_parent_nrs ""}
+        {budget_item_project_id "Budget Item Project" project_parent_nrs ""}
         {budget_item_status_id "Budget Item Status" category "Intranet Budget Item Status"}
         {budget_item_type_id "Budget Item Type" category "Intranet Budget Item Type"}
         {budget_item_owner_id "Budget Item Owner" user_name ""}

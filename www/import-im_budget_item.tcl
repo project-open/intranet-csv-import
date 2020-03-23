@@ -131,7 +131,7 @@ foreach csv_line_fields $values_list_of_lists {
     set budget_item_type	""
     set budget_item_type_id	""
     set budget_item_owner_id	""
-    set budget_item_object_id   ""
+    set budget_item_project_id   ""
     set budget_item_max_value   ""
     set budget_item_alarm_value ""
     set description		""
@@ -335,7 +335,7 @@ foreach csv_line_fields $values_list_of_lists {
 			budget_item_status_id	= :budget_item_status_id,
 			budget_item_type_id	= :budget_item_type_id,
 			budget_item_owner_id	= :budget_item_owner_id,
-			budget_item_object_id	= :budget_item_object_id,
+			budget_item_project_id	= :budget_item_project_id,
 			budget_item_max_value   = :budget_item_max_value,
 			budget_item_alarm_value = :budget_item_alarm_value,
 			note			= :note,
