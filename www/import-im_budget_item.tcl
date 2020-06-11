@@ -361,7 +361,7 @@ foreach csv_line_fields $values_list_of_lists {
     array unset attributes_hash
     array set attributes_hash {}
     db_foreach store_dynfiels $dynfield_sql {
-	ns_log Notice "import-im_budget_item: name=$attribute_name, otype=$object_type, table=$table_name, im_opt_val($attribute_name)=[im_opt_val $attribute_name]"
+	ns_log Notice "import-im_budget_item: name=$attribute_name, otype=$object_type, table=$table_name"
 
 	# Avoid storing attributes multipe times into the same table.
 	# Sub-types can have the same attribute defined as the main type, so duplicate
