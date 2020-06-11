@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<message_catalog package_key="intranet-csv-import" locale="nl_NL" charset="ISO-8859-1">
+
+  <msg key="Export_Companies">Exporteer bedrijven</msg>
+  <msg key="Export_Expense_Bundles">Exporteer onkosten bundels</msg>
+  <msg key="Export_Expense_Items">Exporteer onkosten items</msg>
+  <msg key="Export_Finance_Documents">Exporteer financiële documenten</msg>
+  <msg key="Export_Hours">Exporteer uren</msg>
+  <msg key="Export_Invoice_Items">Exporteer onkosten items</msg>
+  <msg key="Export_Persons">Exporteer personen</msg>
+  <msg key="Export_Project_Task_Relationships">Exporteer project-taak relaties</msg>
+  <msg key="Export_Projects">Exporteer projecten</msg>
+  <msg key="Export_Tasks">Exporteer taken</msg>
+  <msg key="Export_Tickets">Exporteer tickets als CSV</msg>
+  <msg key="Filename">Bestandsnaam</msg>
+  <msg key="Object_Type">Object type</msg>
+  <msg key="Upload_file">Upload bestanden</msg>
+</message_catalog>
