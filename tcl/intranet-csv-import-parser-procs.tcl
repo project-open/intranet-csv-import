@@ -456,7 +456,7 @@ ad_proc -public im_csv_import_parser_project_parent_nrs {
     set parent_id ""
 
     # Shortcut: Accept the name of a project if it's found
-    set project_ids [db_list project_ids "select project_id from im_projects where lower(project_name) = :arg"]
+    set project_ids [db_list project_ids "select project_id from im_projects where lower(project_nr) = :arg"]
     if {"" ne $project_ids} {
 	if {1 eq [llength $project_ids]} {
 	    return [list [lindex $project_ids 0] ""]
