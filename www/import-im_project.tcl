@@ -29,7 +29,7 @@ set current_user_id [auth::require_login]
 set page_title [lang::message::lookup "" intranet-cvs-import.Upload_Objects "Upload Objects"]
 set context_bar [im_context_bar "" $page_title]
 set admin_p [im_is_user_site_wide_or_intranet_admin $current_user_id]
-if {!$admin_p} {
+if {0 && !$admin_p} {
     ad_return_complaint 1 "Only administrators have the right to import objects"
     ad_script_abort
 }
@@ -253,6 +253,12 @@ foreach csv_line_fields $values_list_of_lists {
 
     # project_name needs to be there
     if {"" == $project_name} {
+
+        if {"" eq $project_nr && "" eq $parent_nrs} {
+	    ns_write "<li>We have found an empty line $cnt.\n"
+	    continue
+        }
+
 	if {$ns_write_p} {
 	    ns_write "<li><font color=red>Error: We have found an empty 'Project Name' in line $cnt.<br>
 	        Please correct the CSV file. Every projects needs to have a unique Project Name.</font>\n"
@@ -382,11 +388,19 @@ foreach csv_line_fields $values_list_of_lists {
     if { $project_type_id != 100 } {
 	if {"" == $start_date} {
 	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project start_date, using today.</font>\n" }
-	    set start_date [db_string today "select now()::date from dual"]
+	    set start_date [db_string today "select now()::date"]
 	}
 	if {"" == $end_date} {
+	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project end_date, using start_date+1 or today.</font>\n" }
+
+	    catch {
+		set end_date [db_string today "select start_date::date + 1"]
+	    } err_msg
+	}
+	
+	if {"" == $end_date} {
 	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find project end_date, using today.</font>\n" }
-	    set end_date [db_string today "select now()::date from dual"]
+	    set end_date [db_string today "select now()::date + 1"]
 	}
     }
 
@@ -506,6 +520,24 @@ foreach csv_line_fields $values_list_of_lists {
     if {"" == $project_id} {
 
 	if {$ns_write_p} { ns_write "<li><font color='green'>Going to create project: name='$project_name', nr='$project_nr'</font></li>" }
+
+	# Check if the user has the permission to create new top-level projects
+	if {"" eq $parent_id} {
+	    set add_projects_p [im_permission $current_user_id add_projects]
+	    if {!$add_projects_p} {
+		if {$ns_write_p} { ns_write "<li><font color=red>Error: The current user is not allowed to create new (top-level) projects.</font>" }
+		continue
+	    }
+	} else {
+	    # There is a parent. Check if the user can write to it.
+	    im_project_permissions $current_user_id $parent_id view_parent_p read_parent_p write_parent_p admin_parent_p
+	    if {!$write_parent_p} {
+		set parent_name [db_string parent_name "select project_name from im_projects where project_id = :parent_id" -default "undefined"]
+		if {$ns_write_p} { ns_write "<li><font color=red>Error: The current user is not allowed to create activities below the (top-level) project '$parent_name' with parent_nrs='$parent_nrs'.</font>" }
+		continue
+	    }
+	}
+
 	if {[catch {
 		set project_id [im_project::new \
 			    -project_name	$project_name \
@@ -516,14 +548,22 @@ foreach csv_line_fields $values_list_of_lists {
 			    -project_type_id	$project_type_id \
 			    -project_status_id	$project_status_id \
 			   ]
+
+	    # Add current user as project admin
+	    if {"" eq $parent_id && !$admin_p} {
+		set role_id [im_biz_object_role_project_manager]
+		im_biz_object_add_role $current_user_id $project_id $role_id
+	    }
+
 	} err_msg]} {
 	    if {$ns_write_p} { ns_write "<li><font color=red>Error: Creating new project:<br><pre>$err_msg</pre></font>\n" }
-	    continue	    
+	    continue
 	}
 
     } else {
 	if {$ns_write_p} { ns_write "<li>Project already exists: name='$project_name', nr='$project_nr', id='$project_id'\n" }
     }
+
 
     if {$ns_write_p} { ns_write "<li>Going to update the project.\n" }
     if {[catch {
@@ -593,7 +633,7 @@ foreach csv_line_fields $values_list_of_lists {
 	}
 
 	# Task UoM
-	if {"" eq $uom} { set uom "Day" }
+	if {"" eq $uom} { set uom "Hour" }
 	set uom_id [im_id_from_category [list $uom] "Intranet UoM"]
 	if {"" eq $uom_id} {
 	    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Didn't find UoM '$uom', using default 'Hour'</font>\n" }
@@ -613,7 +653,7 @@ foreach csv_line_fields $values_list_of_lists {
 	    }
 	    default {
 		if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Found invalid UoM=[im_category_from_id $uom_id], using 'Hour' as a default</font>\n" }
-		set uom_id [im_uom_hour]
+		set uom_id [im_uom_hour]		
 	    }
 	}
 
@@ -695,6 +735,8 @@ foreach csv_line_fields $values_list_of_lists {
 		lappend task_dynfield_updates "$attribute_name = :$attribute_name"
 	    }
 	    default {
+		if {$ns_write_p} { ns_write "<li><font=red><b>Dynfield Configuration Error</b>:
+                	  Attribute='$attribute_name' in table='$table_name' is not in im_projects or im_timesheet_tasks.</font>\n" }
 		ad_return_complaint 1 "<b>Dynfield Configuration Error</b>:<br>
 		Attribute='$attribute_name' in table='$table_name' is not in im_projects or im_timesheet_tasks."
 	    }
