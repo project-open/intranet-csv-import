@@ -33,6 +33,14 @@ ad_page_contract {
 set current_user_id [auth::require_login]
 set page_title [lang::message::lookup "" intranet-cvs-import.Upload_Objects "Upload Objects"]
 set context_bar [im_context_bar "" $page_title]
+set user_is_admin_p [im_is_user_site_wide_or_intranet_admin $current_user_id]
+
+set add_users_p [im_permission $current_user_id "add_users"]
+if {!$add_users_p} {
+    ad_return_complaint 1 "You don't have permissions to create new user."
+    ad_script_abort
+}
+
 
 # ---------------------------------------------------------------------
 # Check and open the file
@@ -193,6 +201,7 @@ foreach csv_line_fields $values_list_of_lists {
 
     # Group memberships
     set profiles                                ""
+    set password                                ""
 
     # To Do:
     # group_name_1                            ""
@@ -430,6 +439,11 @@ foreach csv_line_fields $values_list_of_lists {
 	    db_dml sql $sql
 
 	    if {$ns_write_p} { ns_write "<li>Going to update the user's employee data\n" }
+
+	    if {"" ne $password} {
+		if {$ns_write_p} { ns_write "<li>Going to update the user's password</li>"}
+		ad_change_password $user_id $password
+	    }
 
 
 	    ###
