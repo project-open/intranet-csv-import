@@ -217,13 +217,23 @@ foreach csv_line_fields $values_list_of_lists {
 	set $attribute_name ""
     }
   
-    # Get all profiles in the system and store them in an array  
-    foreach profile_tuple [im_profile::profile_options_all -translate_p 0] {
+    # List of all profiles in the system
+    foreach profile_tuple [im_profile::profile_options_all] {
+	set profile_name [lindex $profile_tuple 0]
+	regsub -all {\[} $profile_name {} profile_name
+	regsub -all {\]} $profile_name {} profile_name
+	set profile_all_arr($profile_name) [lindex $profile_tuple 1] 
+    }
+
+    # List of profiles managable for the current user
+    foreach profile_tuple [im_profile::profile_options_managable_for_user $current_user_id] {
 	set profile_name [lindex $profile_tuple 0]
 	regsub -all {\[} $profile_name {} profile_name
 	regsub -all {\]} $profile_name {} profile_name
 	set profile_arr($profile_name) [lindex $profile_tuple 1] 
     }
+
+
 
     # Get all Departments 
     set sql "select cost_center_id, cost_center_name from im_cost_centers where department_p = 't'"
@@ -504,7 +514,13 @@ foreach csv_line_fields $values_list_of_lists {
 		    }
 
 		} else {
-		    if {$ns_write_p} { ns_write "<li><font color=red>Error: Error adding user to profile: >>${profile}<< - Profile not found</font></li>" }
+
+		    if {[info exists profile_all_arr($profile)]} {
+			if {$ns_write_p} { ns_write "<li><font color=red>Error: Error adding user to profile: '${profile}': You (user '[acs_object_name $current_user_id]') have no permission to add a user to profile ${profile}</font></li>" }
+		    } else {
+			if {$ns_write_p} { ns_write "<li><font color=red>Error: Error adding user to profile: '${profile}': Profile doesn't exist</font></li>" }
+		    }
+
 		}
 	    }
 	    
