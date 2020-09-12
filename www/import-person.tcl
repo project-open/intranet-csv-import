@@ -417,7 +417,11 @@ foreach csv_line_fields $values_list_of_lists {
 	if {$ns_write_p} { ns_write "<li>User already exists: $first_names $last_name email='$email'\n" }
     }
 
-    if { $overwrite_existing_user_attributes_p || $new_user_p } {
+
+    # Check the permission of current_user_id to modify user_id:
+    im_user_permissions $current_user_id $user_id user_view_p user_read_p user_write_p user_admin_p
+
+    if {$user_write_p && ($overwrite_existing_user_attributes_p || $new_user_p)} {
 	if {$ns_write_p} { ns_write "<li>Going to update the user's contact data\n" }
 
 	if {[catch {
