@@ -201,6 +201,7 @@ foreach csv_line_fields $values_list_of_lists {
 
     # Group memberships
     set profiles                                ""
+    set company                                 ""
     set password                                ""
 
     # To Do:
@@ -449,16 +450,37 @@ foreach csv_line_fields $values_list_of_lists {
                     wa_country_code = :wa_country_code      ,
                     note            = :note                 
 		where user_id = :user_id
-	"
+	    "
 	    db_dml sql $sql
 
 	    if {$ns_write_p} { ns_write "<li>Going to update the user's employee data\n" }
 
+
+	    # Deal with "password" field:
+	    # Set the user's password if it was provided
 	    if {"" ne $password} {
 		if {$ns_write_p} { ns_write "<li>Going to update the user's password</li>"}
 		ad_change_password $user_id $password
 	    }
 
+	    # Deal with "company" field:
+	    # Search for a suitable company and add the user to the company
+	    if {"" ne $company} {
+		if {$ns_write_p} { ns_write "<li>Going to add user to company '$company'</li>"}
+		set company_id ""
+		if {"" eq $company_id} { 
+		    set company_id [db_string company_path "select min(company_id) from im_companies where lower(trim(company_path)) = lower(trim(:company))" -default ""] 
+		}
+		if {"" eq $company_id} { 
+		    set company_id [db_string company_name "select min(company_id) from im_companies where lower(trim(company_name)) = lower(trim(:company))" -default ""] 
+		}
+		if {"" eq $company_id} {
+		    if {$ns_write_p} { ns_write "<li><font color=brown>Warning: Did not find company name or path equal to: '$company'</font></li>"}
+		} else {
+		    if {$ns_write_p} { ns_write "<li>Adding user to company: '$company'</li>"}
+		    im_biz_object_add_role $user_id $company_id 1300
+		}
+	    }
 
 	    ###
 	    # Assign users to profiles

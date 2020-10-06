@@ -133,6 +133,7 @@ ad_proc -public im_csv_import_guess_person { } {} {
         {vacation_days_per_year          "Vacation Days per Year"      number                   "" }
         {vacation_balance                "Vacation Balance"            number                   "" }
         {profiles                        "Profiles"                    no_change                "" }
+        {company                         "Company"                     no_change                "" }
         {password                        "Password"                    no_change                "" }
    }
     return $mapping
