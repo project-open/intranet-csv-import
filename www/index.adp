@@ -11,20 +11,20 @@
 	<td>#intranet-csv-import.Object_Type#</td>
 	<td> 
 	<%= [im_select object_type [list \
-	      im_budget_item "Budget Item" \
-	      im_company "Company" \
-	      im_conf_item "Configuration Item" \
-	      im_expense "Expense" \
-              im_expense_bundle "Expense Bundle" \
-	      im_invoice "Financial Document" \
-	      im_timesheet_task "Gantt Task" \
-	      im_membership "Membership" \
-	      person "Person" \
-	      im_project "Project" \
-	      rels "Relationship: Projects/Tasks - Members " \
-	      im_risk "Risk" \
-	      im_hour "Timesheet Hour" \
-	      im_ticket "Ticket" \
+	      im_budget_item "Object Type: Budget Item" \
+	      im_company "Object Type: Company" \
+	      im_conf_item "Object Type: Configuration Item" \
+	      im_expense "Object Type: Expense" \
+              im_expense_bundle "Object Type: Expense Bundle" \
+	      im_invoice "Object Type: Financial Document" \
+	      im_timesheet_task "Object Type: Gantt Task" \
+	      im_membership "Object Type: Membership" \
+	      person "Object Type: Person" \
+	      im_project "Object Type: Project" \
+	      rels "Object Type: Relationship: Members of Projects or Gantt Tasks"  \
+	      im_risk "Object Type: Risk" \
+	      im_hour "Object Type: Timesheet Hour" \
+	      im_ticket "Object Type: Ticket" \
 	    ] $object_type] %>
 	</td>
      </tr>
