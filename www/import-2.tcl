@@ -82,6 +82,38 @@ set header_len [llength $headers]
 set values_lol [im_csv_get_values $lines_content $separator]
 
 
+
+
+# ---------------------------------------------------------------------
+# Code set check - detects wrong unicode chars or the beginning of an Excel file...
+# ---------------------------------------------------------------------
+
+set max_char 0
+set hex_chars {}
+foreach char [split $header ""] {
+    set c [scan $char %c]
+    if {$c > $max_char} { set max_char $c }
+    lappend hex_chars [format "%X" $c]
+}
+# ad_return_complaint 1 "sep='$separator',<br>header=$header,<br>headers=$headers,<br>max_char=$max_char,<br>hex=$hex_chars "
+if {"FEFF" eq [lindex $hex_chars 0]} {
+    ad_return_complaint 1 "<b>Something is wrong with your CSV file.<br>We found 'FEFF' as the first (invisible) character in your file</b>:<br>
+    &nbsp;<br>
+    Some text editors add a FEFF 'byte order mark' (BOM) in front of the text.<br>
+    This format is not supported by \]po\[.<br>
+    Please use a correctly formatted CSV in UTF-8 format without BOM.
+    "
+    ad_script_abort
+}
+
+
+
+# ---------------------------------------------------------------------
+# Continue parsing the header
+# ---------------------------------------------------------------------
+
+
+
 # Check if there are lines with less then 4 elements
 # fraber 160315: Exporting from Excel, the last columns may be shorter
 # set error [im_csv_import_check_list_of_lists $values_lol]
