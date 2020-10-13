@@ -424,6 +424,9 @@ foreach csv_line_fields $values_list_of_lists {
     if {$user_write_p && ($overwrite_existing_user_attributes_p || $new_user_p)} {
 	if {$ns_write_p} { ns_write "<li>Going to update the user's contact data\n" }
 
+	set users_contact_exists_p [db_string ucont "select count(*) from users_contact where user_id = :user_id"]
+	if {!$users_contact_exists_p} { db_dml ins_ucont "insert into users_contact (user_id) values (:user_id)" }
+
 	if {[catch {
 	    # Updating contact data 
 	    set sql "
@@ -450,6 +453,10 @@ foreach csv_line_fields $values_list_of_lists {
                     note            = :note                 
 		where user_id = :user_id
 	    "
+
+#	    ad_return_complaint 1 "<pre>$sql</pre><br>wa_line1=$wa_line1<br>wa_line2=$wa_line2<br>wa_city=$wa_city<br>home_phone=$home_phone<br>work_phone=$work_phone"
+
+
 	    db_dml sql $sql
 
 	    if {$ns_write_p} { ns_write "<li>Going to update the user's employee data\n" }
