@@ -9,12 +9,12 @@ ad_page_contract {
     @param map: Name of the ]po[ object attribute
     @param parser: Converter for CSV data type -> ]po[ data type
 } {
-    { return_url "" }
-    { upload_file "" }
-    { import_filename "" }
-    { mapping_name "" }
-    { ns_write_p 1 }
-    { overwrite_existing_user_attributes_p "0" }
+    {return_url ""}
+    {upload_file ""}
+    {import_filename ""}
+    {mapping_name ""}
+    {ns_write_p 1}
+    {overwrite_existing_user_attributes_p "0"}
     column:array
     map:array
     parser:array
@@ -313,7 +313,7 @@ foreach csv_line_fields $values_list_of_lists {
     }
 
     # Supervisor
-    if { "" != $supervisor_id && "" != $supervisor } {
+    if {"" != $supervisor_id && "" != $supervisor} {
 	if {$ns_write_p} {
 	    ns_write "<li><font color=red>Error: Please provide either supervisor or supervisor_id. Record will not be imported, please correct the CSV file.</font>\n"
 	}
@@ -321,15 +321,15 @@ foreach csv_line_fields $values_list_of_lists {
     }
 
     # Department
-    if { "" != $department && "" != $department_id } {
+    if {"" != $department && "" != $department_id} {
 	if {$ns_write_p} {
 	    ns_write "<li><font color=red>Error: Please provide either department or department_id. Record will not be imported, please correct the CSV file.</font>\n"
 	}
 	continue
     }
 
-    if { "" != $department } {
-	if { [info exists department_arr($department)] } {
+    if {"" != $department} {
+	if {[info exists department_arr($department)]} {
 	    set department_id $department_arr($department)
 	} else {
 	    if {$ns_write_p} {
@@ -342,11 +342,10 @@ foreach csv_line_fields $values_list_of_lists {
     # -------------------------------------------------------
     # Check if the User already exists
     #
-    set user_id [db_string party_id "
-	select	party_id
-	from	parties
-	where	email = :email
-    " -default ""]
+    set user_id [db_string party_id "select min(party_id) from parties where lower(trim(email)) = lower(trim(:email))" -default ""]
+    if {"" eq $user_id} {
+	set user_id [db_string party_id "select min(user_id) from users where lower(trim(username)) = lower(trim(:username))" -default ""]
+    }
 
     # Create a new user if necessary
     if {"" == $user_id} {
@@ -380,13 +379,13 @@ foreach csv_line_fields $values_list_of_lists {
 		    # Continue below
 		}
 		default {
-		    if { [llength $creation_info(element_messages)] == 0 } {
+		    if {[llength $creation_info(element_messages)] == 0} {
 			array set reg_elms [auth::get_registration_elements]
 			set first_elm [lindex [concat $reg_elms(required) $reg_elms(optional)] 0]
 			ns_write "<li><font color=red>Error - User not created: $first_elm $creation_info(creation_message)</font>\n"
 		    }
 		    # Element messages
-		    foreach { elm_name elm_error } $creation_info(element_messages) {
+		    foreach {elm_name elm_error} $creation_info(element_messages) {
                         ns_write "<li><font color=red>Error - User not created:  attribute: $elm_name, message: $elm_error\n"
 		    }
 		    continue
@@ -494,14 +493,14 @@ foreach csv_line_fields $values_list_of_lists {
 		set profile [string trim $profile]
 
 		# Backwards compatibility
-		if { "P/O Admins" eq $profile } { set profile "po Admins" }
+		if {"P/O Admins" eq $profile } { set profile "po Admins" }
 
-		if { [info exists profile_arr($profile)] } {
+		if {[info exists profile_arr($profile)]} {
 
 		    if {$ns_write_p} { ns_write "<li>Adding user to profile: $profile_arr($profile) </li>"}
 		    im_profile::add_member -profile_id $profile_arr($profile) -user_id $user_id
 		    
-		    if { "Employees" eq $profile } {
+		    if {"Employees" eq $profile} {
 			# Simply add the record to all users, even it they are not employees...
 			set im_employees_exists_p [db_string im_employees_exists_p "select count(*) from im_employees where employee_id = :user_id"]
 			if {!$im_employees_exists_p} { db_dml add_im_employees "insert into im_employees (employee_id) values (:user_id)" }
@@ -533,7 +532,7 @@ foreach csv_line_fields $values_list_of_lists {
 			###
 			# Set supervisor
 			#
-			if { "" != $supervisor && [string is double -strict $supervisor]} {
+			if {"" != $supervisor && [string is double -strict $supervisor]} {
 			    ns_write "<li>Found supervisor: $supervisor, updating now.</li>"
 			    db_dml update_supervisor "update im_employees set supervisor_id = :supervisor where employee_id = :user_id"
 			}
