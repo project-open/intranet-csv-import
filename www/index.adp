@@ -112,8 +112,8 @@
   <td align=center><a href="examples/im_invoice.csv"><%= [im_gif csv-doc] %></a></td>
   <td align=center><a href="/intranet-reporting/view?report_id=<%=$report_id_export_companies%>"><%= [im_gif database_table] %></a></td>
   <td>
-    <a href="http://www.project-open.com/en/object-type-im-invoice" target="_blank">Financial Documents</a> are
-    <a href="http://www.project-open.com/en/object-type-im-cost" target="_blank">cost items</a> with a header and
+    <a href="https://www.project-open.com/en/object-type-im-invoice" target="_blank">Financial Documents</a> are
+    <a href="https://www.project-open.com/en/object-type-im-cost" target="_blank">cost items</a> with a header and
     one more more lines. Financial documents include invoices, quotes, purchase orders and others.<br>
     Financial document lines can be imported together with the headers (please see the example document).<br>
     Cost Item <a href="/intranet-dynfield/object-type?object_type=im_invoice">DynFields</a> are also recognized by their "pretty name" or "column name".</p>
@@ -198,7 +198,7 @@
   <td align=center></td>
   <td align=center></td>
   <td>
-    Absence import is under active development at the moment.<br>Please <a href="http://www.project-open.com/en/contact">contact us</a> for the current status or updates.
+    Absence import is under active development at the moment.<br>Please <a href="https://www.project-open.com/en/contact">contact us</a> for the current status or updates.
   </td>
 </tr>
 
@@ -220,7 +220,7 @@
   <td colspan=4>
     <p>The ]project-open[ team offers professional services to help you import data from
       systems including SAP, Navision, Jira, MS-Project and many more. 
-      Please <a href="http://www.project-open.com/en/contact">contact</a> us for more information.</p>
+      Please <a href="https://www.project-open.com/en/contact">contact</a> us for more information.</p>
   </td>
 </tr>
 </table>
