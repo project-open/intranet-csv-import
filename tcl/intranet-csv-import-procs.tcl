@@ -114,7 +114,7 @@ ad_proc -public im_csv_import_guess_person { } {} {
         {supervisor_id                   "Supervisor"                  user_name                "" }        
         {supervisor_id                   "Supervisor Email"            user_name                "" }        
         {supervisor_id                   "Supervisor ID"               no_change                "" }
-        {department_id                   "Department"                  no_change                "" }
+        {department_id                   "Department"                  cost_center              "" }
         {availability                    "Availability"                percentage               "" }
         {personnel_number                "Personnel Number"            no_change                "" }
         {ss_number                       "Social Security Number"      no_change                "" }
