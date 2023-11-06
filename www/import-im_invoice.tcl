@@ -422,6 +422,7 @@ foreach csv_line_fields $values_list_of_lists {
 	    3736 { set object_type "im_cost" }
 	    3720 { set object_type "im_expense_item" }
 	    3722 { set object_type "im_expense_bundle" }
+	    3752 { set object_type "im_invoice" }
 	    default { 
 		if {$ns_write_p} { ns_write "<li><font=red>Unsupported cost_type='$cost_type' - skipping</font></li>\n" }
 		continue
