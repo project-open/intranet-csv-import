@@ -239,7 +239,7 @@ set levels {1 "Customer Only" 2 "Customer+Project"}
 # Start Formatting the HTML Page Contents
 
 # Write out HTTP header, considering CSV/MS-Excel formatting
-im_report_write_http_headers -output_format $output_format -report_name "export-projects.csv"
+im_report_write_http_headers -output_format $output_format -report_name "export-projects"
 
 
 
